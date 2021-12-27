@@ -18,7 +18,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zee.amusicplayer.R
-import com.zee.amusicplayer.domain.data.SongItem
+import com.zee.amusicplayer.domain.model.SongItem
 
 @Composable
 fun SingleSongItem(song: SongItem) {
@@ -33,18 +33,23 @@ fun SingleSongItem(song: SongItem) {
                 .clip(RoundedCornerShape(8.dp))
                 .background(color = Color.LightGray)
                 .padding(10.dp),
-            painter = painterResource(id = song.icon?:R.drawable.ic_songs),
+            painter = painterResource(id = R.drawable.ic_songs),
             contentDescription = null
         )
 
-        Column(modifier = Modifier
-            .weight(1f)
-            .padding(start = 10.dp)
-        ,
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 10.dp),
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
 
-            Text(text = song.title, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.h6)
+            Text(
+                text = song.title,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.body1
+            )
             Text(
                 text = song.albumName ?: "<unknown>",
                 maxLines = 1,
@@ -52,18 +57,13 @@ fun SingleSongItem(song: SongItem) {
             )
         }
 
-        IconButton(modifier = Modifier.padding(start = 5.dp), onClick = { }) {
+        IconButton(modifier = Modifier
+            .size(22.dp)
+            .padding(start = 5.dp), onClick = { }) {
             Icon(painter = painterResource(id = R.drawable.ic_more_vert), contentDescription = null)
         }
 
 
     }
 
-}
-
-@Preview
-@Composable
-fun SingleSongItemPreview() {
-    val song = SongItem(title = "don't know", icon = R.drawable.ic_songs, "<unknown>")
-    SingleSongItem(song = song)
 }

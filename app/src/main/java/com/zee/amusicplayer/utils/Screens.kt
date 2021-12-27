@@ -15,5 +15,18 @@ sealed class Screen(val title: String, val route: String, @DrawableRes val IconI
         fun toList(): List<Screen> {
             return listOf(HomeScreen, SongsScreen, AlbumScreen, ArtistsScreen, PlayListScreen)
         }
+
+
+        fun getScreenFromRoute(route: String): Screen {
+            //TODO("update this later")
+            return when (route) {
+                HomeScreen.route -> HomeScreen
+                SongsScreen.route -> SongsScreen
+                AlbumScreen.route -> AlbumScreen
+                ArtistsScreen.route -> ArtistsScreen
+                else -> PlayListScreen
+
+            }
+        }
     }
 }

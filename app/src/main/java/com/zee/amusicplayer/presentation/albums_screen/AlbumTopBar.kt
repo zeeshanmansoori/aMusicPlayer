@@ -1,4 +1,4 @@
-package com.zee.amusicplayer.presentation.home_screen.components
+package com.zee.amusicplayer.presentation.albums_screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -12,23 +12,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.sp
 import com.zee.amusicplayer.R
 import com.zee.amusicplayer.ui.theme.IconTintColor
-import com.zee.amusicplayer.utils.Screen
 import kotlin.math.roundToInt
 
 @Composable
-fun HomeScreenTopBar(
+fun AlbumTopBar(
     modifier: Modifier = Modifier,
     offset: Float = 0f,
-    screen: Screen
 ) {
 
     Row(
@@ -48,40 +42,18 @@ fun HomeScreenTopBar(
         }
 
 
-        val annotatedString = buildAnnotatedString {
-            if (screen == Screen.HomeScreen) {
-                append("Retro ")
-                withStyle(style = SpanStyle(color = MaterialTheme.colors.primary)) {
-                    append("Music")
-                }
-
-                return@buildAnnotatedString
-            }
-
-            append(screen.title)
-
-        }
-
 
         Text(
-            text = annotatedString,
+            text = "Albums",
             style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Bold),
             letterSpacing = 1.sp
         )
 
         IconButton(onClick = { }) {
             Icon(
-                painter = if (screen == Screen.HomeScreen) painterResource(id = R.drawable.ic_settings) else painterResource(
-                    id = R.drawable.ic_more_vert
-                ),
-                contentDescription = if(screen == Screen.HomeScreen) "settings" else "menu", tint = IconTintColor
+                painter = painterResource(id = R.drawable.ic_more_vert),
+                contentDescription = "settings", tint = IconTintColor
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun TopBarPrev() {
-
 }

@@ -14,43 +14,30 @@ import com.zee.amusicplayer.presentation.home_screen.components.UserDetails
 
 @Composable
 fun HomeScreen() {
-
     val toolbarHeight = 48.dp
     val paddingStart = 16.dp
     val toolbarHeightInPixel = with(LocalDensity.current) { toolbarHeight.toPx() }
-    //val offset =
 
-    Box(Modifier.fillMaxSize()) {
-
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingStart),
-            contentPadding = PaddingValues(top = toolbarHeight)
-        ) {
-            item {
-                UserDetails(
-                    modifier = Modifier.padding(vertical = paddingStart),
-                    paddingStart = paddingStart
-                )
-            }
-
-            item {
-
-                HomeScreenActionBar(modifier = Modifier.padding(4.dp))
-            }
-
-            item {
-
-            }
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingStart),
+        contentPadding = PaddingValues(top = toolbarHeight)
+    ) {
+        item {
+            UserDetails(
+                modifier = Modifier.padding(vertical = paddingStart),
+                paddingStart = paddingStart
+            )
         }
-        HomeScreenTopBar(
-            modifier = Modifier
-                .height(toolbarHeight)
-                .padding(horizontal = 2.dp, vertical = 1.dp), offset = 0f
-        )
-    }
 
+        item {
+
+            HomeScreenActionBar(modifier = Modifier.padding(4.dp))
+        }
+
+
+    }
 }
 
 
