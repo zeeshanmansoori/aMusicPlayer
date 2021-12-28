@@ -55,7 +55,7 @@ fun HomeScreenTopBar(
 
         val annotatedString = buildAnnotatedString {
             if (screen == Screen.HomeScreen) {
-                append("Retro ")
+                append("a ")
                 withStyle(style = SpanStyle(color = MaterialTheme.colors.primary)) {
                     append("Music")
                 }

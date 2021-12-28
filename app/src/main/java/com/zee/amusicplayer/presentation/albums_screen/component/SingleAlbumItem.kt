@@ -1,4 +1,4 @@
-package com.zee.amusicplayer.presentation.albums_screen
+package com.zee.amusicplayer.presentation.albums_screen.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,7 +13,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zee.amusicplayer.R
 import com.zee.amusicplayer.domain.model.AlbumItem
@@ -33,7 +32,7 @@ fun SingleAlbumItem(modifier: Modifier = Modifier, albumItem: AlbumItem) {
                 .clip(RoundedCornerShape(12.dp))
                 .background(color = Color.LightGray)
                 .padding(30.dp),
-            painter = painterResource(id = albumItem.albumIcon ?: R.drawable.ic_album),
+            painter = painterResource(id = R.drawable.ic_album),
             contentDescription = null
         )
 
@@ -56,9 +55,3 @@ fun SingleAlbumItem(modifier: Modifier = Modifier, albumItem: AlbumItem) {
 
 }
 
-@Preview
-@Composable
-fun SingleSongItemPreview() {
-
-    SingleAlbumItem(albumItem = AlbumItem("testing"))
-}

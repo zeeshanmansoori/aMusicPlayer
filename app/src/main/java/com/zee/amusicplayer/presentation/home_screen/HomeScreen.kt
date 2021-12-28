@@ -1,28 +1,27 @@
 package com.zee.amusicplayer.presentation.home_screen
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zee.amusicplayer.presentation.home_screen.components.HomeScreenActionBar
-import com.zee.amusicplayer.presentation.home_screen.components.HomeScreenTopBar
 import com.zee.amusicplayer.presentation.home_screen.components.UserDetails
+import com.zee.amusicplayer.utils.Constants
+import com.zee.amusicplayer.utils.Constants.paddingStart
 
 
 @Composable
 fun HomeScreen() {
-    val toolbarHeight = 48.dp
-    val paddingStart = 16.dp
-    val toolbarHeightInPixel = with(LocalDensity.current) { toolbarHeight.toPx() }
 
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingStart),
-        contentPadding = PaddingValues(top = toolbarHeight)
+        contentPadding = PaddingValues(top = Constants.toolBarHeight)
     ) {
         item {
             UserDetails(

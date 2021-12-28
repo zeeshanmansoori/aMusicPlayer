@@ -9,5 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="lightBgColor">#fffffbff</color>
     <color name="darkColorSurface">#ff202124</color>
-
+    <color name="lightColorSurface">#fffaf4fe</color>
 </resources>

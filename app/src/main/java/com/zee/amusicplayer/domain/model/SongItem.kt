@@ -17,6 +17,11 @@ data class SongItem(
     val albumArtist: String? = null
 ) {
     companion object {
+
+        fun List<SongItem>.toAlbums(): List<AlbumItem> {
+            return groupBy { it.albumId }.map { AlbumItem(it.key, it.value) }.toList()
+        }
+
         fun tempList(): MutableList<SongItem> {
             return MutableList(100) { index ->
 
@@ -39,6 +44,22 @@ data class SongItem(
 
 
         }
+
+        fun getEmptySong():SongItem = SongItem(
+            id = -1,
+            title = "",
+            trackNumber = -1,
+            year = -1,
+            duration = -1,
+            data = "",
+            dateModified = -1,
+            albumId = -1,
+            albumName = "",
+            artistId = -1,
+            artistName = "",
+            composer = "",
+            albumArtist = ""
+        )
 
     }
 }
