@@ -8,14 +8,17 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -28,24 +31,50 @@ import com.zee.amusicplayer.presentation.play_list_screen.PlayListScreen
 import com.zee.amusicplayer.presentation.songs_screen.SongsScreen
 import com.zee.amusicplayer.presentation.z_components.CustomBottomNavigation
 import com.zee.amusicplayer.ui.theme.AMusicPlayerTheme
+import com.zee.amusicplayer.utils.Constants.toolBarHeight
 import com.zee.amusicplayer.utils.Screen
 import dagger.hilt.android.AndroidEntryPoint
 
-
+@ExperimentalFoundationApi
+@ExperimentalAnimationApi
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @ExperimentalFoundationApi
-    @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             AMusicPlayerTheme {
-                // A surface container using the 'background' color from the theme
+
                 val navController = rememberAnimatedNavController()
+
                 val viewModel: MainVieModel = hiltViewModel()
+
+
                 val screen = viewModel.currentScreen.value
 
+
+                val toolbarHeightPx = with(LocalDensity.current) { toolBarHeight.toPx() }
+
+
+                val toolbarOffsetHeightPx = remember { mutableStateOf(0f) }
+
+                val nestedScrollConnection = remember {
+                    object : NestedScrollConnection {
+                        override fun onPreScroll(
+                            available: Offset,
+                            source: NestedScrollSource
+                        ): Offset {
+
+                            val delta = available.y
+                            val newOffset = toolbarOffsetHeightPx.value + delta
+                            toolbarOffsetHeightPx.value = newOffset.coerceIn(-toolbarHeightPx, 0f)
+
+                            return Offset.Zero
+                        }
+
+
+                    }
+                }
                 Scaffold(
                     bottomBar = {
                         CustomBottomNavigation(
@@ -55,6 +84,7 @@ class MainActivity : ComponentActivity() {
                                 if (screen.route != route) {
                                     navController.navigate(route)
                                     viewModel.updateScreen(Screen.getScreenFromRoute(route))
+                                    toolbarOffsetHeightPx.value = 0f
                                 }
 
                             }
@@ -62,20 +92,12 @@ class MainActivity : ComponentActivity() {
                     }) {
 
 
-                    val toolbarHeight = 48.dp
-                    val paddingStart = 16.dp
-                    val toolbarHeightInPixel = with(LocalDensity.current) { toolbarHeight.toPx() }
+                    Box(
+                        Modifier
+                            .fillMaxSize()
+                            .nestedScroll(nestedScrollConnection)
+                    ) {
 
-
-                    Box(Modifier.fillMaxSize()) {
-
-
-                        HomeScreenTopBar(
-                            screen = screen,
-                            modifier = Modifier
-                                .height(toolbarHeight)
-                                .padding(horizontal = 2.dp, vertical = 1.dp), offset = 0f
-                        )
 
                         AnimatedNavHost(
                             navController = navController,
@@ -111,6 +133,12 @@ class MainActivity : ComponentActivity() {
                                 PlayListScreen()
                             }
                         }
+
+                        HomeScreenTopBar(
+                            screen = screen,
+                            modifier = Modifier,
+                            offset = toolbarOffsetHeightPx.value
+                        )
                     }
                 }
             }
