@@ -1,6 +1,10 @@
 package com.zee.amusicplayer.di
 
 import android.app.Application
+import android.content.Context
+import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DefaultDataSource
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.zee.amusicplayer.domain.repository.AlbumRepository
 import com.zee.amusicplayer.domain.repository.ArtistRepository
 import com.zee.amusicplayer.domain.repository.SongRepository
@@ -14,6 +18,8 @@ import com.zee.amusicplayer.feature_songs.repository.SongRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.scopes.ServiceScoped
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -66,6 +72,7 @@ object AppModule {
     fun provideArtistUseCase(repository: ArtistRepository): GetAllArtistUseCase {
         return GetAllArtistUseCase(repository)
     }
+
 
 
 }

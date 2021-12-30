@@ -22,7 +22,6 @@ class SongRepositoryImpl(private val dataSource: AudioOfflineDataSource) : SongR
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 val song =getSongFromCursorImpl(cursor)
-                log("song got $song")
                 songs.add(song)
 
             } while (cursor.moveToNext())

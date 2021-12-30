@@ -8,7 +8,6 @@ import android.os.Build
 import android.provider.MediaStore
 import com.zee.amusicplayer.domain.model.SongItem
 import com.zee.amusicplayer.utils.*
-import java.util.concurrent.TimeUnit
 
 
 class AudioOfflineDataSource(private val context: Context) {
@@ -34,8 +33,6 @@ class AudioOfflineDataSource(private val context: Context) {
     )
 
 
-
-
     fun getSongFromCursor(cursor: Cursor): SongItem {
         //log("getSongFromCursor cursor called from source $cursor")
 
@@ -52,7 +49,7 @@ class AudioOfflineDataSource(private val context: Context) {
         val artistName = cursor.getStringOrNull(MediaStore.Audio.AudioColumns.ARTIST)
         val composer = cursor.getStringOrNull(MediaStore.Audio.AudioColumns.COMPOSER)
         val albumArtist = cursor.getStringOrNull(Constants.ALBUM_ARTIST)
-
+        val contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id)
         return SongItem(
             id,
             title,
@@ -66,7 +63,8 @@ class AudioOfflineDataSource(private val context: Context) {
             artistId,
             artistName ?: "",
             composer ?: "",
-            albumArtist ?: ""
+            albumArtist ?: "",
+            contentUri = contentUri.toString()
         )
     }
 

@@ -1,28 +1,23 @@
-package com.zee.amusicplayer.presentation.songs_screen
+package com.zee.amusicplayer.exo_player
 
 import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.MediaMetadataCompat
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.zee.amusicplayer.domain.model.SongItem
-import com.zee.amusicplayer.exo_player.MusicServiceConnection
-import com.zee.amusicplayer.exo_player.isPlayEnabled
-import com.zee.amusicplayer.exo_player.isPlaying
-import com.zee.amusicplayer.exo_player.isPrepared
-import com.zee.amusicplayer.utils.Constants
+import com.zee.amusicplayer.utils.Constants.MEDIA_ROOT_ID
 import com.zee.amusicplayer.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 
 @HiltViewModel
-class SongsVieModel @Inject constructor(
+class MainViewModel @Inject constructor(
     private val musicServiceConnection: MusicServiceConnection
 ) : ViewModel() {
-    private val _mediaItems =
-        mutableStateOf<Resource<List<SongItem>>>(Resource.Loading(data = null))
-    val mediaItems: State<Resource<List<SongItem>>> = _mediaItems
+    private val _mediaItems = MutableLiveData<Resource<List<SongItem>>>()
+    val mediaItems: LiveData<Resource<List<SongItem>>> = _mediaItems
 
     val isConnected = musicServiceConnection.isConnected
     val networkError = musicServiceConnection.networkError
@@ -30,9 +25,9 @@ class SongsVieModel @Inject constructor(
     val playbackState = musicServiceConnection.playbackState
 
     init {
-
+        _mediaItems.postValue(Resource.Loading(null))
         musicServiceConnection.subscribe(
-            Constants.MEDIA_ROOT_ID,
+            MEDIA_ROOT_ID,
             object : MediaBrowserCompat.SubscriptionCallback() {
                 override fun onChildrenLoaded(
                     parentId: String,
@@ -46,7 +41,7 @@ class SongsVieModel @Inject constructor(
 
                             )
                     }
-                    _mediaItems.value = Resource.Success(data = items)
+                    _mediaItems.postValue(Resource.Success(items))
                 }
             })
     }
@@ -67,7 +62,7 @@ class SongsVieModel @Inject constructor(
     fun playOrToggleSong(mediaItem: SongItem, toggle: Boolean = false) {
         val isPrepared = playbackState.value?.isPrepared ?: false
         if (isPrepared && mediaItem.id.toString() ==
-            curPlayingSong.value?.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)
+            curPlayingSong.value?.getString(METADATA_KEY_MEDIA_ID)
         ) {
             playbackState.value?.let { playbackState ->
                 when {
@@ -84,7 +79,7 @@ class SongsVieModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         musicServiceConnection.unsubscribe(
-            Constants.MEDIA_ROOT_ID,
+            MEDIA_ROOT_ID,
             object : MediaBrowserCompat.SubscriptionCallback() {})
     }
 }

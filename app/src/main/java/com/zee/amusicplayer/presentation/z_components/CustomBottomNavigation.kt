@@ -1,6 +1,7 @@
 package com.zee.amusicplayer.presentation.z_components
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -49,8 +50,8 @@ fun CustomBottomNavigation(
 
     // in order to clip the ripple effect vertically i putted content inside surface
     // other than surface nothing working
-    Surface {
-        Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
+    Surface(modifier = modifier) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
 
             Screen.toList().forEach { screen ->
                 SingleBottomNavigationItem(

@@ -18,6 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.zee.amusicplayer.R
+import com.zee.amusicplayer.common.MusicImage
 import com.zee.amusicplayer.domain.model.SongItem
 import com.zee.amusicplayer.utils.Constants
 
@@ -29,15 +30,7 @@ fun SingleSongItem(modifier: Modifier = Modifier,song: SongItem) {
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        Image(
-            modifier = Modifier
-                .size(40.dp)
-                .clip(RoundedCornerShape(Constants.rectanglesCorner))
-                .background(color = Color.LightGray)
-                .padding(10.dp),
-            painter = painterResource(id = R.drawable.ic_songs),
-            contentDescription = null
-        )
+        MusicImage(modifier = Modifier.size(40.dp))
 
         Column(
             modifier = Modifier
