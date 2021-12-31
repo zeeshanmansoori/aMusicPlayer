@@ -41,3 +41,4 @@ offline music player with jetpack compose and ExoPlayer.
 |----------|:-------------:|:-------------:|:-------------:|
 
 ### Demo
+![](screenshots/demo.gif)
