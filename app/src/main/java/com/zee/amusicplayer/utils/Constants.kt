@@ -4,6 +4,7 @@ import androidx.compose.ui.unit.dp
 
 object Constants {
 
+    const val UPDATE_PLAYER_POSITION_INTERVAL = 100L
     const val NETWORK_ERROR = "network_error"
     val toolBarHeight = 48.dp
     val bottomBarHeight = 80.dp

@@ -6,14 +6,15 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.BottomSheetScaffold
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Scaffold
-import androidx.compose.material.rememberBottomSheetScaffoldState
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
@@ -21,6 +22,7 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.style.TextAlign.Companion.Center
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -28,6 +30,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionRequired
+import com.google.accompanist.permissions.rememberPermissionState
 import com.zee.amusicplayer.presentation.albums_screen.AlbumScreen
 import com.zee.amusicplayer.presentation.artists_screen.ArtistScreen
 import com.zee.amusicplayer.presentation.home_screen.HomeScreen
@@ -36,6 +41,7 @@ import com.zee.amusicplayer.presentation.home_screen.components.PlayerCollapseBa
 import com.zee.amusicplayer.presentation.play_list_screen.PlayListScreen
 import com.zee.amusicplayer.presentation.player_screen.PlayerScreen
 import com.zee.amusicplayer.presentation.songs_screen.SongsScreen
+import com.zee.amusicplayer.presentation.songs_screen.SongsVieModel
 import com.zee.amusicplayer.presentation.z_components.CustomBottomNavigation
 import com.zee.amusicplayer.ui.theme.AMusicPlayerTheme
 import com.zee.amusicplayer.utils.Constants
@@ -45,6 +51,7 @@ import com.zee.amusicplayer.utils.currentFraction
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.roundToInt
 
+@ExperimentalComposeUiApi
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
@@ -52,6 +59,7 @@ import kotlin.math.roundToInt
 class MainActivity : ComponentActivity() {
 
 
+    @ExperimentalPermissionsApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -60,6 +68,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberAnimatedNavController()
 
                 val viewModel: MainVieModel = hiltViewModel()
+                val songViewModel: SongsVieModel = hiltViewModel()
 
 
                 val screen = viewModel.currentScreen.value
@@ -94,94 +103,163 @@ class MainActivity : ComponentActivity() {
                 }
 
 
-                Scaffold(Modifier.fillMaxSize(), bottomBar = {
-                    CustomBottomNavigation(
-                        modifier = Modifier
-                            .height(Constants.bottomBarHeight)
-                            .fillMaxWidth()
-                            .offset {
-                                IntOffset(
-                                    0,
-                                    (bottomBarHeightInPx * bottomSheetState.currentFraction).roundToInt()
+                // Track if the user doesn't want to see the rationale any more.
+
+                val doNotShowRationale = rememberSaveable { mutableStateOf(false) }
+
+
+                val cameraPermissionState =
+                    rememberPermissionState(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                PermissionRequired(
+                    permissionState = cameraPermissionState,
+                    permissionNotGrantedContent = {
+
+                        AMusicPlayerTheme() {
+
+
+                            Column(
+                                Modifier.fillMaxSize().padding(5.dp),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    "Camera permission denied. See this FAQ with information about why we " +
+                                            "need this permission. Please, grant us access",
+                                    style = MaterialTheme.typography.h6,
+                                    textAlign = Center
                                 )
-                            },
-                        currentScreenId = screen.route,
-                        onItemSelected = { route ->
-                            if (screen.route != route) {
-                                navController.navigate(route)
-                                viewModel.updateScreen(Screen.getScreenFromRoute(route))
-                                toolbarOffsetHeightPx.value = 0f
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Button(onClick = { cameraPermissionState.launchPermissionRequest() }) {
+                                    Text("Grant Permission", style = MaterialTheme.typography.body2)
+                                }
                             }
-
                         }
-                    )
-                }) {
 
-                    BottomSheetScaffold(
-                        modifier = Modifier.fillMaxSize(),
-                        sheetPeekHeight = toolBarHeight + Constants.bottomBarHeight + 4.dp,
-                        sheetContent = {
+                    },
+                    permissionNotAvailableContent = {
 
-                            Column(Modifier.fillMaxSize()) {
-                                PlayerCollapseBar(modifier = Modifier.alpha(1 - bottomSheetState.currentFraction))
-                                PlayerScreen(visiblity = bottomSheetState.currentFraction)
+                        AMusicPlayerTheme() {
+
+
+                            Column(
+                                Modifier.fillMaxSize().padding(5.dp),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    "Camera permission denied. See this FAQ with information about why we " +
+                                            "need this permission. Please, grant us access",
+                                    style = MaterialTheme.typography.h6,
+                                    textAlign = Center
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Button(onClick = { cameraPermissionState.launchPermissionRequest() }) {
+                                    Text("Grant Permission", style = MaterialTheme.typography.body2)
+                                }
+                            }
+                        }
+
+                    }
+                ) {
+                    Scaffold(Modifier.fillMaxSize(), bottomBar = {
+                        CustomBottomNavigation(
+                            modifier = Modifier
+                                .height(Constants.bottomBarHeight)
+                                .fillMaxWidth()
+                                .offset {
+                                    IntOffset(
+                                        0,
+                                        (bottomBarHeightInPx * bottomSheetState.currentFraction).roundToInt()
+                                    )
+                                },
+                            currentScreenId = screen.route,
+                            onItemSelected = { route ->
+                                if (screen.route != route) {
+                                    navController.navigate(route)
+                                    viewModel.updateScreen(Screen.getScreenFromRoute(route))
+                                    toolbarOffsetHeightPx.value = 0f
+                                }
 
                             }
-                        },
-                        scaffoldState = bottomSheetState
-                    ) {
+                        )
+                    }) {
 
+                        BottomSheetScaffold(
+                            modifier = Modifier.fillMaxSize(),
+                            sheetPeekHeight = toolBarHeight + Constants.bottomBarHeight + 4.dp,
+                            sheetContent = {
 
-                        Box(
-                            Modifier
-                                .fillMaxWidth()
-                                .nestedScroll(nestedScrollConnection)
+                                Column(Modifier.fillMaxSize()) {
+                                    PlayerCollapseBar(
+                                        modifier = Modifier
+                                            .background(color = MaterialTheme.colors.surface)
+                                            .alpha(1 - bottomSheetState.currentFraction),
+                                        songViewModel
+                                    )
+                                    PlayerScreen(
+                                        modifier = Modifier,
+                                        songViewModel,
+                                        visiblity = bottomSheetState.currentFraction,
+                                        bottomSheetState
+                                    )
+
+                                }
+                            },
+                            scaffoldState = bottomSheetState
                         ) {
 
 
-                            AnimatedNavHost(
-                                navController = navController,
-                                startDestination = Screen.HomeScreen.route,
-                                enterTransition = {
-                                    fadeIn(animationSpec = tween(300)) + scaleIn(initialScale = .85f)
-                                },
-                                exitTransition = {
-                                    fadeOut(animationSpec = tween(200)) + scaleOut(
-                                        targetScale = .85f
-                                    )
-                                },
+                            Box(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .nestedScroll(nestedScrollConnection)
+                            ) {
 
-                                ) {
 
-                                composable(Screen.HomeScreen.route) {
-                                    HomeScreen()
+                                AnimatedNavHost(
+                                    navController = navController,
+                                    startDestination = Screen.HomeScreen.route,
+                                    enterTransition = {
+                                        fadeIn(animationSpec = tween(300)) + scaleIn(initialScale = .85f)
+                                    },
+                                    exitTransition = {
+                                        fadeOut(animationSpec = tween(200)) + scaleOut(
+                                            targetScale = .85f
+                                        )
+                                    },
+
+                                    ) {
+
+                                    composable(Screen.HomeScreen.route) {
+                                        HomeScreen()
+                                    }
+
+                                    composable(Screen.SongsScreen.route) {
+                                        SongsScreen(songViewModel)
+                                    }
+
+                                    composable(Screen.AlbumScreen.route) {
+                                        AlbumScreen()
+                                    }
+
+                                    composable(Screen.ArtistsScreen.route) {
+                                        ArtistScreen()
+                                    }
+
+                                    composable(Screen.PlayListScreen.route) {
+                                        PlayListScreen()
+                                    }
                                 }
 
-                                composable(Screen.SongsScreen.route) {
-                                    SongsScreen()
-                                }
-
-                                composable(Screen.AlbumScreen.route) {
-                                    AlbumScreen()
-                                }
-
-                                composable(Screen.ArtistsScreen.route) {
-                                    ArtistScreen()
-                                }
-
-                                composable(Screen.PlayListScreen.route) {
-                                    PlayListScreen()
-                                }
+                                HomeScreenTopBar(
+                                    screen = screen,
+                                    modifier = Modifier,
+                                    offset = toolbarOffsetHeightPx.value
+                                )
                             }
-
-                            HomeScreenTopBar(
-                                screen = screen,
-                                modifier = Modifier,
-                                offset = toolbarOffsetHeightPx.value
-                            )
                         }
-                    }
 
+                    }
                 }
 
 

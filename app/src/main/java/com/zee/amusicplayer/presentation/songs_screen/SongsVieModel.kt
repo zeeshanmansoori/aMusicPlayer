@@ -2,17 +2,19 @@ package com.zee.amusicplayer.presentation.songs_screen
 
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.zee.amusicplayer.domain.model.SongItem
-import com.zee.amusicplayer.exo_player.MusicServiceConnection
-import com.zee.amusicplayer.exo_player.isPlayEnabled
-import com.zee.amusicplayer.exo_player.isPlaying
-import com.zee.amusicplayer.exo_player.isPrepared
+import com.zee.amusicplayer.exo_player.*
 import com.zee.amusicplayer.utils.Constants
 import com.zee.amusicplayer.utils.Resource
+import com.zee.amusicplayer.utils.log
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -26,8 +28,19 @@ class SongsVieModel @Inject constructor(
 
     val isConnected = musicServiceConnection.isConnected
     val networkError = musicServiceConnection.networkError
-    val curPlayingSong = musicServiceConnection.curPlayingSong
     val playbackState = musicServiceConnection.playbackState
+
+    val curPlayingSong = musicServiceConnection.curPlayingSong
+    val isCurrentSongPLaying: MutableState<Boolean> =
+        mutableStateOf(playbackState.value?.isPlaying ?: false)
+    //val currentSelectedSong get() = _mediaItems.value.data?.find { it.id.toString() == curPlayingSong.value?.description?.mediaId }
+
+    private val _curSongDuration = mutableStateOf(0L)
+    val curSongDuration: State<Long> = _curSongDuration
+
+    private val _curPlayerPosition = mutableStateOf(0L)
+    val curPlayerPosition: State<Long> = _curPlayerPosition
+
 
     init {
 
@@ -49,6 +62,23 @@ class SongsVieModel @Inject constructor(
                     _mediaItems.value = Resource.Success(data = items)
                 }
             })
+
+        updateCurrentPlayerPosition()
+    }
+
+    private fun updateCurrentPlayerPosition() {
+        viewModelScope.launch {
+            while (true) {
+
+                val pos = playbackState.value?.currentPlaybackPosition
+                val currentSongDuration = MusicService.currentSongDuration
+                if (curPlayerPosition.value != pos) {
+                    _curPlayerPosition.value = pos?:0
+                    _curSongDuration.value = currentSongDuration
+                }
+                delay(Constants.UPDATE_PLAYER_POSITION_INTERVAL)
+            }
+        }
     }
 
     fun skipToNextSong() {
@@ -78,6 +108,24 @@ class SongsVieModel @Inject constructor(
             }
         } else {
             musicServiceConnection.transportControls.playFromMediaId(mediaItem.id.toString(), null)
+        }
+    }
+
+    fun playOrToggleSong(mediaId: String?, toggle: Boolean = false) {
+        if (mediaId == null) return
+        val isPrepared = playbackState.value?.isPrepared ?: false
+        if (isPrepared && mediaId ==
+            curPlayingSong.value?.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)
+        ) {
+            playbackState.value?.let { playbackState ->
+                when {
+                    playbackState.isPlaying -> if (toggle) musicServiceConnection.transportControls.pause()
+                    playbackState.isPlayEnabled -> musicServiceConnection.transportControls.play()
+                    else -> Unit
+                }
+            }
+        } else {
+            musicServiceConnection.transportControls.playFromMediaId(mediaId, null)
         }
     }
 
