@@ -28,13 +28,15 @@ offline music player with jetpack compose and ExoPlayer.
 
 ### Dark Mode
 
-| <img src="screenshots/d_home.jpg" width="200"/> | <img src="screenshots/d_home.jpg" width="200"/> | <img src="screenshots/d_home.jpg" width="200"/> | <img src="screenshots/d_home.jpg" width="200"/> | <img src="screenshots/d_home.jpg" width="200"/> | 
+| <img src="screenshots/d_home.jpg" width="200"/> | <img src="screenshots/d_songs.jpg" width="200"/> | <img src="screenshots/d_album.jpg" width="200"/> | <img src="screenshots/d_artist.jpg" width="200"/> | <img src="screenshots/d_playlist.jpg" width="200"/> | 
+<img src="screenshots/d_player.jpg" width="200"/> | 
 
 |----------|:-------------:|:-------------:|:-------------:|
 
 ### Light Mode
 
-| <img src="screenshots/l_home.jpg" width="200"/> | <img src="screenshots/l_home.jpg" width="200"/> | <img src="screenshots/d_home.jpg" width="200"/> | <img src="screenshots/d_home.jpg" width="200"/> | <img src="screenshots/d_home.jpg" width="200"/> | 
+| <img src="screenshots/l_home.jpg" width="200"/> | <img src="screenshots/l_songs.jpg" width="200"/> | <img src="screenshots/l_album.jpg" width="200"/> | <img src="screenshots/l_artist.jpg" width="200"/> | <img src="screenshots/l_playlist.jpg" width="200"/> | 
+<img src="screenshots/l_player.jpg" width="200"/> | 
 
 |----------|:-------------:|:-------------:|:-------------:|
 
