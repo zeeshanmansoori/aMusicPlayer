@@ -27,11 +27,15 @@ offline music player with jetpack compose and ExoPlayer.
 ## Result
 
 ### Dark Mode
-| ![home](screenshots/d_home.jpg) | ![songs](screenshots/d_songs.jpg) |  ![albums](screenshots/d_album.jpg) | ![artists](screenshots/d_artist.jpg) | ![artists](screenshots/d_playlist.jpg) |
+
+| <img src="screenshots/d_home.jpg" width="200"/> | <img src="screenshots/d_home.jpg" width="200"/> | <img src="screenshots/d_home.jpg" width="200"/> | <img src="screenshots/d_home.jpg" width="200"/> | <img src="screenshots/d_home.jpg" width="200"/> | 
+
 |----------|:-------------:|:-------------:|:-------------:|
 
 ### Light Mode
-| ![home](screenshots/l_home.jpg) | ![songs](screenshots/l_songs.jpg) |  ![albums](screenshots/l_album.jpg) | ![artists](screenshots/l_artist.jpg) | ![artists](screenshots/l_playlist.jpg) |
+
+| <img src="screenshots/l_home.jpg" width="200"/> | <img src="screenshots/l_home.jpg" width="200"/> | <img src="screenshots/d_home.jpg" width="200"/> | <img src="screenshots/d_home.jpg" width="200"/> | <img src="screenshots/d_home.jpg" width="200"/> | 
+
 |----------|:-------------:|:-------------:|:-------------:|
 
 ### Demo
