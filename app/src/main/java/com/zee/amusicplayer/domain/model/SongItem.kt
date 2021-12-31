@@ -14,8 +14,8 @@ data class SongItem(
     val artistId: Long = 0L,
     val artistName: String = "",
     val composer: String? = null,
-    val albumArtist: String? = null,
     val contentUri: String? = null,
+    val albumUri:String? = null
 ) {
     companion object {
 
@@ -59,7 +59,6 @@ data class SongItem(
             artistId = -1,
             artistName = "",
             composer = "",
-            albumArtist = ""
         )
 
     }

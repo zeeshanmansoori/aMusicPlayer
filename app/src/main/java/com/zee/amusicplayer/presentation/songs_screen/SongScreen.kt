@@ -1,5 +1,9 @@
 package com.zee.amusicplayer.presentation.songs_screen
 
+import android.support.v4.media.MediaMetadataCompat
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,38 +13,47 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.zee.amusicplayer.domain.model.SongItem
 import com.zee.amusicplayer.utils.Constants
 import com.zee.amusicplayer.utils.Resource
 import com.zee.amusicplayer.utils.log
+import com.zee.amusicplayer.utils.showToast
+import kotlinx.coroutines.launch
 
 
+@ExperimentalMaterialApi
 @Composable
 fun SongsScreen(
-    viewModel: SongsVieModel
+    viewModel: SongsVieModel,
+    bottomSheetState: BottomSheetScaffoldState
 ) {
     val state = viewModel.mediaItems.value
-    val context = LocalContext.current
+    val currentlyPlaying = viewModel.curPlayingSong.value
+    val bottomSheetCollapsed = bottomSheetState.bottomSheetState.isCollapsed
+    val scope = rememberCoroutineScope()
 
-
-    LaunchedEffect(key1 = true){
-        log("songviewmodel SongsScreen $viewModel")
-    }
     when (state) {
         is Resource.Success -> {
-            SongContent(songs = state.data ?: emptyList(), viewModel)
+            SongContent(songs = state.data ?: emptyList(), currentSongItem = currentlyPlaying) {
+
+                viewModel.playOrToggleSong(it)
+                if (bottomSheetCollapsed)
+                    scope.launch {
+                        bottomSheetState.bottomSheetState.animateTo(
+                            BottomSheetValue.Expanded,
+                            anim = tween(300)
+                        )
+                    }
+
+            }
         }
         else -> {
             Box(
@@ -62,7 +75,11 @@ fun SongsScreen(
 
 
 @Composable
-fun SongContent(songs: List<SongItem>, viewModel: SongsVieModel) {
+fun SongContent(
+    songs: List<SongItem>,
+    currentSongItem: MediaMetadataCompat?,
+    togglePlay: (String) -> Unit
+) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize(),
@@ -71,16 +88,18 @@ fun SongContent(songs: List<SongItem>, viewModel: SongsVieModel) {
     ) {
 
         items(songs) { song ->
-            SingleSongItem(modifier = Modifier
-                .clip(RoundedCornerShape(Constants.rectanglesCorner))
-                .clickable {
-                    //context.startActivity(Intent(context, NewActivity::class.java))
-                    viewModel.playOrToggleSong(song)
-                }
-                .padding(
-                    end = Constants.paddingStart.plus(4.dp),
-                    start = Constants.paddingStart
-                ), song = song
+            SingleSongItem(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(Constants.rectanglesCorner))
+                    .clickable {
+                        log("song $song")
+                        togglePlay(song.id.toString())
+                    }
+                    .padding(
+                        end = Constants.paddingStart.plus(4.dp),
+                        start = Constants.paddingStart
+                    ), song = song,
+                showEqualizer = song.id.toString() == currentSongItem?.description?.mediaId.toString()
             )
         }
 
@@ -88,8 +107,3 @@ fun SongContent(songs: List<SongItem>, viewModel: SongsVieModel) {
     }
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun SongsScreenPreview() {
-//    SongsScreen()
-//}

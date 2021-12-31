@@ -1,5 +1,6 @@
 package com.zee.amusicplayer.presentation.player_screen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -7,24 +8,26 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.skydoves.landscapist.CircularReveal
+import com.skydoves.landscapist.glide.GlideImage
 import com.zee.amusicplayer.R
+import com.zee.amusicplayer.exo_player.isPlaying
 import com.zee.amusicplayer.presentation.player_screen.component.BottomControllerBar
 import com.zee.amusicplayer.presentation.player_screen.component.PlayerControllerBar
 import com.zee.amusicplayer.presentation.player_screen.component.TrackBar
 import com.zee.amusicplayer.presentation.songs_screen.SongsVieModel
 import com.zee.amusicplayer.utils.Constants
 import com.zee.amusicplayer.utils.MarqueeText
-import com.zee.amusicplayer.utils.log
 import kotlinx.coroutines.launch
 
 @ExperimentalComposeUiApi
@@ -40,11 +43,17 @@ fun PlayerScreen(
 
 
     val currentPlaying = songsVieModel.curPlayingSong.value
-    val isPlaying = songsVieModel.isCurrentSongPLaying.value
     val scope = rememberCoroutineScope()
     val playbackState = songsVieModel.playbackState.value
-    var currentPosition = songsVieModel.curPlayerPosition.value
+    val currentPosition = songsVieModel.curPlayerPosition.value
     val curSongDuration = songsVieModel.curSongDuration.value
+
+    BackHandler(bottomSheetState.bottomSheetState.isExpanded) {
+        scope.launch {
+            bottomSheetState.bottomSheetState.collapse()
+        }
+
+    }
 
 
     Box(
@@ -68,10 +77,25 @@ fun PlayerScreen(
                 shape = RoundedCornerShape(Constants.rectanglesCorner),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(1f),
+                    .aspectRatio(1f)
+                    .padding(if (currentPlaying?.description?.iconUri == null) 80.dp else 0.dp)
+                ,
                 color = Color.LightGray
 
             ) {
+
+                GlideImage(
+                    imageModel = currentPlaying?.description?.iconUri.toString(),
+                    // Crop, Fit, Inside, FillHeight, FillWidth, None
+                    contentScale = ContentScale.FillBounds,
+                    // shows an image with a circular revealed animation.
+                    circularReveal = CircularReveal(duration = 250),
+                    // shows a placeholder ImageBitmap when loading.
+                    placeHolder = painterResource(id = R.drawable.ic_songs),
+                    // shows an error ImageBitmap when the request failed.
+                    error = painterResource(id = R.drawable.ic_songs)
+                )
+
 
                 Image(
                     modifier = modifier
@@ -83,10 +107,6 @@ fun PlayerScreen(
 
             }
 
-            LaunchedEffect(key1 = currentPosition) {
-                log("progress $currentPosition")
-                log("max $curSongDuration")
-            }
 
             TrackBar(
                 modifier = Modifier.padding(vertical = 10.dp),
@@ -98,7 +118,7 @@ fun PlayerScreen(
             MarqueeText(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 10.dp),
+                    .padding(top = 10.dp),
                 text = currentPlaying?.description?.title.toString(),
                 style = MaterialTheme.typography.subtitle1.copy(fontSize = 18.sp)
             )
@@ -109,10 +129,10 @@ fun PlayerScreen(
             )
 
             PlayerControllerBar(
-                isPlaying = isPlaying,
+                isPlaying = playbackState?.isPlaying == true,
                 onPlayingStateChange = {
                     songsVieModel.playOrToggleSong(currentPlaying?.description?.mediaId, true)
-                    songsVieModel.isCurrentSongPLaying.value = it
+
                 },
                 playNext = { songsVieModel.skipToNextSong() },
                 playPrevious = { songsVieModel.skipToPreviousSong() })

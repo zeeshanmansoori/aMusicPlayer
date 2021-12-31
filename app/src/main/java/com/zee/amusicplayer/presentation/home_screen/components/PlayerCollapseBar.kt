@@ -12,19 +12,15 @@ import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.zee.amusicplayer.exo_player.isPlaying
 import com.zee.amusicplayer.presentation.songs_screen.SongsVieModel
 import com.zee.amusicplayer.utils.Constants
 import com.zee.amusicplayer.utils.MarqueeText
-import com.zee.amusicplayer.utils.log
 
 @Composable
 fun PlayerCollapseBar(
@@ -32,7 +28,7 @@ fun PlayerCollapseBar(
     songsVieModel: SongsVieModel
 ) {
     val currentSong = songsVieModel.curPlayingSong.value
-    val isPlaying = songsVieModel.playbackState.value?.isPlaying ?: false
+    val playbackState = songsVieModel.playbackState.value
 
     Row(
         modifier
@@ -47,9 +43,9 @@ fun PlayerCollapseBar(
             modifier = Modifier.weight(1f),
             text = currentSong?.description?.title?.toString() ?: "No song is playing"
         )
-        PlayPauseBtnWithProgressBar(isPlaying) {
+        PlayPauseBtnWithProgressBar(playbackState?.isPlaying == true) {
             if (currentSong != null)
-                songsVieModel.playOrToggleSong(currentSong.description.mediaId)
+                songsVieModel.playOrToggleSong(currentSong.description.mediaId, true)
         }
     }
 }
@@ -71,7 +67,7 @@ fun PlayPauseBtnWithProgressBar(play: Boolean = false, playStateChange: () -> Un
     ) {
         CircularProgressIndicator(modifier = Modifier.fillMaxSize(), progress = 1f)
         Icon(
-            imageVector = if (play) Icons.Filled.PlayArrow else Icons.Filled.Pause,
+            imageVector = if (!play) Icons.Filled.PlayArrow else Icons.Filled.Pause,
             contentDescription = null
         )
     }

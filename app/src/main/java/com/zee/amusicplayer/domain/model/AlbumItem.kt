@@ -23,9 +23,6 @@ data class AlbumItem(
     val songCount: Int
         get() = songs.size
 
-    val albumArtist: String?
-        get() = safeGetFirstSong().albumArtist
-
     private fun safeGetFirstSong(): SongItem {
         return songs.firstOrNull() ?: SongItem.getEmptySong()
     }

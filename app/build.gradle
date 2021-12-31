@@ -84,7 +84,6 @@ dependencies {
     kapt "androidx.hilt:hilt-compiler:1.0.0"
 
 
-
     //accomponist
     def acc_version = "0.22.0-rc"
     implementation "com.google.accompanist:accompanist-systemuicontroller:$acc_version"
@@ -103,4 +102,14 @@ dependencies {
     implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer_version"
     implementation "com.google.android.exoplayer:exoplayer-ui:$exoplayer_version"
     implementation "com.google.android.exoplayer:extension-mediasession:$exoplayer_version"
+
+
+    //lottie
+    def lottieVersion = "4.2.2"
+    implementation "com.airbnb.android:lottie-compose:$lottieVersion"
+
+    //coil
+    def coilVersion = "1.4.0"
+    implementation "io.coil-kt:coil-compose:$coilVersion"
+    implementation "com.github.skydoves:landscapist-glide:1.4.4"
 }

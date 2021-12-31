@@ -74,7 +74,7 @@ class SongRepositoryImpl(private val dataSource: AudioOfflineDataSource) : SongR
         selectionValues: Array<String>?,
         sortOrder: String
     ): Cursor? {
-        log("makeSongCursor(selection) called ")
+
         var selectionFinal = selection
         selectionFinal = if (selection != null && selection.trim { it <= ' ' } != "") {
             "$IS_MUSIC AND $selectionFinal"

@@ -27,18 +27,18 @@ class LocalMusicSource(private val songRepository: SongRepository) : AbstractMus
                 songRepository.songs()
             }
 
-            log("Local Music Source ${songs.size}")
+
 
             songList = songs.map { songItem ->
-                log("inside map")
+
                 MediaMetadataCompat.Builder()
                     .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, songItem.artistName)
                     .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, songItem.id.toString())
                     .putString(MediaMetadataCompat.METADATA_KEY_TITLE, songItem.title)
                     .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, songItem.title)
-                    .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON_URI, null)
+                    .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON_URI, songItem.albumUri)
                     .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, songItem.contentUri)
-                    .putString(MediaMetadataCompat.METADATA_KEY_ART_URI, null)
+                    .putString(MediaMetadataCompat.METADATA_KEY_ART_URI, songItem.albumUri)
                     .putString(
                         MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE,
                         songItem.artistName

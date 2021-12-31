@@ -29,7 +29,6 @@ class AudioOfflineDataSource(private val context: Context) {
         MediaStore.Audio.AudioColumns.ARTIST_ID, // 9
         MediaStore.Audio.AudioColumns.ARTIST, // 10
         MediaStore.Audio.AudioColumns.COMPOSER, // 11
-        Constants.ALBUM_ARTIST // 12
     )
 
 
@@ -48,8 +47,10 @@ class AudioOfflineDataSource(private val context: Context) {
         val artistId = cursor.getLong(MediaStore.Audio.AudioColumns.ARTIST_ID)
         val artistName = cursor.getStringOrNull(MediaStore.Audio.AudioColumns.ARTIST)
         val composer = cursor.getStringOrNull(MediaStore.Audio.AudioColumns.COMPOSER)
-        val albumArtist = cursor.getStringOrNull(Constants.ALBUM_ARTIST)
         val contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id)
+        val albumUri = if (artistName == null) null else getMediaStoreAlbumCoverUri(albumId).toString()
+
+        log("song id $id name $title artist $artistName albumid $albumId albumname $albumName albumartist $composer")
         return SongItem(
             id,
             title,
@@ -63,13 +64,13 @@ class AudioOfflineDataSource(private val context: Context) {
             artistId,
             artistName ?: "",
             composer ?: "",
-            albumArtist ?: "",
-            contentUri = contentUri.toString()
+            contentUri = contentUri.toString(),
+            albumUri = albumUri
         )
     }
 
 
-    private fun getThumbnail(albumId: Long): Uri {
+    private fun getMediaStoreAlbumCoverUri(albumId: Long): Uri {
         val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
         return ContentUris.withAppendedId(sArtworkUri, albumId)
     }
@@ -80,7 +81,7 @@ class AudioOfflineDataSource(private val context: Context) {
         selectionArgs: Array<String>?,
         sortOrder: String = SortOrder.SongSortOrder.SONG_A_Z
     ): Cursor? {
-        //log("getCursor called from source")
+
         return context.contentResolver.query(
             uri,
             projection, selection, selectionArgs, sortOrder

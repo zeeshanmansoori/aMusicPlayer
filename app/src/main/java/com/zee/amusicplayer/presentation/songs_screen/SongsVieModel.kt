@@ -2,7 +2,6 @@ package com.zee.amusicplayer.presentation.songs_screen
 
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -11,7 +10,6 @@ import com.zee.amusicplayer.domain.model.SongItem
 import com.zee.amusicplayer.exo_player.*
 import com.zee.amusicplayer.utils.Constants
 import com.zee.amusicplayer.utils.Resource
-import com.zee.amusicplayer.utils.log
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -31,9 +29,6 @@ class SongsVieModel @Inject constructor(
     val playbackState = musicServiceConnection.playbackState
 
     val curPlayingSong = musicServiceConnection.curPlayingSong
-    val isCurrentSongPLaying: MutableState<Boolean> =
-        mutableStateOf(playbackState.value?.isPlaying ?: false)
-    //val currentSelectedSong get() = _mediaItems.value.data?.find { it.id.toString() == curPlayingSong.value?.description?.mediaId }
 
     private val _curSongDuration = mutableStateOf(0L)
     val curSongDuration: State<Long> = _curSongDuration
@@ -43,7 +38,11 @@ class SongsVieModel @Inject constructor(
 
 
     init {
+        initThings()
+    }
 
+
+    private fun initThings() {
         musicServiceConnection.subscribe(
             Constants.MEDIA_ROOT_ID,
             object : MediaBrowserCompat.SubscriptionCallback() {
@@ -54,10 +53,12 @@ class SongsVieModel @Inject constructor(
                     super.onChildrenLoaded(parentId, children)
                     val items = children.map {
                         SongItem(
-                            it.mediaId?.toLong() ?: 0L,
-                            it.description.title.toString(),
+                            id = it.mediaId?.toLong() ?: 0L,
+                            title = it.description.title.toString(),
+                            albumName = it.description.subtitle.toString(),
+                            albumUri = it.description.iconUri?.toString()
 
-                            )
+                        )
                     }
                     _mediaItems.value = Resource.Success(data = items)
                 }
@@ -73,7 +74,7 @@ class SongsVieModel @Inject constructor(
                 val pos = playbackState.value?.currentPlaybackPosition
                 val currentSongDuration = MusicService.currentSongDuration
                 if (curPlayerPosition.value != pos) {
-                    _curPlayerPosition.value = pos?:0
+                    _curPlayerPosition.value = pos ?: 0
                     _curSongDuration.value = currentSongDuration
                 }
                 delay(Constants.UPDATE_PLAYER_POSITION_INTERVAL)

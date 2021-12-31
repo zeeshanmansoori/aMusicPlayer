@@ -12,8 +12,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -22,7 +20,6 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.style.TextAlign.Companion.Center
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -37,6 +34,7 @@ import com.zee.amusicplayer.presentation.albums_screen.AlbumScreen
 import com.zee.amusicplayer.presentation.artists_screen.ArtistScreen
 import com.zee.amusicplayer.presentation.home_screen.HomeScreen
 import com.zee.amusicplayer.presentation.home_screen.components.HomeScreenTopBar
+import com.zee.amusicplayer.presentation.home_screen.components.PermissionNotGranted
 import com.zee.amusicplayer.presentation.home_screen.components.PlayerCollapseBar
 import com.zee.amusicplayer.presentation.play_list_screen.PlayListScreen
 import com.zee.amusicplayer.presentation.player_screen.PlayerScreen
@@ -68,7 +66,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberAnimatedNavController()
 
                 val viewModel: MainVieModel = hiltViewModel()
-                val songViewModel: SongsVieModel = hiltViewModel()
+
 
 
                 val screen = viewModel.currentScreen.value
@@ -105,62 +103,27 @@ class MainActivity : ComponentActivity() {
 
                 // Track if the user doesn't want to see the rationale any more.
 
-                val doNotShowRationale = rememberSaveable { mutableStateOf(false) }
-
-
                 val cameraPermissionState =
                     rememberPermissionState(android.Manifest.permission.READ_EXTERNAL_STORAGE)
                 PermissionRequired(
                     permissionState = cameraPermissionState,
                     permissionNotGrantedContent = {
 
-                        AMusicPlayerTheme() {
-
-
-                            Column(
-                                Modifier.fillMaxSize().padding(5.dp),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Text(
-                                    "Camera permission denied. See this FAQ with information about why we " +
-                                            "need this permission. Please, grant us access",
-                                    style = MaterialTheme.typography.h6,
-                                    textAlign = Center
-                                )
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Button(onClick = { cameraPermissionState.launchPermissionRequest() }) {
-                                    Text("Grant Permission", style = MaterialTheme.typography.body2)
-                                }
-                            }
-                        }
+                       PermissionNotGranted {
+                           cameraPermissionState.launchPermissionRequest()
+                       }
 
                     },
                     permissionNotAvailableContent = {
-
-                        AMusicPlayerTheme() {
-
-
-                            Column(
-                                Modifier.fillMaxSize().padding(5.dp),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Text(
-                                    "Camera permission denied. See this FAQ with information about why we " +
-                                            "need this permission. Please, grant us access",
-                                    style = MaterialTheme.typography.h6,
-                                    textAlign = Center
-                                )
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Button(onClick = { cameraPermissionState.launchPermissionRequest() }) {
-                                    Text("Grant Permission", style = MaterialTheme.typography.body2)
-                                }
-                            }
+                        PermissionNotGranted {
+                            cameraPermissionState.launchPermissionRequest()
                         }
 
                     }
                 ) {
+
+                    val songViewModel: SongsVieModel = hiltViewModel()
+
                     Scaffold(Modifier.fillMaxSize(), bottomBar = {
                         CustomBottomNavigation(
                             modifier = Modifier
@@ -235,7 +198,7 @@ class MainActivity : ComponentActivity() {
                                     }
 
                                     composable(Screen.SongsScreen.route) {
-                                        SongsScreen(songViewModel)
+                                        SongsScreen(songViewModel,bottomSheetState)
                                     }
 
                                     composable(Screen.AlbumScreen.route) {
