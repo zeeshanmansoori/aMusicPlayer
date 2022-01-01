@@ -9,7 +9,7 @@ offline music player with jetpack compose and ExoPlayer.
 - Dependency injection with Hilt.
 - Media can be playing in background using bound MediaBrowserCompatService
 - Media style notifications.
-- Uses a `MediaBrowserService` to control and expose the current media session.
+- Uses a `MediaBrowserCompat` to control and expose the current media session.
 - Plays Media that are there inside local storage.
 
 ## Libraries
