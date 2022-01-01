@@ -1,24 +1,27 @@
 package com.zee.amusicplayer.presentation.player_screen
 
+import android.view.MotionEvent
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.Image
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.skydoves.landscapist.CircularReveal
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.skydoves.landscapist.glide.GlideImage
 import com.zee.amusicplayer.R
 import com.zee.amusicplayer.exo_player.isPlaying
@@ -30,6 +33,8 @@ import com.zee.amusicplayer.utils.Constants
 import com.zee.amusicplayer.utils.MarqueeText
 import kotlinx.coroutines.launch
 
+@ExperimentalPermissionsApi
+@ExperimentalFoundationApi
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
@@ -41,12 +46,18 @@ fun PlayerScreen(
     bottomSheetState: BottomSheetScaffoldState,
 ) {
 
+    var doAnimate by remember {
+        mutableStateOf(false)
+    }
+    val scaleFactor = animateFloatAsState(targetValue = if (doAnimate) 0.85f else 1f)
 
     val currentPlaying = songsVieModel.curPlayingSong.value
     val scope = rememberCoroutineScope()
     val playbackState = songsVieModel.playbackState.value
     val currentPosition = songsVieModel.curPlayerPosition.value
     val curSongDuration = songsVieModel.curSongDuration.value
+
+
 
     BackHandler(bottomSheetState.bottomSheetState.isExpanded) {
         scope.launch {
@@ -63,57 +74,58 @@ fun PlayerScreen(
                 color = MaterialTheme.colors.surface
             )
             .padding(horizontal = Constants.paddingStart)
+
+
     ) {
 
         Column(
-            modifier
+            Modifier
                 .fillMaxSize()
                 .alpha(visiblity),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
             Surface(
-                elevation = 5.dp,
-                shape = RoundedCornerShape(Constants.rectanglesCorner),
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1f)
-                    .padding(if (currentPlaying?.description?.iconUri == null) 80.dp else 0.dp)
-                ,
+                    .scale(scaleFactor.value)
+                    .pointerInteropFilter {
+                        doAnimate = if (it.action == MotionEvent.ACTION_DOWN) true
+                        else if (it.action == MotionEvent.ACTION_UP || it.action == MotionEvent.ACTION_SCROLL) false
+                        else false
+
+
+                        true
+                    },
+                elevation = if (scaleFactor.value == 1f) 5.dp else 0.dp,
+                shape = RoundedCornerShape(Constants.rectanglesCorner),
                 color = Color.LightGray
-
             ) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
 
-                GlideImage(
-                    imageModel = currentPlaying?.description?.iconUri.toString(),
-                    // Crop, Fit, Inside, FillHeight, FillWidth, None
-                    contentScale = ContentScale.FillBounds,
-                    // shows an image with a circular revealed animation.
-                    circularReveal = CircularReveal(duration = 250),
-                    // shows a placeholder ImageBitmap when loading.
-                    placeHolder = painterResource(id = R.drawable.ic_songs),
-                    // shows an error ImageBitmap when the request failed.
-                    error = painterResource(id = R.drawable.ic_songs)
-                )
-
-
-                Image(
-                    modifier = modifier
-                        .background(color = Color.LightGray)
-                        .padding(80.dp),
-                    painter = painterResource(id = R.drawable.ic_songs),
-                    contentDescription = null
-                )
-
+                    GlideImage(
+                        imageModel = currentPlaying?.description?.iconUri.toString(),
+                        // Crop, Fit, Inside, FillHeight, FillWidth, None
+                        contentScale = ContentScale.Crop,
+                        // shows an image with a circular revealed animation.
+                        circularReveal = null,
+                        // shows a placeholder ImageBitmap when loading.
+                        placeHolder = painterResource(id = R.drawable.ic_songs),
+                        // shows an error ImageBitmap when the request failed.
+                        error = painterResource(id = R.drawable.ic_songs)
+                    )
+                }
             }
-
 
             TrackBar(
                 modifier = Modifier.padding(vertical = 10.dp),
                 progress = if (curSongDuration != 0L && curSongDuration < currentPosition) 0L else currentPosition,
                 max = if (curSongDuration != 0L && curSongDuration < currentPosition) 1L else curSongDuration,
-                updateProgress = { }
-
+                seekTo = songsVieModel::seekTo
             )
             MarqueeText(
                 modifier = Modifier

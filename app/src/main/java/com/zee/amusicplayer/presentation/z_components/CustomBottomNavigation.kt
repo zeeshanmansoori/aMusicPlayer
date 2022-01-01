@@ -35,7 +35,7 @@ fun CustomBottomNavPreview() {
         modifier = Modifier
             .background(color = MaterialTheme.colors.background)
             .padding(vertical = 4.dp),
-        currentScreenId = Screen.HomeScreen.route,
+        currentRoute = Screen.HomeScreen.route,
         onItemSelected = {}
     )
 }
@@ -43,7 +43,7 @@ fun CustomBottomNavPreview() {
 @Composable
 fun CustomBottomNavigation(
     modifier: Modifier,
-    currentScreenId: String,
+    currentRoute: String?,
     onItemSelected: (String) -> Unit
 ) {
 
@@ -57,7 +57,7 @@ fun CustomBottomNavigation(
                 SingleBottomNavigationItem(
                     modifier = Modifier.weight(1f),
                     screen = screen,
-                    isSelected = currentScreenId == screen.route,
+                    isSelected = currentRoute == screen.route,
                     onItemSelected = onItemSelected
                 )
             }

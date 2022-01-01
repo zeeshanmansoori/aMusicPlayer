@@ -12,19 +12,21 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zee.amusicplayer.domain.model.ArtistItem
 import com.zee.amusicplayer.presentation.artists_screen.component.SingleArtistItem
 import com.zee.amusicplayer.utils.Constants
+import com.zee.amusicplayer.utils.showToast
 
 
 @ExperimentalFoundationApi
 @Composable
 fun ArtistScreen(viewModel: ArtistVieModel = hiltViewModel()) {
     val artists = viewModel.allArtist.value
-
+    val context = LocalContext.current
     LazyVerticalGrid(
         modifier = Modifier.fillMaxWidth(),
         cells = GridCells.Fixed(2),
@@ -44,7 +46,10 @@ fun ArtistScreen(viewModel: ArtistVieModel = hiltViewModel()) {
                     )
                     .clip(RoundedCornerShape(Constants.rectanglesCorner))
                     .clickable {
-
+                        showToast(
+                            context = context,
+                            "this feature is not available yet."
+                        )
                     }
                     .padding(vertical = 15.dp, horizontal = Constants.paddingStart.div(2)),
                 artist = album

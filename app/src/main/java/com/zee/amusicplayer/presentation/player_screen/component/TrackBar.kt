@@ -6,14 +6,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Slider
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zee.amusicplayer.ui.theme.TextColor
-import com.zee.amusicplayer.utils.log
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.math.roundToLong
 
 @ExperimentalMaterialApi
 @Composable
@@ -21,24 +22,48 @@ fun TrackBar(
     modifier: Modifier = Modifier,
     progress: Long,
     max: Long,
-    updateProgress: (Float) -> Unit
+    seekTo: (Long) -> Unit
 ) {
+
+    var interactionStarted by remember {
+        mutableStateOf(false)
+    }
+
+    val scope = rememberCoroutineScope()
+
 
     Row(modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
 
         Text(text = formattedTime(progress), fontSize = 14.sp, color = TextColor)
-
+        var secondaryProgress by remember {
+            mutableStateOf(0f)
+        }
 
 
         Slider(
             modifier = Modifier
                 .padding(horizontal = 5.dp)
                 .weight(1f),
-            value = progress.toFloat(),
-            valueRange = progress.toFloat()..max.toFloat(),
-            onValueChange = updateProgress,
-            onValueChangeFinished = {}
+            value = if (!interactionStarted) progress.toFloat() else secondaryProgress,
+            valueRange = 0f..max.toFloat(),
+            onValueChange = {
+                interactionStarted = true
+                secondaryProgress = it
+            },
+            onValueChangeFinished = {
+
+                scope.launch {
+                    if (progress.toFloat() != secondaryProgress) {
+                        seekTo(secondaryProgress.roundToLong())
+                    }
+
+                    delay(100)
+                    interactionStarted = false
+                }
+
+            }
         )
+
         Text(text = formattedTime(max), fontSize = 14.sp, color = TextColor)
     }
 }

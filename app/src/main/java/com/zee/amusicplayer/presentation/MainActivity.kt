@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -53,11 +54,12 @@ import kotlin.math.roundToInt
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
+@ExperimentalPermissionsApi
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
 
-    @ExperimentalPermissionsApi
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -65,11 +67,13 @@ class MainActivity : ComponentActivity() {
 
                 val navController = rememberAnimatedNavController()
 
-                val viewModel: MainVieModel = hiltViewModel()
+                val backStackEntry = navController.currentBackStackEntryAsState()
 
 
+                //val viewModel: MainVieModel = hiltViewModel()
 
-                val screen = viewModel.currentScreen.value
+
+                //val screen = viewModel.currentScreen.value
 
 
                 val toolbarHeightPx = with(LocalDensity.current) { toolBarHeight.toPx() }
@@ -78,6 +82,7 @@ class MainActivity : ComponentActivity() {
                 val toolbarOffsetHeightPx = remember { mutableStateOf(0f) }
 
                 val bottomSheetState = rememberBottomSheetScaffoldState()
+                val currentRoute = backStackEntry.value?.destination?.route
 
                 val bottomBarHeightInPx =
                     with(LocalDensity.current) { Constants.bottomBarHeight.toPx() }
@@ -109,9 +114,9 @@ class MainActivity : ComponentActivity() {
                     permissionState = cameraPermissionState,
                     permissionNotGrantedContent = {
 
-                       PermissionNotGranted {
-                           cameraPermissionState.launchPermissionRequest()
-                       }
+                        PermissionNotGranted {
+                            cameraPermissionState.launchPermissionRequest()
+                        }
 
                     },
                     permissionNotAvailableContent = {
@@ -135,11 +140,11 @@ class MainActivity : ComponentActivity() {
                                         (bottomBarHeightInPx * bottomSheetState.currentFraction).roundToInt()
                                     )
                                 },
-                            currentScreenId = screen.route,
+                            currentRoute = currentRoute,
                             onItemSelected = { route ->
-                                if (screen.route != route) {
+                                if (currentRoute != route) {
                                     navController.navigate(route)
-                                    viewModel.updateScreen(Screen.getScreenFromRoute(route))
+                                    //viewModel.updateScreen(Screen.getScreenFromRoute(route))
                                     toolbarOffsetHeightPx.value = 0f
                                 }
 
@@ -198,7 +203,7 @@ class MainActivity : ComponentActivity() {
                                     }
 
                                     composable(Screen.SongsScreen.route) {
-                                        SongsScreen(songViewModel,bottomSheetState)
+                                        SongsScreen(songViewModel, bottomSheetState)
                                     }
 
                                     composable(Screen.AlbumScreen.route) {
@@ -215,7 +220,7 @@ class MainActivity : ComponentActivity() {
                                 }
 
                                 HomeScreenTopBar(
-                                    screen = screen,
+                                    route = currentRoute,
                                     modifier = Modifier,
                                     offset = toolbarOffsetHeightPx.value
                                 )

@@ -9,7 +9,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -29,8 +28,10 @@ import kotlin.math.roundToInt
 fun HomeScreenTopBar(
     modifier: Modifier = Modifier,
     offset: Float = 0f,
-    screen: Screen
+    route: String?
 ) {
+
+    val screen = Screen.getScreenFromRoute(route) ?: return
 
     Row(
         modifier = modifier
@@ -38,8 +39,7 @@ fun HomeScreenTopBar(
             .height(Constants.toolBarHeight)
             .offset { IntOffset(0, offset.roundToInt()) }
             .background(color = MaterialTheme.colors.surface)
-            .padding(vertical = 2.dp, horizontal = 2.dp)
-        ,
+            .padding(vertical = 2.dp, horizontal = 2.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -79,7 +79,8 @@ fun HomeScreenTopBar(
                 painter = if (screen == Screen.HomeScreen) painterResource(id = R.drawable.ic_settings) else painterResource(
                     id = R.drawable.ic_more_vert
                 ),
-                contentDescription = if(screen == Screen.HomeScreen) "settings" else "menu", tint = IconTintColor
+                contentDescription = if (screen == Screen.HomeScreen) "settings" else "menu",
+                tint = IconTintColor
             )
         }
     }
