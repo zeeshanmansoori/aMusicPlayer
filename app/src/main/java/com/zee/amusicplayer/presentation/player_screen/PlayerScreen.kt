@@ -18,12 +18,14 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.skydoves.landscapist.glide.GlideImage
 import com.zee.amusicplayer.R
+import com.zee.amusicplayer.common.getBitmapFromContentUri
 import com.zee.amusicplayer.exo_player.isPlaying
 import com.zee.amusicplayer.presentation.player_screen.component.PlayerControllerBar
 import com.zee.amusicplayer.presentation.player_screen.component.TrackBar
@@ -55,6 +57,20 @@ fun PlayerScreen(
     val playbackState = songsVieModel.playbackState.value
     val currentPosition = songsVieModel.curPlayerPosition.value
     val curSongDuration = songsVieModel.curSongDuration.value
+    val context = LocalContext.current
+
+
+    val thumbnail by remember {
+
+        val result = derivedStateOf {
+            val bm = getBitmapFromContentUri(
+                context,
+                songsVieModel.curPlayingSong.value?.description?.mediaUri?.toString()
+            )
+            bm
+        }
+        return@remember result
+    }
 
 
 
@@ -107,7 +123,7 @@ fun PlayerScreen(
                 ) {
 
                     GlideImage(
-                        imageModel = currentPlaying?.description?.iconUri.toString(),
+                        imageModel = thumbnail,
                         // Crop, Fit, Inside, FillHeight, FillWidth, None
                         contentScale = ContentScale.Crop,
                         // shows an image with a circular revealed animation.

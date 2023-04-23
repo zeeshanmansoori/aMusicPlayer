@@ -27,7 +27,7 @@ fun HomeScreen(songViewModel: SongsVieModel, bottomSheetState: BottomSheetScaffo
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingStart)
-            .padding(top = Constants.toolBarHeight),
+            .padding(vertical = Constants.toolBarHeight),
 //        contentPadding = PaddingValues(top = )
     ) {
         HomeScreenActionBar(modifier = Modifier.padding(4.dp).padding(bottom =4.dp))

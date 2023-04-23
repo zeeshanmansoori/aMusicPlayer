@@ -43,12 +43,10 @@ class SongsVieModel @Inject constructor(
 
 
     private fun initThings() {
-        musicServiceConnection.subscribe(
-            Constants.MEDIA_ROOT_ID,
+        musicServiceConnection.subscribe(Constants.MEDIA_ROOT_ID,
             object : MediaBrowserCompat.SubscriptionCallback() {
                 override fun onChildrenLoaded(
-                    parentId: String,
-                    children: MutableList<MediaBrowserCompat.MediaItem>
+                    parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>
                 ) {
                     super.onChildrenLoaded(parentId, children)
                     val items = children.map {
@@ -56,8 +54,8 @@ class SongsVieModel @Inject constructor(
                             id = it.mediaId?.toLong() ?: 0L,
                             title = it.description.title.toString(),
                             albumName = it.description.subtitle.toString(),
-                            albumUri = it.description.iconUri?.toString()
-
+                            albumUri = it.description.iconUri?.toString(),
+                            contentUri = it.description.mediaUri?.toString(),
                         )
                     }
                     _mediaItems.value = Resource.Success(data = items)
@@ -97,8 +95,9 @@ class SongsVieModel @Inject constructor(
 
     fun playOrToggleSong(mediaItem: SongItem, toggle: Boolean = false) {
         val isPrepared = playbackState.value?.isPrepared ?: false
-        if (isPrepared && mediaItem.id.toString() ==
-            curPlayingSong.value?.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)
+        if (isPrepared && mediaItem.id.toString() == curPlayingSong.value?.getString(
+                MediaMetadataCompat.METADATA_KEY_MEDIA_ID
+            )
         ) {
             playbackState.value?.let { playbackState ->
                 when {
@@ -115,9 +114,7 @@ class SongsVieModel @Inject constructor(
     fun playOrToggleSong(mediaId: String?, toggle: Boolean = false) {
         if (mediaId == null) return
         val isPrepared = playbackState.value?.isPrepared ?: false
-        if (isPrepared && mediaId ==
-            curPlayingSong.value?.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)
-        ) {
+        if (isPrepared && mediaId == curPlayingSong.value?.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)) {
             playbackState.value?.let { playbackState ->
                 when {
                     playbackState.isPlaying -> if (toggle) musicServiceConnection.transportControls.pause()
@@ -132,8 +129,7 @@ class SongsVieModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        musicServiceConnection.unsubscribe(
-            Constants.MEDIA_ROOT_ID,
+        musicServiceConnection.unsubscribe(Constants.MEDIA_ROOT_ID,
             object : MediaBrowserCompat.SubscriptionCallback() {})
     }
 }

@@ -1,7 +1,5 @@
 package com.zee.amusicplayer.presentation.songs_screen
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -13,7 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.*
 import com.zee.amusicplayer.R
@@ -21,14 +18,17 @@ import com.zee.amusicplayer.common.MusicImage
 import com.zee.amusicplayer.domain.model.SongItem
 
 @Composable
-fun SingleSongItem(modifier: Modifier = Modifier, song: SongItem, showEqualizer: Boolean = false) {
+fun SingleSongItem(
+    modifier: Modifier = Modifier,
+    song: SongItem,
+    showEqualizer: Boolean = false,
+) {
     Row(
         modifier = modifier
             .padding(vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-
-        MusicImage(modifier = Modifier.size(40.dp), iconUrl = song.albumUri)
+        MusicImage(modifier = Modifier.size(40.dp), song = song)
 
         Column(
             modifier = Modifier

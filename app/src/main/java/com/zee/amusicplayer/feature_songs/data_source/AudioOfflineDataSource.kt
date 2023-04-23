@@ -50,7 +50,6 @@ class AudioOfflineDataSource(private val context: Context) {
         val contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id)
         val albumUri = if (artistName == null) null else getMediaStoreAlbumCoverUri(albumId).toString()
 
-        log("song id $id name $title artist $artistName albumid $albumId albumname $albumName albumartist $composer")
         return SongItem(
             id,
             title,
