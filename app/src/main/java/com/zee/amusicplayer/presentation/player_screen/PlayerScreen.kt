@@ -25,7 +25,6 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.skydoves.landscapist.glide.GlideImage
 import com.zee.amusicplayer.R
 import com.zee.amusicplayer.exo_player.isPlaying
-import com.zee.amusicplayer.presentation.player_screen.component.BottomControllerBar
 import com.zee.amusicplayer.presentation.player_screen.component.PlayerControllerBar
 import com.zee.amusicplayer.presentation.player_screen.component.TrackBar
 import com.zee.amusicplayer.presentation.songs_screen.SongsVieModel
@@ -150,18 +149,6 @@ fun PlayerScreen(
                 playPrevious = { songsVieModel.skipToPreviousSong() })
 
         }
-
-        BottomControllerBar(modifier = Modifier.align(Alignment.BottomCenter)) {
-
-            // dismiss the bottomsheet
-            if (bottomSheetState.bottomSheetState.isExpanded)
-                scope.launch {
-                    bottomSheetState.bottomSheetState.collapse()
-                }
-
-
-        }
-
     }
 }
 
