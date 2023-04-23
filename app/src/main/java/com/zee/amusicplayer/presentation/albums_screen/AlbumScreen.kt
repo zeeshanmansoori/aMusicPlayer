@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
@@ -25,9 +26,9 @@ import com.zee.amusicplayer.utils.showToast
 
 @ExperimentalFoundationApi
 @Composable
-fun AlbumScreen(viewModel: AlbumVieModel = hiltViewModel()) {
+fun AlbumScreen(viewModel: AlbumVieModel) {
 
-    val albums = viewModel.allAlbums.value
+    val albums = viewModel.allAlbums.collectAsState().value
     val context = LocalContext.current
     LazyVerticalGrid(
         modifier = Modifier.fillMaxWidth(),
@@ -65,5 +66,5 @@ fun AlbumScreen(viewModel: AlbumVieModel = hiltViewModel()) {
 @Preview(showBackground = true)
 @Composable
 fun SongsScreenPreview() {
-    AlbumScreen()
+    AlbumScreen(hiltViewModel())
 }

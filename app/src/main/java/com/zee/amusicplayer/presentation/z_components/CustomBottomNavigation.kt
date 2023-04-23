@@ -1,7 +1,6 @@
 package com.zee.amusicplayer.presentation.z_components
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -135,7 +134,8 @@ fun SingleBottomNavigationItemPreview1() {
         Modifier,
         screen = Screen.HomeScreen,
         isSelected = true,
-        onItemSelected = {})
+        onItemSelected = {},
+    )
 }
 
 

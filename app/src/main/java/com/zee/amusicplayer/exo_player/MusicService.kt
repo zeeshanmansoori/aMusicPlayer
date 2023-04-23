@@ -2,6 +2,7 @@ package com.zee.amusicplayer.exo_player
 
 import android.app.PendingIntent
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
@@ -59,7 +60,11 @@ class MusicService : MediaBrowserServiceCompat() {
             musicSource.load()
         }
         val activityIntent = packageManager?.getLaunchIntentForPackage(packageName)?.let {
-            PendingIntent.getActivity(this, 0, it, 0)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                PendingIntent.getActivity(this, 0, it, PendingIntent.FLAG_MUTABLE)
+            } else {
+                PendingIntent.getActivity(this, 0, it, 0)
+            }
         }
         mediaSession = MediaSessionCompat(this, SERVICE_TAG)
             .apply {

@@ -23,29 +23,6 @@ data class SongItem(
             return groupBy { it.albumId }.map { AlbumItem(it.key, it.value) }.toList()
         }
 
-        fun tempList(): MutableList<SongItem> {
-            return MutableList(100) { index ->
-
-
-                SongItem(
-                    id = index.toLong(),
-                    title = "imran is my borther and i linke nothing to listen",
-                    trackNumber = index,
-                    year = 2021,
-                    duration = 5000,
-                    dateModified = 6465,
-                    albumId = index.toLong() % 10,
-                    albumName = "AlBMN",
-                    artistId = 65,
-                    artistName = "artisits zee",
-                    composer = "zee is composer",
-                )
-
-            }
-
-
-        }
-
         fun getEmptySong():SongItem = SongItem(
             id = -1,
             title = "",

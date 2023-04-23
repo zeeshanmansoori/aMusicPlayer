@@ -10,7 +10,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -24,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -33,13 +33,13 @@ import com.google.accompanist.permissions.PermissionRequired
 import com.google.accompanist.permissions.rememberPermissionState
 import com.zee.amusicplayer.presentation.albums_screen.AlbumScreen
 import com.zee.amusicplayer.presentation.artists_screen.ArtistScreen
+import com.zee.amusicplayer.presentation.artists_screen.ArtistVieModel
 import com.zee.amusicplayer.presentation.home_screen.HomeScreen
 import com.zee.amusicplayer.presentation.home_screen.components.HomeScreenTopBar
 import com.zee.amusicplayer.presentation.home_screen.components.PermissionNotGranted
 import com.zee.amusicplayer.presentation.home_screen.components.PlayerCollapseBar
 import com.zee.amusicplayer.presentation.play_list_screen.PlayListScreen
 import com.zee.amusicplayer.presentation.player_screen.PlayerScreen
-import com.zee.amusicplayer.presentation.songs_screen.SongsScreen
 import com.zee.amusicplayer.presentation.songs_screen.SongsVieModel
 import com.zee.amusicplayer.presentation.z_components.CustomBottomNavigation
 import com.zee.amusicplayer.ui.theme.AMusicPlayerTheme
@@ -57,7 +57,6 @@ import kotlin.math.roundToInt
 @ExperimentalPermissionsApi
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,7 +78,7 @@ class MainActivity : ComponentActivity() {
                 val toolbarHeightPx = with(LocalDensity.current) { toolBarHeight.toPx() }
 
 
-                val toolbarOffsetHeightPx = remember { mutableStateOf(0f) }
+//                val toolbarOffsetHeightPx = remember { mutableStateOf(0f) }
 
                 val bottomSheetState = rememberBottomSheetScaffoldState()
                 val currentRoute = backStackEntry.value?.destination?.route
@@ -96,8 +95,8 @@ class MainActivity : ComponentActivity() {
                         ): Offset {
 
                             val delta = available.y
-                            val newOffset = toolbarOffsetHeightPx.value + delta
-                            toolbarOffsetHeightPx.value = newOffset.coerceIn(-toolbarHeightPx, 0f)
+//                            val newOffset = toolbarOffsetHeightPx.value + delta
+//                            toolbarOffsetHeightPx.value = newOffset.coerceIn(-toolbarHeightPx, 0f)
                             return Offset.Zero
                         }
 
@@ -145,7 +144,7 @@ class MainActivity : ComponentActivity() {
                                 if (currentRoute != route) {
                                     navController.navigate(route)
                                     //viewModel.updateScreen(Screen.getScreenFromRoute(route))
-                                    toolbarOffsetHeightPx.value = 0f
+//                                    toolbarOffsetHeightPx.value = 0f
                                 }
 
                             }
@@ -199,19 +198,25 @@ class MainActivity : ComponentActivity() {
                                     ) {
 
                                     composable(Screen.HomeScreen.route) {
-                                        HomeScreen()
+                                        HomeScreen(songViewModel, bottomSheetState)
                                     }
 
-                                    composable(Screen.SongsScreen.route) {
-                                        SongsScreen(songViewModel, bottomSheetState)
-                                    }
+//                                    composable(Screen.SongsScreen.route) {
+//                                        SongsScreen(songViewModel, bottomSheetState)
+//                                    }
 
                                     composable(Screen.AlbumScreen.route) {
-                                        AlbumScreen()
+                                        val parentEntry = remember(backStackEntry) {
+                                            navController.getBackStackEntry(Screen.HomeScreen.route)
+                                        }
+                                        AlbumScreen(hiltViewModel(parentEntry))
                                     }
 
-                                    composable(Screen.ArtistsScreen.route) {
-                                        ArtistScreen()
+                                    composable(Screen.ArtistsScreen.route) { backStackEntry ->
+                                        val parentEntry = remember(backStackEntry) {
+                                            navController.getBackStackEntry(Screen.HomeScreen.route)
+                                        }
+                                        ArtistScreen(hiltViewModel<ArtistVieModel>(parentEntry))
                                     }
 
                                     composable(Screen.PlayListScreen.route) {
@@ -222,7 +227,7 @@ class MainActivity : ComponentActivity() {
                                 HomeScreenTopBar(
                                     route = currentRoute,
                                     modifier = Modifier,
-                                    offset = toolbarOffsetHeightPx.value
+//                                    offset = toolbarOffsetHeightPx.value
                                 )
                             }
                         }
@@ -236,10 +241,14 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     AMusicPlayerTheme {
-        HomeScreen()
+        HomeScreen(
+            songViewModel = viewModel(),
+            bottomSheetState = rememberBottomSheetScaffoldState()
+        )
     }
 }
