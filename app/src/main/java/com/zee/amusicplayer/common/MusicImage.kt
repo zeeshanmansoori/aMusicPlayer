@@ -17,8 +17,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
-import com.skydoves.landscapist.CircularReveal
-import com.skydoves.landscapist.glide.GlideImage
+import coil.compose.AsyncImage
 import com.zee.amusicplayer.R
 import com.zee.amusicplayer.domain.model.SongItem
 import com.zee.amusicplayer.utils.Constants
@@ -41,15 +40,11 @@ fun MusicImage(
         contentAlignment = Alignment.Center
     ) {
 
-        GlideImage(
-            imageModel = thumbnail,
-            // Crop, Fit, Inside, FillHeight, FillWidth, None
+        AsyncImage(
+            model = thumbnail,
+            contentDescription = null,
             contentScale = ContentScale.FillBounds,
-            // shows an image with a circular revealed animation.
-            circularReveal = CircularReveal(duration = 250),
-            // shows a placeholder ImageBitmap when loading.
-            placeHolder = painterResource(id = R.drawable.ic_songs),
-            // shows an error ImageBitmap when the request failed.
+            placeholder = painterResource(id = R.drawable.ic_songs),
             error = painterResource(id = R.drawable.ic_songs)
         )
     }

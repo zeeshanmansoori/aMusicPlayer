@@ -1,5 +1,6 @@
 package com.zee.amusicplayer.presentation
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -29,7 +30,7 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionRequired
+import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.zee.amusicplayer.presentation.albums_screen.AlbumScreen
 import com.zee.amusicplayer.presentation.artists_screen.ArtistScreen
@@ -58,7 +59,8 @@ import kotlin.math.roundToInt
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-
+    //TODO will remove this
+    @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnrememberedGetBackStackEntry")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -109,22 +111,7 @@ class MainActivity : ComponentActivity() {
 
                 val cameraPermissionState =
                     rememberPermissionState(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-                PermissionRequired(
-                    permissionState = cameraPermissionState,
-                    permissionNotGrantedContent = {
-
-                        PermissionNotGranted {
-                            cameraPermissionState.launchPermissionRequest()
-                        }
-
-                    },
-                    permissionNotAvailableContent = {
-                        PermissionNotGranted {
-                            cameraPermissionState.launchPermissionRequest()
-                        }
-
-                    }
-                ) {
+                if (cameraPermissionState.status.isGranted) {
 
                     val songViewModel: SongsVieModel = hiltViewModel()
 
@@ -232,6 +219,10 @@ class MainActivity : ComponentActivity() {
                             }
                         }
 
+                    }
+                } else {
+                    PermissionNotGranted {
+                        cameraPermissionState.launchPermissionRequest()
                     }
                 }
 
