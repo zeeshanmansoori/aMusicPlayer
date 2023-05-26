@@ -81,7 +81,6 @@ dependencies {
     //accompanist
     def acc_version = "0.30.1"
     implementation "com.google.accompanist:accompanist-systemuicontroller:$acc_version"
-    implementation "com.google.accompanist:accompanist-pager:$acc_version"
     implementation "com.google.accompanist:accompanist-permissions:$acc_version"
     implementation "com.google.accompanist:accompanist-navigation-animation:$acc_version"
     implementation "com.google.accompanist:accompanist-navigation-material:$acc_version"
