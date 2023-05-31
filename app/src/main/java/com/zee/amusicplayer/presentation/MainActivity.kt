@@ -164,7 +164,7 @@ class MainActivity : ComponentActivity() {
                         PlayerScreen(
                             modifier = Modifier,
                             songViewModel,
-                            visiblity = bottomSheetState.currentFraction,
+                            visibility = bottomSheetState.currentFraction,
                             bottomSheetState
                         )
 
