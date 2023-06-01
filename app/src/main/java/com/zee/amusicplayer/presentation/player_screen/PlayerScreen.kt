@@ -22,8 +22,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.skydoves.landscapist.glide.GlideImage
 import com.zee.amusicplayer.R
 import com.zee.amusicplayer.common.getBitmapFromContentUri
 import com.zee.amusicplayer.exo_player.isPlaying
@@ -122,16 +122,12 @@ fun PlayerScreen(
                     contentAlignment = Alignment.Center
                 ) {
 
-                    GlideImage(
-                        imageModel = thumbnail,
-                        // Crop, Fit, Inside, FillHeight, FillWidth, None
+                    AsyncImage(
+                        model = thumbnail,
+                        contentDescription=null,
                         contentScale = ContentScale.Crop,
-                        // shows an image with a circular revealed animation.
-                        circularReveal = null,
-                        // shows a placeholder ImageBitmap when loading.
-                        placeHolder = painterResource(id = R.drawable.ic_songs),
-                        // shows an error ImageBitmap when the request failed.
-                        error = painterResource(id = R.drawable.ic_songs)
+                        placeholder = painterResource(id = R.drawable.ic_songs),
+                        error = painterResource(id = R.drawable.ic_songs),
                     )
                 }
             }
