@@ -42,10 +42,11 @@ fun SongsScreen(
                 viewModel.playOrToggleSong(it)
                 if (bottomSheetCollapsed)
                     scope.launch {
-                        bottomSheetState.bottomSheetState.animateTo(
-                            BottomSheetValue.Expanded,
-                            anim = tween(300)
-                        )
+                        bottomSheetState.bottomSheetState.expand()
+//                        bottomSheetState.bottomSheetState.animateTo(
+//                            BottomSheetValue.Expanded,
+//                            anim = tween(300)
+//                        )
                     }
 
             }

@@ -21,13 +21,15 @@ fun showToast(context: Context, text: String, duration: Int = Toast.LENGTH_SHORT
     Toast.makeText(context, text, duration).show()
 }
 
-@ExperimentalMaterialApi
+
+@OptIn(ExperimentalMaterialApi::class)
 val BottomSheetScaffoldState.currentFraction: Float
     get() {
-        val fraction = bottomSheetState.progress.fraction
-        val targetValue = bottomSheetState.targetValue
+        val fraction = bottomSheetState.progress
+        // TODO(need to update targetValue)
+        val targetValue = bottomSheetState.tagetValue
         val currentValue = bottomSheetState.currentValue
-
+bottomSheetState.
         return when {
             currentValue == BottomSheetValue.Collapsed && targetValue == BottomSheetValue.Collapsed -> 0f
             currentValue == BottomSheetValue.Expanded && targetValue == BottomSheetValue.Expanded -> 1f

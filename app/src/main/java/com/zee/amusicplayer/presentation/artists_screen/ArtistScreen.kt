@@ -5,8 +5,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -30,12 +31,12 @@ fun ArtistScreen(viewModel: ArtistVieModel ) {
     val context = LocalContext.current
     LazyVerticalGrid(
         modifier = Modifier.fillMaxWidth(),
-        cells = GridCells.Fixed(2),
+        columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(
             top = Constants.toolBarHeight,
         )
     ) {
-        itemsIndexed(artists) { index: Int, album: ArtistItem ->
+        this.itemsIndexed(artists) { index: Int, album: ArtistItem ->
 
             SingleArtistItem(
                 modifier = Modifier

@@ -43,7 +43,7 @@ import kotlinx.coroutines.launch
 fun PlayerScreen(
     modifier: Modifier = Modifier,
     songsVieModel: SongsVieModel,
-    visiblity: Float = 1f,
+    visibility: Float = 1f,
     bottomSheetState: BottomSheetScaffoldState,
 ) {
 
@@ -96,7 +96,7 @@ fun PlayerScreen(
         Column(
             Modifier
                 .fillMaxSize()
-                .alpha(visiblity),
+                .alpha(visibility),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 

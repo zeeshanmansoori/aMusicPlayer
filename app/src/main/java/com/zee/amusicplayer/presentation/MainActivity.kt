@@ -1,5 +1,6 @@
 package com.zee.amusicplayer.presentation
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -24,12 +25,14 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionRequired
+import com.google.accompanist.permissions.PermissionState
+import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.zee.amusicplayer.presentation.albums_screen.AlbumScreen
 import com.zee.amusicplayer.presentation.artists_screen.ArtistScreen
@@ -58,7 +61,6 @@ import kotlin.math.roundToInt
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -66,179 +68,171 @@ class MainActivity : ComponentActivity() {
 
                 val navController = rememberAnimatedNavController()
 
-                val backStackEntry = navController.currentBackStackEntryAsState()
-
-
                 //val viewModel: MainVieModel = hiltViewModel()
-
-
                 //val screen = viewModel.currentScreen.value
-
-
-                val toolbarHeightPx = with(LocalDensity.current) { toolBarHeight.toPx() }
-
-
+//                val toolbarHeightPx = with(LocalDensity.current) { toolBarHeight.toPx() }
 //                val toolbarOffsetHeightPx = remember { mutableStateOf(0f) }
-
-                val bottomSheetState = rememberBottomSheetScaffoldState()
-                val currentRoute = backStackEntry.value?.destination?.route
-
-                val bottomBarHeightInPx =
-                    with(LocalDensity.current) { Constants.bottomBarHeight.toPx() }
-
-
-                val nestedScrollConnection = remember {
-                    object : NestedScrollConnection {
-                        override fun onPreScroll(
-                            available: Offset,
-                            source: NestedScrollSource
-                        ): Offset {
-
-                            val delta = available.y
-//                            val newOffset = toolbarOffsetHeightPx.value + delta
-//                            toolbarOffsetHeightPx.value = newOffset.coerceIn(-toolbarHeightPx, 0f)
-                            return Offset.Zero
-                        }
-
-
-                    }
-                }
 
 
                 // Track if the user doesn't want to see the rationale any more.
-
-                val cameraPermissionState =
+                val readPermissionState =
                     rememberPermissionState(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-                PermissionRequired(
-                    permissionState = cameraPermissionState,
-                    permissionNotGrantedContent = {
-
-                        PermissionNotGranted {
-                            cameraPermissionState.launchPermissionRequest()
-                        }
-
-                    },
-                    permissionNotAvailableContent = {
-                        PermissionNotGranted {
-                            cameraPermissionState.launchPermissionRequest()
-                        }
-
-                    }
-                ) {
-
-                    val songViewModel: SongsVieModel = hiltViewModel()
-
-                    Scaffold(Modifier.fillMaxSize(), bottomBar = {
-                        CustomBottomNavigation(
-                            modifier = Modifier
-                                .height(Constants.bottomBarHeight)
-                                .fillMaxWidth()
-                                .offset {
-                                    IntOffset(
-                                        0,
-                                        (bottomBarHeightInPx * bottomSheetState.currentFraction).roundToInt()
-                                    )
-                                },
-                            currentRoute = currentRoute,
-                            onItemSelected = { route ->
-                                if (currentRoute != route) {
-                                    navController.navigate(route)
-                                    //viewModel.updateScreen(Screen.getScreenFromRoute(route))
-//                                    toolbarOffsetHeightPx.value = 0f
-                                }
-
-                            }
-                        )
-                    }) {
-
-                        BottomSheetScaffold(
-                            modifier = Modifier.fillMaxSize(),
-                            sheetPeekHeight = toolBarHeight + Constants.bottomBarHeight + 4.dp,
-                            sheetContent = {
-
-                                Column(Modifier.fillMaxSize()) {
-                                    PlayerCollapseBar(
-                                        modifier = Modifier
-                                            .background(color = MaterialTheme.colors.surface)
-                                            .alpha(1 - bottomSheetState.currentFraction),
-                                        songViewModel
-                                    )
-                                    PlayerScreen(
-                                        modifier = Modifier,
-                                        songViewModel,
-                                        visiblity = bottomSheetState.currentFraction,
-                                        bottomSheetState
-                                    )
-
-                                }
-                            },
-                            scaffoldState = bottomSheetState
-                        ) {
-
-
-                            Box(
-                                Modifier
-                                    .fillMaxWidth()
-                                    .nestedScroll(nestedScrollConnection)
-                            ) {
-
-
-                                AnimatedNavHost(
-                                    navController = navController,
-                                    startDestination = Screen.HomeScreen.route,
-                                    enterTransition = {
-                                        fadeIn(animationSpec = tween(300)) + scaleIn(initialScale = .85f)
-                                    },
-                                    exitTransition = {
-                                        fadeOut(animationSpec = tween(200)) + scaleOut(
-                                            targetScale = .85f
-                                        )
-                                    },
-
-                                    ) {
-
-                                    composable(Screen.HomeScreen.route) {
-                                        HomeScreen(songViewModel, bottomSheetState)
-                                    }
-
-//                                    composable(Screen.SongsScreen.route) {
-//                                        SongsScreen(songViewModel, bottomSheetState)
-//                                    }
-
-                                    composable(Screen.AlbumScreen.route) {
-                                        val parentEntry = remember(backStackEntry) {
-                                            navController.getBackStackEntry(Screen.HomeScreen.route)
-                                        }
-                                        AlbumScreen(hiltViewModel(parentEntry))
-                                    }
-
-                                    composable(Screen.ArtistsScreen.route) { backStackEntry ->
-                                        val parentEntry = remember(backStackEntry) {
-                                            navController.getBackStackEntry(Screen.HomeScreen.route)
-                                        }
-                                        ArtistScreen(hiltViewModel<ArtistVieModel>(parentEntry))
-                                    }
-
-                                    composable(Screen.PlayListScreen.route) {
-                                        PlayListScreen()
-                                    }
-                                }
-
-                                HomeScreenTopBar(
-                                    route = currentRoute,
-                                    modifier = Modifier,
-//                                    offset = toolbarOffsetHeightPx.value
-                                )
-                            }
-                        }
-
-                    }
-                }
+                if (readPermissionState.status.isGranted) PermissionGrantedUI(navController) else PermissionDeniedUI(
+                    readPermissionState
+                )
 
 
             }
         }
     }
+
+    @Composable
+    private fun PermissionDeniedUI(readPermissionState: PermissionState) {
+        PermissionNotGranted {
+            readPermissionState.launchPermissionRequest()
+        }
+    }
+
+    @SuppressLint("UnrememberedGetBackStackEntry")
+    @Composable
+    private fun PermissionGrantedUI(navController: NavHostController) {
+
+        val songViewModel: SongsVieModel = hiltViewModel()
+
+        val backStackEntry = navController.currentBackStackEntryAsState()
+        val bottomSheetState = rememberBottomSheetScaffoldState()
+        val currentRoute = backStackEntry.value?.destination?.route
+
+        val bottomBarHeightInPx =
+            with(LocalDensity.current) { Constants.bottomBarHeight.toPx() }
+
+
+        val nestedScrollConnection = remember {
+            object : NestedScrollConnection {
+                override fun onPreScroll(
+                    available: Offset,
+                    source: NestedScrollSource
+                ): Offset {
+
+                    val delta = available.y
+//                            val newOffset = toolbarOffsetHeightPx.value + delta
+//                            toolbarOffsetHeightPx.value = newOffset.coerceIn(-toolbarHeightPx, 0f)
+                    return Offset.Zero
+                }
+
+
+            }
+        }
+
+        Scaffold(Modifier.fillMaxSize(), bottomBar = {
+            CustomBottomNavigation(
+                modifier = Modifier
+                    .height(Constants.bottomBarHeight)
+                    .fillMaxWidth()
+                    .offset {
+                        IntOffset(
+                            0,
+                            (bottomBarHeightInPx * bottomSheetState.currentFraction).roundToInt()
+                        )
+                    },
+                currentRoute = currentRoute,
+                onItemSelected = { route ->
+                    if (currentRoute != route) {
+                        navController.navigate(route)
+                        //viewModel.updateScreen(Screen.getScreenFromRoute(route))
+//                                    toolbarOffsetHeightPx.value = 0f
+                    }
+
+                }
+            )
+        }) {
+
+            BottomSheetScaffold(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it),
+                sheetPeekHeight = toolBarHeight + Constants.bottomBarHeight + 4.dp,
+                sheetContent = {
+
+                    Column(Modifier.fillMaxSize()) {
+                        PlayerCollapseBar(
+                            modifier = Modifier
+                                .background(color = MaterialTheme.colors.surface)
+                                .alpha(1 - bottomSheetState.currentFraction),
+                            songViewModel
+                        )
+                        PlayerScreen(
+                            modifier = Modifier,
+                            songViewModel,
+                            visibility = bottomSheetState.currentFraction,
+                            bottomSheetState
+                        )
+
+                    }
+                },
+                scaffoldState = bottomSheetState
+            ) {
+
+
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .nestedScroll(nestedScrollConnection)
+                ) {
+
+
+                    AnimatedNavHost(
+                        navController = navController,
+                        startDestination = Screen.HomeScreen.route,
+                        enterTransition = {
+                            fadeIn(animationSpec = tween(300)) + scaleIn(initialScale = .85f)
+                        },
+                        exitTransition = {
+                            fadeOut(animationSpec = tween(200)) + scaleOut(
+                                targetScale = .85f
+                            )
+                        },
+
+                        ) {
+
+                        composable(Screen.HomeScreen.route) {
+                            HomeScreen(songViewModel, bottomSheetState)
+                        }
+
+//                                    composable(Screen.SongsScreen.route) {
+//                                        SongsScreen(songViewModel, bottomSheetState)
+//                                    }
+
+                        composable(Screen.AlbumScreen.route) {
+                            val parentEntry = remember(backStackEntry) {
+                                navController.getBackStackEntry(Screen.HomeScreen.route)
+                            }
+                            AlbumScreen(hiltViewModel(parentEntry))
+                        }
+
+                        composable(Screen.ArtistsScreen.route) { backStackEntry ->
+                            val parentEntry = remember(backStackEntry) {
+                                navController.getBackStackEntry(Screen.HomeScreen.route)
+                            }
+                            ArtistScreen(hiltViewModel<ArtistVieModel>(parentEntry))
+                        }
+
+                        composable(Screen.PlayListScreen.route) {
+                            PlayListScreen()
+                        }
+                    }
+
+                    HomeScreenTopBar(
+                        route = currentRoute,
+                        modifier = Modifier,
+//                                    offset = toolbarOffsetHeightPx.value
+                    )
+                }
+            }
+
+        }
+    }
+
 }
 
 @OptIn(ExperimentalMaterialApi::class)
