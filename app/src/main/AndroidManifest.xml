@@ -17,7 +17,8 @@
 
         <service
             android:name=".exo_player.MusicService"
-            android:exported="false">
+            android:exported="false"
+            >
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
