@@ -32,7 +32,6 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
-import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.zee.amusicplayer.presentation.albums_screen.AlbumScreen
 import com.zee.amusicplayer.presentation.artists_screen.ArtistScreen
@@ -77,7 +76,8 @@ class MainActivity : ComponentActivity() {
                 // Track if the user doesn't want to see the rationale any more.
                 val readPermissionState =
                     rememberPermissionState(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-                if (readPermissionState.status.isGranted) PermissionGrantedUI(navController) else PermissionDeniedUI(
+
+                if (readPermissionState.hasPermission) PermissionGrantedUI(navController) else PermissionDeniedUI(
                     readPermissionState
                 )
 
