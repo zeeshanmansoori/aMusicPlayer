@@ -27,7 +27,7 @@ val BottomSheetScaffoldState.currentFraction: Float
     get() {
         val fraction = bottomSheetState.progress
         // TODO(need to update targetValue)
-        val targetValue = bottomSheetState.targetValue
+        val targetValue = bottomSheetState.currentValue
         val currentValue = bottomSheetState.currentValue
         return when {
             currentValue == BottomSheetValue.Collapsed && targetValue == BottomSheetValue.Collapsed -> 0f

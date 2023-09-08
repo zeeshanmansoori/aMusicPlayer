@@ -22,7 +22,7 @@ object ServiceModule {
     @ServiceScoped
     @Provides
     fun provideAudioAttributes() =
-        AudioAttributes.Builder().setContentType(C.CONTENT_TYPE_MUSIC).setUsage(C.USAGE_MEDIA)
+        AudioAttributes.Builder().setContentType(C.AUDIO_CONTENT_TYPE_MUSIC).setUsage(C.USAGE_MEDIA)
             .build()
 
     @ServiceScoped
