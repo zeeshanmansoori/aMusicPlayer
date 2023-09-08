@@ -32,6 +32,7 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
+import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.zee.amusicplayer.presentation.albums_screen.AlbumScreen
 import com.zee.amusicplayer.presentation.artists_screen.ArtistScreen
@@ -52,14 +53,11 @@ import com.zee.amusicplayer.utils.currentFraction
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.roundToInt
 
-@ExperimentalComposeUiApi
-@ExperimentalMaterialApi
-@ExperimentalFoundationApi
-@ExperimentalAnimationApi
-@ExperimentalPermissionsApi
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    @OptIn(ExperimentalAnimationApi::class, ExperimentalPermissionsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -77,7 +75,7 @@ class MainActivity : ComponentActivity() {
                 val readPermissionState =
                     rememberPermissionState(android.Manifest.permission.READ_EXTERNAL_STORAGE)
 
-                if (readPermissionState.hasPermission) PermissionGrantedUI(navController) else PermissionDeniedUI(
+                if (readPermissionState.status.isGranted) PermissionGrantedUI(navController) else PermissionDeniedUI(
                     readPermissionState
                 )
 
@@ -86,6 +84,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @OptIn(ExperimentalPermissionsApi::class)
     @Composable
     private fun PermissionDeniedUI(readPermissionState: PermissionState) {
         PermissionNotGranted {
@@ -93,6 +92,10 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @OptIn(ExperimentalMaterialApi::class, ExperimentalPermissionsApi::class,
+        ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class,
+        ExperimentalAnimationApi::class
+    )
     @SuppressLint("UnrememberedGetBackStackEntry")
     @Composable
     private fun PermissionGrantedUI(navController: NavHostController) {
@@ -103,15 +106,13 @@ class MainActivity : ComponentActivity() {
         val bottomSheetState = rememberBottomSheetScaffoldState()
         val currentRoute = backStackEntry.value?.destination?.route
 
-        val bottomBarHeightInPx =
-            with(LocalDensity.current) { Constants.bottomBarHeight.toPx() }
+        val bottomBarHeightInPx = with(LocalDensity.current) { Constants.bottomBarHeight.toPx() }
 
 
         val nestedScrollConnection = remember {
             object : NestedScrollConnection {
                 override fun onPreScroll(
-                    available: Offset,
-                    source: NestedScrollSource
+                    available: Offset, source: NestedScrollSource
                 ): Offset {
 
                     val delta = available.y
@@ -125,26 +126,21 @@ class MainActivity : ComponentActivity() {
         }
 
         Scaffold(Modifier.fillMaxSize(), bottomBar = {
-            CustomBottomNavigation(
-                modifier = Modifier
-                    .height(Constants.bottomBarHeight)
-                    .fillMaxWidth()
-                    .offset {
-                        IntOffset(
-                            0,
-                            (bottomBarHeightInPx * bottomSheetState.currentFraction).roundToInt()
-                        )
-                    },
-                currentRoute = currentRoute,
-                onItemSelected = { route ->
-                    if (currentRoute != route) {
-                        navController.navigate(route)
-                        //viewModel.updateScreen(Screen.getScreenFromRoute(route))
+            CustomBottomNavigation(modifier = Modifier
+                .height(Constants.bottomBarHeight)
+                .fillMaxWidth()
+                .offset {
+                    IntOffset(
+                        0, (bottomBarHeightInPx * bottomSheetState.currentFraction).roundToInt()
+                    )
+                }, currentRoute = currentRoute, onItemSelected = { route ->
+                if (currentRoute != route) {
+                    navController.navigate(route)
+                    //viewModel.updateScreen(Screen.getScreenFromRoute(route))
 //                                    toolbarOffsetHeightPx.value = 0f
-                    }
-
                 }
-            )
+
+            })
         }) {
 
             BottomSheetScaffold(
@@ -158,14 +154,13 @@ class MainActivity : ComponentActivity() {
                         PlayerCollapseBar(
                             modifier = Modifier
                                 .background(color = MaterialTheme.colors.surface)
-                                .alpha(1 - bottomSheetState.currentFraction),
-                            songViewModel
+                                .alpha(1 - bottomSheetState.currentFraction), songViewModel
                         )
                         PlayerScreen(
                             modifier = Modifier,
-                            songViewModel,
+                            songsVieModel = songViewModel,
                             visibility = bottomSheetState.currentFraction,
-                            bottomSheetState
+                            bottomSheetState = bottomSheetState
                         )
 
                     }
@@ -179,19 +174,15 @@ class MainActivity : ComponentActivity() {
                         .fillMaxWidth()
                         .nestedScroll(nestedScrollConnection)
                 ) {
-
-
                     AnimatedNavHost(
                         navController = navController,
                         startDestination = Screen.HomeScreen.route,
-                        enterTransition = {
-                            fadeIn(animationSpec = tween(300)) + scaleIn(initialScale = .85f)
-                        },
-                        exitTransition = {
-                            fadeOut(animationSpec = tween(200)) + scaleOut(
-                                targetScale = .85f
-                            )
-                        },
+//                        enterTransition = {
+//                            fadeIn(animationSpec = tween(300)) +(scaleIn(initialScale = .85f))
+//                        },
+//                        exitTransition = {
+//                            fadeOut(animationSpec = tween(200)) +(scaleOut(targetScale = .85f))
+//                        },
 
                         ) {
 
@@ -241,8 +232,7 @@ class MainActivity : ComponentActivity() {
 fun DefaultPreview() {
     AMusicPlayerTheme {
         HomeScreen(
-            songViewModel = viewModel(),
-            bottomSheetState = rememberBottomSheetScaffoldState()
+            songViewModel = viewModel(), bottomSheetState = rememberBottomSheetScaffoldState()
         )
     }
 }

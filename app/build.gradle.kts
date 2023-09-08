@@ -7,13 +7,13 @@ plugins {
 }
 
 android {
-    compileSdk = 33
+    compileSdk = 34
     namespace = "com.zee.amusicplayer"
 
     defaultConfig {
         applicationId = "com.zee.amusicplayer"
         minSdk = 27
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 3
         versionName = "1.0"
 
@@ -60,48 +60,45 @@ android {
 }
 
 dependencies {
-    val compose_version = "1.4.0"
-    implementation ("androidx.core:core-ktx:1.7.0")
-    implementation ("androidx.compose.ui:ui:$compose_version")
-    implementation ("androidx.compose.material:material:$compose_version")
-    implementation ("androidx.compose.ui:ui-tooling-preview:$compose_version")
-    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
-    implementation ("androidx.activity:activity-compose:1.7.2")
-    testImplementation("junit:junit:4.+")
-    androidTestImplementation ("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation ("androidx.test.espresso:espresso-core:3.4.0")
-    androidTestImplementation ("androidx.compose.ui:ui-test-junit4:$compose_version")
-    debugImplementation ("androidx.compose.ui:ui-tooling:$compose_version")
+    val bom = platform("androidx.compose:compose-bom:2023.09.00")
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation("androidx.activity:activity-compose:1.7.2")
+    implementation(bom)
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.compose.material:material")
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation(bom)
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
 
 
     // Compose dependencies
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0")
-    implementation ("androidx.compose.material:material-icons-extended:$compose_version")
-    implementation ("androidx.hilt:hilt-navigation-compose:1.0.0-rc01")
-//    implementation (" androidx.navigation.compose:1.0.1")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation ("androidx.hilt:hilt-navigation-compose:1.1.0-alpha01")
+//    implementation (" androidx.navigation.compose:1.0.1");
     // Coroutines
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
 
     //Dagger - Hilt
     implementation ("com.google.dagger:hilt-android:2.48")
     kapt( "com.google.dagger:hilt-android-compiler:2.48")
-    //    kapt "androidx.hilt:hilt-compiler:1.0.0"
-//    implementation ("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
 
 
     //accomponist
     val acc_version = "0.22.0-rc"
-    implementation ("com.google.accompanist:accompanist-systemuicontroller:$acc_version")
-    implementation ("com.google.accompanist:accompanist-pager:$acc_version")
-    implementation ("com.google.accompanist:accompanist-permissions:$acc_version")
-    implementation ("com.google.accompanist:accompanist-navigation-animation:$acc_version")
-    implementation ("com.google.accompanist:accompanist-navigation-material:$acc_version")
-    implementation ("com.google.accompanist:accompanist-insets:$acc_version")
+    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
+    implementation ("com.google.accompanist:accompanist-permissions:0.30.1")
+    implementation ("com.google.accompanist:accompanist-navigation-animation:0.30.1")
+    implementation ("com.google.accompanist:accompanist-navigation-material:0.30.1")
+    implementation ("com.google.accompanist:accompanist-insets:0.30.1")
 
-    //nav
-    val nav_compose_version = "2.4.0-rc01"
-    implementation ("androidx.navigation:navigation-compose:$nav_compose_version")
 
 
     val exoplayer_version = "2.19.1"
@@ -118,6 +115,12 @@ dependencies {
     val coilVersion = "2.4.0"
     implementation ("io.coil-kt:coil-compose:$coilVersion")
     implementation ("com.github.skydoves:landscapist-glide:1.4.4")
+
+
+    // breaking while updating
+    val nav_compose_version = "2.4.0-rc01"
+    implementation ("androidx.navigation:navigation-compose:$nav_compose_version")
+    implementation ("androidx.compose.material:material-icons-extended:$1.4.0")
 }
 
 // AGP 8.1.
