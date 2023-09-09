@@ -26,10 +26,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             AMusicPlayerTheme {
 
-                val navController = rememberAnimatedNavController()
+                val navController = rememberNavController()
 
                 //val viewModel: MainVieModel = hiltViewModel()
                 //val screen = viewModel.currentScreen.value
@@ -74,10 +74,9 @@ class MainActivity : ComponentActivity() {
                 // Track if the user doesn't want to see the rationale any more.
                 val readPermissionState =
                     rememberPermissionState(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-
-                if (readPermissionState.status.isGranted) PermissionGrantedUI(navController) else PermissionDeniedUI(
-                    readPermissionState
-                )
+                if (readPermissionState.status.isGranted || android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU)
+                    PermissionGrantedUI(navController)
+                else PermissionDeniedUI(readPermissionState)
 
 
             }
@@ -174,7 +173,7 @@ class MainActivity : ComponentActivity() {
                         .fillMaxWidth()
                         .nestedScroll(nestedScrollConnection)
                 ) {
-                    AnimatedNavHost(
+                    NavHost(
                         navController = navController,
                         startDestination = Screen.HomeScreen.route,
 //                        enterTransition = {

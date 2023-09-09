@@ -76,12 +76,13 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+    implementation ("androidx.navigation:navigation-compose:2.7.2")
 
 
     // Compose dependencies
     implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
     implementation ("androidx.hilt:hilt-navigation-compose:1.1.0-alpha01")
-//    implementation (" androidx.navigation.compose:1.0.1");
+
     // Coroutines
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
@@ -90,12 +91,8 @@ dependencies {
     implementation ("com.google.dagger:hilt-android:2.48")
     kapt( "com.google.dagger:hilt-android-compiler:2.48")
 
-
-    //accomponist
-    val acc_version = "0.22.0-rc"
     implementation ("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
     implementation ("com.google.accompanist:accompanist-permissions:0.30.1")
-    implementation ("com.google.accompanist:accompanist-navigation-animation:0.30.1")
     implementation ("com.google.accompanist:accompanist-navigation-material:0.30.1")
     implementation ("com.google.accompanist:accompanist-insets:0.30.1")
 
@@ -118,8 +115,6 @@ dependencies {
 
 
     // breaking while updating
-    val nav_compose_version = "2.4.0-rc01"
-    implementation ("androidx.navigation:navigation-compose:$nav_compose_version")
     implementation ("androidx.compose.material:material-icons-extended:$1.4.0")
 }
 
