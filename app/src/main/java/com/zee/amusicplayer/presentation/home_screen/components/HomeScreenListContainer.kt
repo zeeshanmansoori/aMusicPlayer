@@ -4,9 +4,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,7 +34,7 @@ fun HomeScreenListContainer(modifier: Modifier = Modifier, containerTitle: Strin
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            Text(text = containerTitle, style = MaterialTheme.typography.h5)
+            Text(text = containerTitle, style = MaterialTheme.typography.headlineSmall)
             Icon(painter = painterResource(id = R.drawable.ic_next), contentDescription = null)
 
         }

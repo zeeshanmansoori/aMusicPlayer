@@ -1,10 +1,15 @@
 package com.zee.amusicplayer.presentation.home_screen.components
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,7 +29,7 @@ fun PermissionNotGranted(retryBtn: () -> Unit) {
     ) {
         Text(
             "Need Storage permission in order to play music",
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.headlineSmall,
             textAlign = TextAlign.Center,
             color = if (isSystemInDarkTheme()) Color.White else Color.Black
         )
@@ -32,7 +37,7 @@ fun PermissionNotGranted(retryBtn: () -> Unit) {
         Button(onClick = retryBtn) {
             Text(
                 "Grant Permission",
-                style = MaterialTheme.typography.body1,
+                style = MaterialTheme.typography.bodyLarge,
                 color = if (isSystemInDarkTheme()) Color.White else Color.Black
             )
         }

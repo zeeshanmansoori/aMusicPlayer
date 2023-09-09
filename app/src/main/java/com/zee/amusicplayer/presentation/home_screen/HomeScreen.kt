@@ -3,9 +3,9 @@ package com.zee.amusicplayer.presentation.home_screen
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.BottomSheetScaffoldState
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.rememberBottomSheetScaffoldState
+import androidx.compose.material3.BottomSheetScaffoldState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -19,7 +19,7 @@ import com.zee.amusicplayer.utils.Constants
 import com.zee.amusicplayer.utils.Constants.paddingStart
 
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn( ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(songViewModel: SongsVieModel, bottomSheetState: BottomSheetScaffoldState) {
 
@@ -35,7 +35,7 @@ fun HomeScreen(songViewModel: SongsVieModel, bottomSheetState: BottomSheetScaffo
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {

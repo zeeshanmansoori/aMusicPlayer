@@ -9,6 +9,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material3.BottomSheetScaffoldState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -34,11 +39,12 @@ import com.zee.amusicplayer.utils.Constants
 import com.zee.amusicplayer.utils.MarqueeText
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalPermissionsApi
 @ExperimentalFoundationApi
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
-@ExperimentalMaterialApi
+
 @Composable
 fun PlayerScreen(
     modifier: Modifier = Modifier,
@@ -50,7 +56,7 @@ fun PlayerScreen(
     var doAnimate by remember {
         mutableStateOf(false)
     }
-    val scaleFactor = animateFloatAsState(targetValue = if (doAnimate) 0.85f else 1f)
+    val scaleFactor = animateFloatAsState(targetValue = if (doAnimate) 0.85f else 1f, label = "")
 
     val currentPlaying = songsVieModel.curPlayingSong.value
     val scope = rememberCoroutineScope()
@@ -74,9 +80,9 @@ fun PlayerScreen(
 
 
 
-    BackHandler(bottomSheetState.bottomSheetState.isExpanded) {
+    BackHandler(bottomSheetState.bottomSheetState.isVisible) {
         scope.launch {
-            bottomSheetState.bottomSheetState.collapse()
+            bottomSheetState.bottomSheetState.hide()
         }
 
     }
@@ -86,7 +92,7 @@ fun PlayerScreen(
         modifier = modifier
             .fillMaxSize()
             .background(
-                color = MaterialTheme.colors.surface
+                color = MaterialTheme.colorScheme.surface
             )
             .padding(horizontal = Constants.paddingStart)
 
@@ -113,7 +119,7 @@ fun PlayerScreen(
 
                         true
                     },
-                elevation = if (scaleFactor.value == 1f) 5.dp else 0.dp,
+//                elevation = if (scaleFactor.value == 1f) 5.dp else 0.dp,
                 shape = RoundedCornerShape(Constants.rectanglesCorner),
                 color = Color.LightGray
             ) {
@@ -124,7 +130,7 @@ fun PlayerScreen(
 
                     AsyncImage(
                         model = thumbnail,
-                        contentDescription=null,
+                        contentDescription = null,
                         contentScale = ContentScale.Crop,
                         placeholder = painterResource(id = R.drawable.ic_songs),
                         error = painterResource(id = R.drawable.ic_songs),
@@ -143,7 +149,7 @@ fun PlayerScreen(
                     .fillMaxWidth()
                     .padding(top = 10.dp),
                 text = currentPlaying?.description?.title.toString(),
-                style = MaterialTheme.typography.subtitle1.copy(fontSize = 18.sp)
+                style = MaterialTheme.typography.titleSmall.copy(fontSize = 18.sp)
             )
 
             Text(

@@ -1,11 +1,16 @@
 package com.zee.amusicplayer.presentation.home_screen.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,7 +43,7 @@ fun HomeScreenTopBar(
             .fillMaxWidth()
             .height(Constants.toolBarHeight)
             .offset { IntOffset(0, offset.roundToInt()) }
-            .background(color = MaterialTheme.colors.surface)
+            .background(color = MaterialTheme.colorScheme.surface)
             .padding(vertical = 2.dp, horizontal = 2.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -56,7 +61,7 @@ fun HomeScreenTopBar(
         val annotatedString = buildAnnotatedString {
             if (screen == Screen.HomeScreen) {
                 append("a ")
-                withStyle(style = SpanStyle(color = MaterialTheme.colors.primary)) {
+                withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary)) {
                     append("Music")
                 }
 
@@ -70,7 +75,7 @@ fun HomeScreenTopBar(
 
         Text(
             text = annotatedString,
-            style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Bold),
+            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
             letterSpacing = 1.sp
         )
 

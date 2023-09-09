@@ -5,9 +5,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,7 +47,7 @@ fun HomeScreenActionBar(modifier: Modifier = Modifier) {
             text = "Sort by",
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            style = MaterialTheme.typography.body1
+            style = MaterialTheme.typography.bodyLarge
         )
         val items = HomeScreenActionItem.getItems()
         Row(
@@ -98,7 +98,7 @@ fun SingleHomeScreenActionBarItem(
                 tint = bgColor.copy(alpha = .6f)
             )
         }
-        Text(text = title, style = MaterialTheme.typography.subtitle1.copy(fontSize = 13.sp))
+        Text(text = title, style = MaterialTheme.typography.titleMedium.copy(fontSize = 13.sp))
     }
 }
 

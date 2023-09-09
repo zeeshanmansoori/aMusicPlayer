@@ -1,26 +1,26 @@
 package com.zee.amusicplayer.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material.ripple.RippleAlpha
 import androidx.compose.material.ripple.RippleTheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 
-private val DarkColorPalette = darkColors(
+private val DarkColorPalette = darkColorScheme(
     primary = colorPrimary,
-    primaryVariant = colorPrimary700,
+//    primaryVariant = colorPrimary700,
     secondary = Teal200,
     surface = DarkColorSurface,
 )
 
-private val LightColorPalette = lightColors(
+private val LightColorPalette = lightColorScheme(
     primary = colorPrimary,
-    primaryVariant = colorPrimary700,
+//    primaryVariant = colorPrimary700,
     secondary = Teal200,
     surface = LightColorSurface,
     background = lightBackGroundColor
@@ -49,7 +49,7 @@ fun AMusicPlayerTheme(
 
 
     MaterialTheme(
-        colors = colors,
+        colorScheme = colors,
         typography = Typography,
         shapes = Shapes,
     )
@@ -68,7 +68,7 @@ private object JetNewsRippleTheme : RippleTheme {
     // Using that will override the ripple color set in DarkMode
     // or when you set light parameter to false
     @Composable
-    override fun defaultColor(): Color = MaterialTheme.colors.primary
+    override fun defaultColor(): Color = MaterialTheme.colorScheme.primary
 
     @Composable
     override fun rippleAlpha(): RippleAlpha = RippleTheme.defaultRippleAlpha(

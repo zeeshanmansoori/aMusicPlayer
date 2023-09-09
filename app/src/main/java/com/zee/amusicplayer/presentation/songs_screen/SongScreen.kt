@@ -1,7 +1,6 @@
 package com.zee.amusicplayer.presentation.songs_screen
 
 import android.support.v4.media.MediaMetadataCompat
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +10,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material3.BottomSheetScaffoldState
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -24,7 +28,8 @@ import com.zee.amusicplayer.utils.log
 import kotlinx.coroutines.launch
 
 
-@ExperimentalMaterialApi
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SongsScreen(
     viewModel: SongsVieModel,
@@ -32,7 +37,7 @@ fun SongsScreen(
 ) {
     val state = viewModel.mediaItems.value
     val currentlyPlaying = viewModel.curPlayingSong.value
-    val bottomSheetCollapsed = bottomSheetState.bottomSheetState.isCollapsed
+    val bottomSheetCollapsed = !bottomSheetState.bottomSheetState.isVisible
     val scope = rememberCoroutineScope()
 
     when (state) {
@@ -59,7 +64,7 @@ fun SongsScreen(
             ) {
                 if (state is Resource.Loading)
                     CircularProgressIndicator()
-                else Text(text = "${state.message}", style = MaterialTheme.typography.h2)
+                else Text(text = "${state.message}", style = MaterialTheme.typography.headlineMedium)
             }
         }
 
