@@ -1,6 +1,7 @@
 package com.zee.amusicplayer.presentation
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -53,11 +54,16 @@ import com.zee.amusicplayer.utils.currentFraction
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.roundToInt
 
-
+@OptIn(
+    ExperimentalMaterialApi::class,
+    ExperimentalPermissionsApi::class,
+    ExperimentalFoundationApi::class,
+    ExperimentalComposeUiApi::class,
+    ExperimentalAnimationApi::class
+)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @OptIn(ExperimentalAnimationApi::class, ExperimentalPermissionsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -70,11 +76,13 @@ class MainActivity : ComponentActivity() {
 //                val toolbarHeightPx = with(LocalDensity.current) { toolBarHeight.toPx() }
 //                val toolbarOffsetHeightPx = remember { mutableStateOf(0f) }
 
-
-                // Track if the user doesn't want to see the rationale any more.
                 val readPermissionState =
-                    rememberPermissionState(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-                if (readPermissionState.status.isGranted || android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        rememberPermissionState(android.Manifest.permission.READ_MEDIA_AUDIO)
+                    } else {
+                        rememberPermissionState(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                    }
+                if (readPermissionState.status.isGranted)
                     PermissionGrantedUI(navController)
                 else PermissionDeniedUI(readPermissionState)
 
@@ -91,10 +99,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    @OptIn(ExperimentalMaterialApi::class, ExperimentalPermissionsApi::class,
-        ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class,
-        ExperimentalAnimationApi::class
-    )
     @SuppressLint("UnrememberedGetBackStackEntry")
     @Composable
     private fun PermissionGrantedUI(navController: NavHostController) {
@@ -183,7 +187,7 @@ class MainActivity : ComponentActivity() {
 //                            fadeOut(animationSpec = tween(200)) +(scaleOut(targetScale = .85f))
 //                        },
 
-                        ) {
+                    ) {
 
                         composable(Screen.HomeScreen.route) {
                             HomeScreen(songViewModel, bottomSheetState)
