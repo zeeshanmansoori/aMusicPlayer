@@ -11,6 +11,7 @@ val TextColor = Color(0xffa09da6)
 val IconTintColor = Color(0xff767376)
 val lightBackGroundColor = Color(0xfffffbff)
 
+val Orange500 = Color(0xFFF5C32D)
 val Blue500 = Color(0xff2196F3)
 val Red500 = Color(0xffF44336)
 val Green500 = Color(0xff673AB7)

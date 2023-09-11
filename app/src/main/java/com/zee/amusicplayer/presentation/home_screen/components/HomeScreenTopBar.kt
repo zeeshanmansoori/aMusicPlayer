@@ -1,7 +1,12 @@
 package com.zee.amusicplayer.presentation.home_screen.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -21,28 +26,22 @@ import androidx.compose.ui.unit.sp
 import com.zee.amusicplayer.R
 import com.zee.amusicplayer.ui.theme.IconTintColor
 import com.zee.amusicplayer.utils.Constants
-import com.zee.amusicplayer.utils.Screen
 import kotlin.math.roundToInt
 
 @Composable
 fun HomeScreenTopBar(
     modifier: Modifier = Modifier,
     offset: Float = 0f,
-    route: String?
 ) {
 
-    val screen = Screen.getScreenFromRoute(route) ?: return
-
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(Constants.toolBarHeight)
-            .offset { IntOffset(0, offset.roundToInt()) }
-            .background(color = MaterialTheme.colors.surface)
-            .padding(vertical = 2.dp, horizontal = 2.dp),
+    Row(modifier = modifier
+        .fillMaxWidth()
+        .height(Constants.toolBarHeight)
+        .offset { IntOffset(0, offset.roundToInt()) }
+        .background(color = MaterialTheme.colors.surface)
+        .padding(vertical = 2.dp, horizontal = 2.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
+        verticalAlignment = Alignment.CenterVertically) {
         IconButton(onClick = { }) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_serch),
@@ -54,16 +53,13 @@ fun HomeScreenTopBar(
 
 
         val annotatedString = buildAnnotatedString {
-            if (screen == Screen.HomeScreen) {
-                append("a ")
-                withStyle(style = SpanStyle(color = MaterialTheme.colors.primary)) {
-                    append("Music")
-                }
 
-                return@buildAnnotatedString
+            append("a ")
+            withStyle(style = SpanStyle(color = MaterialTheme.colors.primary)) {
+                append("Music")
             }
 
-            append(screen.title)
+            return@buildAnnotatedString
 
         }
 
@@ -76,11 +72,16 @@ fun HomeScreenTopBar(
 
         IconButton(onClick = { }) {
             Icon(
-                painter = if (screen == Screen.HomeScreen) painterResource(id = R.drawable.ic_settings) else painterResource(
-                    id = R.drawable.ic_more_vert
-                ),
-                contentDescription = if (screen == Screen.HomeScreen) "settings" else "menu",
-                tint = IconTintColor
+                painter =
+//                if (screen == Screen.HomeScreen)
+                painterResource(id = R.drawable.ic_settings)
+//                else
+//                    painterResource(
+//                    id = R.drawable.ic_more_vert
+//                ),
+                , contentDescription = "settings"
+                //else "menu",
+                , tint = IconTintColor
             )
         }
     }
@@ -89,5 +90,5 @@ fun HomeScreenTopBar(
 @Preview(showBackground = true)
 @Composable
 fun TopBarPrev() {
-
+    HomeScreenTopBar()
 }

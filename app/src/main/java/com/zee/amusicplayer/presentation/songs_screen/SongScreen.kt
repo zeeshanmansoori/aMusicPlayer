@@ -19,7 +19,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import com.zee.amusicplayer.domain.model.SongItem
 import com.zee.amusicplayer.utils.Constants
 import com.zee.amusicplayer.utils.Resource
@@ -30,7 +31,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun SongsScreen(
     viewModel: SongsVieModel,
-    bottomSheetState: BottomSheetScaffoldState
+    bottomSheetState: BottomSheetScaffoldState,
+    nestedScrollConnection: NestedScrollConnection,
 ) {
     val state = viewModel.mediaItems.value
     val currentlyPlaying = viewModel.curPlayingSong.value
@@ -39,7 +41,11 @@ fun SongsScreen(
 
     when (state) {
         is Resource.Success -> {
-            SongContent(songs = state.data ?: emptyList(), currentSongItem = currentlyPlaying) {
+            SongContent(
+                songs = state.data ?: emptyList(),
+                currentSongItem = currentlyPlaying,
+                nestedScrollConnection = nestedScrollConnection
+            ) {
 
                 viewModel.playOrToggleSong(it)
                 if (bottomSheetCollapsed)
@@ -76,11 +82,13 @@ fun SongsScreen(
 fun SongContent(
     songs: List<SongItem>,
     currentSongItem: MediaMetadataCompat?,
+    nestedScrollConnection: NestedScrollConnection,
     togglePlay: (String) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .nestedScroll(nestedScrollConnection),
 //        contentPadding = PaddingValues(top = Constants.toolBarHeight),
         state = rememberLazyListState()
     ) {
@@ -95,7 +103,7 @@ fun SongContent(
                         togglePlay(song.id.toString())
                     }
                     .padding(
-                        end = Constants.paddingStart.plus(4.dp),
+                        end = Constants.paddingStart,
                         start = Constants.paddingStart
                     ), song = song,
                 showEqualizer = song.id.toString() == currentSongItem?.description?.mediaId.toString()

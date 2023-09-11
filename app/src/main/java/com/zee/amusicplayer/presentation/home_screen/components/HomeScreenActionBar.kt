@@ -3,7 +3,13 @@ package com.zee.amusicplayer.presentation.home_screen.components
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -22,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.zee.amusicplayer.R
 import com.zee.amusicplayer.ui.theme.Blue500
 import com.zee.amusicplayer.ui.theme.Green500
+import com.zee.amusicplayer.ui.theme.Orange500
 import com.zee.amusicplayer.ui.theme.Purple500
 import com.zee.amusicplayer.ui.theme.Red500
 import com.zee.amusicplayer.utils.showToast
@@ -30,6 +37,7 @@ import com.zee.amusicplayer.utils.showToast
 data class HomeScreenActionItem(val color: Color, val title: String, @DrawableRes val icon: Int) {
     companion object {
         fun getItems() = listOf(
+            HomeScreenActionItem(Orange500, "Name", R.drawable.ic_trending),
             HomeScreenActionItem(Blue500, "History", R.drawable.ic_history),
             HomeScreenActionItem(Red500, "Last added", R.drawable.ic_recently_added),
             HomeScreenActionItem(Purple500, "Most played", R.drawable.ic_trending),
@@ -39,7 +47,25 @@ data class HomeScreenActionItem(val color: Color, val title: String, @DrawableRe
 }
 
 @Composable
-fun HomeScreenActionBar(modifier: Modifier = Modifier) {
+fun SortingSection(modifier: Modifier = Modifier) {
+    val items = HomeScreenActionItem.getItems()
+
+    Row(
+        modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+
+        items.forEach { item ->
+            SingleHomeScreenActionBarItem(item.title, item.icon, item.color)
+        }
+
+    }
+
+}
+
+@Composable
+    fun HomeScreenActionBar(modifier: Modifier = Modifier) {
 
     Column {
         Text(

@@ -29,7 +29,6 @@ import com.zee.amusicplayer.presentation.albums_screen.AlbumScreen
 import com.zee.amusicplayer.presentation.artists_screen.ArtistScreen
 import com.zee.amusicplayer.presentation.artists_screen.ArtistVieModel
 import com.zee.amusicplayer.presentation.home_screen.HomeScreen
-import com.zee.amusicplayer.presentation.home_screen.components.HomeScreenTopBar
 import com.zee.amusicplayer.presentation.home_screen.components.PlayerCollapseBar
 import com.zee.amusicplayer.presentation.play_list_screen.PlayListScreen
 import com.zee.amusicplayer.presentation.player_screen.PlayerScreen
@@ -112,7 +111,7 @@ object MainActivityComponent {
 
         Box(
             Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
 //                .nestedScroll(nestedScrollConnection)
         ) {
             NavHost(
@@ -153,12 +152,6 @@ object MainActivityComponent {
                     PlayListScreen()
                 }
             }
-
-            HomeScreenTopBar(
-                route = currentRoute,
-                modifier = Modifier,
-//                                    offset = toolbarOffsetHeightPx.value
-            )
         }
     }
 

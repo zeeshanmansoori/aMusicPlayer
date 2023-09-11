@@ -10,18 +10,13 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
@@ -86,28 +81,10 @@ class MainActivity : ComponentActivity() {
 
         val songViewModel: SongsVieModel = hiltViewModel()
 
-        val backStackEntry = navController.currentBackStackEntryAsState()
         val bottomSheetState = rememberBottomSheetScaffoldState()
-        val currentRoute = backStackEntry.value?.destination?.route
 
         val bottomBarHeightInPx = with(LocalDensity.current) { Constants.bottomBarHeight.toPx() }
 
-
-        val nestedScrollConnection = remember {
-            object : NestedScrollConnection {
-                override fun onPreScroll(
-                    available: Offset, source: NestedScrollSource
-                ): Offset {
-
-                    val delta = available.y
-//                            val newOffset = toolbarOffsetHeightPx.value + delta
-//                            toolbarOffsetHeightPx.value = newOffset.coerceIn(-toolbarHeightPx, 0f)
-                    return Offset.Zero
-                }
-
-
-            }
-        }
 
         Scaffold(
             Modifier.fillMaxSize(),

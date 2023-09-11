@@ -31,7 +31,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInteropFilter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -68,7 +67,6 @@ fun PlayerScreen(
     val playbackState = songsVieModel.playbackState.value
     val currentPosition = songsVieModel.curPlayerPosition.value
     val curSongDuration = songsVieModel.curSongDuration.value
-    val context = LocalContext.current
 
     BackHandler(bottomSheetState.bottomSheetState.isExpanded) {
         scope.launch {
@@ -110,14 +108,11 @@ fun PlayerScreen(
                 MusicImage(
                     Modifier.fillMaxSize()
                         .pointerInteropFilter {
-                            println("zeeshan pointer $it ${MotionEvent.ACTION_DOWN}")
-                            doAnimate =
-                                when (it.action) {
+                            doAnimate = when (it.action) {
                                     MotionEvent.ACTION_DOWN -> true
                                     MotionEvent.ACTION_UP, MotionEvent.ACTION_SCROLL -> false
                                     else -> false
                                 }
-
 
                             true
                         },
@@ -150,8 +145,9 @@ fun PlayerScreen(
                     songsVieModel.playOrToggleSong(currentPlaying?.description?.mediaId, true)
 
                 },
-                playNext = { songsVieModel.skipToNextSong() },
-                playPrevious = { songsVieModel.skipToPreviousSong() })
+                playNext = songsVieModel::skipToNextSong,
+                playPrevious =  songsVieModel::skipToPreviousSong,
+            )
 
         }
     }
