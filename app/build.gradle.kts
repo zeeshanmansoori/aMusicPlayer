@@ -52,7 +52,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.2"
     }
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
@@ -108,14 +108,11 @@ dependencies {
     val lottieVersion = "4.2.2"
     implementation ("com.airbnb.android:lottie-compose:$lottieVersion")
 
-    //coil
-    val coilVersion = "2.4.0"
-    implementation ("io.coil-kt:coil-compose:$coilVersion")
-    implementation ("com.github.skydoves:landscapist-glide:1.4.4")
+    //glide
+    implementation("com.github.bumptech.glide:compose:1.0.0-alpha.5")
+    implementation("io.coil-kt:coil-compose:2.4.0")
 
 
     // breaking while updating
     implementation ("androidx.compose.material:material-icons-extended:$1.4.0")
 }
-
-// AGP 8.1.

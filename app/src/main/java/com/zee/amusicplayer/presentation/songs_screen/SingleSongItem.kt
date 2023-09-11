@@ -1,6 +1,12 @@
 package com.zee.amusicplayer.presentation.songs_screen
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -9,13 +15,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.airbnb.lottie.compose.*
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.zee.amusicplayer.R
 import com.zee.amusicplayer.common.MusicImage
 import com.zee.amusicplayer.domain.model.SongItem
+import com.zee.amusicplayer.utils.Constants
 
 @Composable
 fun SingleSongItem(
@@ -28,7 +41,13 @@ fun SingleSongItem(
             .padding(vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        MusicImage(modifier = Modifier.size(40.dp), song = song)
+        MusicImage(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(RoundedCornerShape(Constants.rectanglesCorner))
+                .background(color = Color.LightGray),
+            contentUri = song.contentUri
+        )
 
         Column(
             modifier = Modifier

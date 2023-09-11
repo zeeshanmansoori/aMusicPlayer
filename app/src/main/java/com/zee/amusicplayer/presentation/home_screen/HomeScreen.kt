@@ -23,6 +23,10 @@ import com.zee.amusicplayer.utils.Constants.paddingStart
 @Composable
 fun HomeScreen(songViewModel: SongsVieModel, bottomSheetState: BottomSheetScaffoldState) {
 
+    Column {
+
+
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -30,7 +34,9 @@ fun HomeScreen(songViewModel: SongsVieModel, bottomSheetState: BottomSheetScaffo
             .padding(vertical = Constants.toolBarHeight),
 //        contentPadding = PaddingValues(top = )
     ) {
-        HomeScreenActionBar(modifier = Modifier.padding(4.dp).padding(bottom =4.dp))
+        HomeScreenActionBar(modifier = Modifier
+            .padding(4.dp)
+            .padding(bottom = 4.dp))
         SongsScreen(viewModel = songViewModel, bottomSheetState = bottomSheetState)
     }
 }

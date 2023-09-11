@@ -6,10 +6,24 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.BottomSheetScaffoldState
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -17,15 +31,11 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInteropFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.zee.amusicplayer.R
-import com.zee.amusicplayer.common.getBitmapFromContentUri
+import com.zee.amusicplayer.common.MusicImage
 import com.zee.amusicplayer.exo_player.isPlaying
 import com.zee.amusicplayer.presentation.player_screen.component.PlayerControllerBar
 import com.zee.amusicplayer.presentation.player_screen.component.TrackBar
@@ -50,7 +60,8 @@ fun PlayerScreen(
     var doAnimate by remember {
         mutableStateOf(false)
     }
-    val scaleFactor = animateFloatAsState(targetValue = if (doAnimate) 0.85f else 1f)
+
+    val scaleFactor by animateFloatAsState(targetValue = if (doAnimate) 0.85f else 1f, label = "")
 
     val currentPlaying = songsVieModel.curPlayingSong.value
     val scope = rememberCoroutineScope()
@@ -59,27 +70,13 @@ fun PlayerScreen(
     val curSongDuration = songsVieModel.curSongDuration.value
     val context = LocalContext.current
 
-
-    val thumbnail by remember {
-
-        val result = derivedStateOf {
-            val bm = getBitmapFromContentUri(
-                context,
-                songsVieModel.curPlayingSong.value?.description?.mediaUri?.toString()
-            )
-            bm
-        }
-        return@remember result
-    }
-
-
-
     BackHandler(bottomSheetState.bottomSheetState.isExpanded) {
         scope.launch {
             bottomSheetState.bottomSheetState.collapse()
         }
 
     }
+
 
 
     Box(
@@ -104,32 +101,28 @@ fun PlayerScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1f)
-                    .scale(scaleFactor.value)
-                    .pointerInteropFilter {
-                        doAnimate = if (it.action == MotionEvent.ACTION_DOWN) true
-                        else if (it.action == MotionEvent.ACTION_UP || it.action == MotionEvent.ACTION_SCROLL) false
-                        else false
-
-
-                        true
-                    },
-                elevation = if (scaleFactor.value == 1f) 5.dp else 0.dp,
+                    .scale(scaleFactor),
+                elevation = if (scaleFactor == 1f) 5.dp else 0.dp,
                 shape = RoundedCornerShape(Constants.rectanglesCorner),
                 color = Color.LightGray
             ) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
 
-                    AsyncImage(
-                        model = thumbnail,
-                        contentDescription=null,
-                        contentScale = ContentScale.Crop,
-                        placeholder = painterResource(id = R.drawable.ic_songs),
-                        error = painterResource(id = R.drawable.ic_songs),
-                    )
-                }
+                MusicImage(
+                    Modifier.fillMaxSize()
+                        .pointerInteropFilter {
+                            println("zeeshan pointer $it ${MotionEvent.ACTION_DOWN}")
+                            doAnimate =
+                                when (it.action) {
+                                    MotionEvent.ACTION_DOWN -> true
+                                    MotionEvent.ACTION_UP, MotionEvent.ACTION_SCROLL -> false
+                                    else -> false
+                                }
+
+
+                            true
+                        },
+                    contentUri = songsVieModel.curPlayingSong.value?.description?.mediaUri?.toString(),
+                )
             }
 
             TrackBar(
