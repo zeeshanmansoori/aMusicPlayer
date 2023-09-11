@@ -11,14 +11,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 
-private val DarkColorPalette = darkColors(
+private val darkColorPalette = darkColors(
     primary = colorPrimary,
     primaryVariant = colorPrimary700,
     secondary = Teal200,
     surface = DarkColorSurface,
 )
 
-private val LightColorPalette = lightColors(
+private val lightColorPalette = lightColors(
     primary = colorPrimary,
     primaryVariant = colorPrimary700,
     secondary = Teal200,
@@ -42,9 +42,9 @@ fun AMusicPlayerTheme(
     content: @Composable() () -> Unit
 ) {
     val colors = if (darkTheme) {
-        DarkColorPalette
+        darkColorPalette
     } else {
-        LightColorPalette
+        lightColorPalette
     }
 
 
@@ -55,14 +55,14 @@ fun AMusicPlayerTheme(
     )
     {
         CompositionLocalProvider(
-            LocalRippleTheme provides JetNewsRippleTheme,
+            LocalRippleTheme provides MRippleTheme,
             content = content
         )
     }
 }
 
 
-private object JetNewsRippleTheme : RippleTheme {
+private object MRippleTheme : RippleTheme {
     // Here you should return the ripple color you want
     // and not use the defaultRippleColor extension on RippleTheme.
     // Using that will override the ripple color set in DarkMode
