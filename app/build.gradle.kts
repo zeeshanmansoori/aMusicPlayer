@@ -31,9 +31,14 @@ android {
                     getDefaultProguardFile("proguard-android-optimize.txt"),
                     "proguard-rules.pro"
             )
+
+            resValue("string","app_name","aMusic")
+
         }
         getByName("debug") {
             isDebuggable = true
+            applicationIdSuffix = ".debug"
+            resValue("string","app_name","aMusicDebug")
 
         }
 
@@ -48,6 +53,7 @@ android {
     }
     buildFeatures {
         compose =  true
+//        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.2"
