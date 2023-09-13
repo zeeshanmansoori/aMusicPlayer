@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
@@ -74,7 +75,9 @@ fun HomeScreen(songViewModel: SongsVieModel, bottomSheetState: BottomSheetScaffo
             SongsScreen(
                 viewModel = songViewModel,
                 bottomSheetState = bottomSheetState,
-                nestedScrollConnection = nestedScrollConnection
+                modifier = Modifier
+                    .fillMaxSize()
+                    .nestedScroll(nestedScrollConnection)
             )
         }
     }

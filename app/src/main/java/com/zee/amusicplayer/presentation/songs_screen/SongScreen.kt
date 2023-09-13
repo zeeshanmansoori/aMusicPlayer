@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomSheetScaffoldState
@@ -19,8 +19,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import com.zee.amusicplayer.domain.model.SongItem
 import com.zee.amusicplayer.utils.Constants
 import com.zee.amusicplayer.utils.Resource
@@ -32,7 +30,7 @@ import kotlinx.coroutines.launch
 fun SongsScreen(
     viewModel: SongsVieModel,
     bottomSheetState: BottomSheetScaffoldState,
-    nestedScrollConnection: NestedScrollConnection,
+    modifier: Modifier = Modifier,
 ) {
     val state = viewModel.mediaItems.value
     val currentlyPlaying = viewModel.curPlayingSong.value
@@ -44,7 +42,7 @@ fun SongsScreen(
             SongContent(
                 songs = state.data ?: emptyList(),
                 currentSongItem = currentlyPlaying,
-                nestedScrollConnection = nestedScrollConnection
+                modifier = modifier
             ) {
 
                 viewModel.playOrToggleSong(it)
@@ -82,20 +80,16 @@ fun SongsScreen(
 fun SongContent(
     songs: List<SongItem>,
     currentSongItem: MediaMetadataCompat?,
-    nestedScrollConnection: NestedScrollConnection,
+    modifier: Modifier = Modifier,
     togglePlay: (String) -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(nestedScrollConnection),
+        modifier = modifier,
 //        contentPadding = PaddingValues(top = Constants.toolBarHeight),
         state = rememberLazyListState()
     ) {
 
-        itemsIndexed(songs, key = { index, item ->
-            item.id//Helps to cache the UI Item for better scrolling
-        }) { index, song ->
+        items(songs) { song ->
             SingleSongItem(
                 modifier = Modifier
                     .clip(RoundedCornerShape(Constants.rectanglesCorner))

@@ -82,7 +82,7 @@ class LocalMusicSource(private val songRepository: SongRepository) : AbstractMus
     }.toMutableList()
 
 
-    override fun iterator(): Iterator<MediaMetadataCompat> {
-        return songList.iterator()
-    }
+//    override fun iterator(): Iterator<MediaMetadataCompat> {
+//        return songList.iterator()
+//    }
 }

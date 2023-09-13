@@ -1,8 +1,6 @@
 package com.zee.amusicplayer.exo_player
 
-import android.support.v4.media.MediaMetadataCompat
-
-interface MusicSource : Iterable<MediaMetadataCompat> {
+interface MusicSource  {
     suspend fun load()
     fun whenReady(performAction: (Boolean) -> Unit): Boolean
 }

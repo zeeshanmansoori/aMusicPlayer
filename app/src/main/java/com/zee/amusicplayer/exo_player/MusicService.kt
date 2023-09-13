@@ -19,7 +19,11 @@ import com.zee.amusicplayer.exo_player.callbacks.MusicPlayerEventListener
 import com.zee.amusicplayer.exo_player.callbacks.MusicPlayerNotificationListener
 import com.zee.amusicplayer.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val SERVICE_TAG: String = "MusicService"
@@ -86,6 +90,7 @@ class MusicService : MediaBrowserServiceCompat() {
             curPlayingSong = it
             preparePlayer(musicSource.songList, it, true)
         }
+
 
         mediaSessionConnector = MediaSessionConnector(mediaSession)
         mediaSessionConnector.setPlaybackPreparer(musicPlayerBackPreparer)
