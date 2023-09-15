@@ -24,7 +24,7 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.zee.amusicplayer.presentation.home_screen.HomeScreen
 import com.zee.amusicplayer.presentation.home_screen.components.PermissionNotGranted
-import com.zee.amusicplayer.presentation.songs_screen.SongsVieModel
+import com.zee.amusicplayer.presentation.songs_screen.SongsViewModel
 import com.zee.amusicplayer.presentation.z_components.MainActivityComponent
 import com.zee.amusicplayer.ui.theme.AMusicPlayerTheme
 import com.zee.amusicplayer.utils.Constants
@@ -39,6 +39,12 @@ import dagger.hilt.android.AndroidEntryPoint
 )
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    override fun onStart() {
+        super.onStart()
+
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,7 +85,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun PermissionGrantedUI(navController: NavHostController) {
 
-        val songViewModel: SongsVieModel = hiltViewModel()
+        val songViewModel: SongsViewModel = hiltViewModel()
 
         val bottomSheetState = rememberBottomSheetScaffoldState()
 
@@ -111,7 +117,8 @@ class MainActivity : ComponentActivity() {
                 MainActivityComponent.MainActivityContent(
                     songViewModel,
                     bottomSheetState,
-                    navController
+                    navController,
+                    modifier = Modifier.fillMaxSize().padding(bottom = Constants.bottomSheetBottomMargin)
                 )
             }
 

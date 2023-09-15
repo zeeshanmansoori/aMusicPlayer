@@ -32,7 +32,7 @@ import com.zee.amusicplayer.presentation.home_screen.HomeScreen
 import com.zee.amusicplayer.presentation.home_screen.components.PlayerCollapseBar
 import com.zee.amusicplayer.presentation.play_list_screen.PlayListScreen
 import com.zee.amusicplayer.presentation.player_screen.PlayerScreen
-import com.zee.amusicplayer.presentation.songs_screen.SongsVieModel
+import com.zee.amusicplayer.presentation.songs_screen.SongsViewModel
 import com.zee.amusicplayer.utils.Constants
 import com.zee.amusicplayer.utils.Screen
 import com.zee.amusicplayer.utils.currentFraction
@@ -80,7 +80,7 @@ object MainActivityComponent {
     @Composable
     fun BottomSheetContent(
         bottomSheetState: BottomSheetScaffoldState,
-        songViewModel: SongsVieModel
+        songViewModel: SongsViewModel
     ) {
         Column(Modifier.fillMaxSize()) {
             PlayerCollapseBar(
@@ -102,16 +102,16 @@ object MainActivityComponent {
     @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
     @Composable
     fun MainActivityContent(
-        songViewModel: SongsVieModel,
+        songViewModel: SongsViewModel,
         bottomSheetState: BottomSheetScaffoldState,
         navController: NavHostController,
+        modifier: Modifier = Modifier
     ) {
         val backStackEntry = navController.currentBackStackEntryAsState()
         val currentRoute = backStackEntry.value?.destination?.route
 
         Box(
-            Modifier
-                .fillMaxSize()
+            modifier = modifier
 //                .nestedScroll(nestedScrollConnection)
         ) {
             NavHost(

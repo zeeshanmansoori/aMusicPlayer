@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.MediaItem
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -27,13 +28,12 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.zee.amusicplayer.R
 import com.zee.amusicplayer.common.MusicImage
-import com.zee.amusicplayer.domain.model.SongItem
 import com.zee.amusicplayer.utils.Constants
 
 @Composable
 fun SingleSongItem(
     modifier: Modifier = Modifier,
-    song: SongItem,
+    song: MediaItem,
     showEqualizer: Boolean = false,
 ) {
     Row(
@@ -46,7 +46,7 @@ fun SingleSongItem(
                 .size(40.dp)
                 .clip(RoundedCornerShape(Constants.rectanglesCorner))
                 .background(color = Color.LightGray),
-            contentUri = song.contentUri
+            contentUri = song.requestMetadata.mediaUri?.toString(),
         )
 
         Column(
@@ -57,13 +57,13 @@ fun SingleSongItem(
         ) {
 
             Text(
-                text = song.title,
+                text = song.mediaMetadata.title.toString(),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.body1
             )
             Text(
-                text = song.albumName,
+                text = song.mediaMetadata.albumTitle.toString(),
                 maxLines = 1,
                 style = MaterialTheme.typography.body2
             )

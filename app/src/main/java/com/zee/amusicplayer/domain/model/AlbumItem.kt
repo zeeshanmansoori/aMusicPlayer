@@ -41,7 +41,7 @@ data class AlbumItem(
                     id = index.toLong(),
                     songs = listOf(
                         SongItem(
-                            id = 1,
+                            id = "",
                             title = "tu meri muhabbat",
                             trackNumber = 1,
                             year = 2021,

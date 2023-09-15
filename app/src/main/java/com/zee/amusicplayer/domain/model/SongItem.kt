@@ -1,7 +1,7 @@
 package com.zee.amusicplayer.domain.model
 
 data class SongItem(
-    val id: Long = 56,
+    val id: String = "",
     val title: String = "",
     val trackNumber: Int = 0,
     val year: Int = 0,
@@ -15,7 +15,7 @@ data class SongItem(
     val artistName: String = "",
     val composer: String? = null,
     val contentUri: String? = null,
-    val albumUri:String? = null
+    val albumUri: String? = null
 ) {
     companion object {
 
@@ -23,8 +23,8 @@ data class SongItem(
             return groupBy { it.albumId }.map { AlbumItem(it.key, it.value) }.toList()
         }
 
-        fun getEmptySong():SongItem = SongItem(
-            id = -1,
+        fun getEmptySong(): SongItem = SongItem(
+            id = "",
             title = "",
             trackNumber = -1,
             year = -1,
@@ -37,7 +37,6 @@ data class SongItem(
             artistName = "",
             composer = "",
         )
-
     }
 }
 

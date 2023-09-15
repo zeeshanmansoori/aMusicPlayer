@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
@@ -24,14 +23,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.zee.amusicplayer.presentation.home_screen.components.HomeScreenActionBar
 import com.zee.amusicplayer.presentation.home_screen.components.HomeScreenTopBar
 import com.zee.amusicplayer.presentation.songs_screen.SongsScreen
-import com.zee.amusicplayer.presentation.songs_screen.SongsVieModel
+import com.zee.amusicplayer.presentation.songs_screen.SongsViewModel
 import com.zee.amusicplayer.ui.theme.AMusicPlayerTheme
 import com.zee.amusicplayer.utils.Constants.bottomBarHeight
 import com.zee.amusicplayer.utils.Constants.paddingStart
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun HomeScreen(songViewModel: SongsVieModel, bottomSheetState: BottomSheetScaffoldState) {
+fun HomeScreen(songViewModel: SongsViewModel, bottomSheetState: BottomSheetScaffoldState) {
 
     val toolbarHeightPx = with(LocalDensity.current) { bottomBarHeight.toPx() }
 
@@ -77,7 +76,7 @@ fun HomeScreen(songViewModel: SongsVieModel, bottomSheetState: BottomSheetScaffo
                 bottomSheetState = bottomSheetState,
                 modifier = Modifier
                     .fillMaxSize()
-                    .nestedScroll(nestedScrollConnection)
+//                    .nestedScroll(nestedScrollConnection)
             )
         }
     }

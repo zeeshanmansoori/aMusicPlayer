@@ -103,12 +103,15 @@ dependencies {
     implementation ("com.google.accompanist:accompanist-insets:0.30.1")
 
 
+    val media3_version = "1.1.1"
 
-    val exoplayer_version = "2.19.1"
-    implementation ("com.google.android.exoplayer:exoplayer-core:$exoplayer_version")
-    implementation ("com.google.android.exoplayer:exoplayer-ui:$exoplayer_version")
-    implementation ("com.google.android.exoplayer:extension-mediasession:$exoplayer_version")
+    // For media playback using ExoPlayer
+    implementation("androidx.media3:media3-exoplayer:$media3_version")
+    // For building media playback UIs
+    implementation("androidx.media3:media3-ui:$media3_version")
 
+    // For exposing and controlling media sessions
+    implementation("androidx.media3:media3-session:$media3_version")
 
     //lottie
     val lottieVersion = "4.2.2"

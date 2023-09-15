@@ -1,12 +1,12 @@
 package com.zee.amusicplayer.di
 
+import android.app.PendingIntent
 import android.content.Context
-import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.audio.AudioAttributes
-import com.google.android.exoplayer2.upstream.DefaultDataSource
-import com.zee.amusicplayer.domain.repository.SongRepository
-import com.zee.amusicplayer.exo_player.LocalMusicSource
+import android.content.Intent
+import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.session.MediaSession
+import com.zee.amusicplayer.presentation.MainActivity
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,22 +21,6 @@ object ServiceModule {
 
     @ServiceScoped
     @Provides
-    fun provideAudioAttributes() =
-        AudioAttributes.Builder().setContentType(C.AUDIO_CONTENT_TYPE_MUSIC).setUsage(C.USAGE_MEDIA)
-            .build()
-
-    @ServiceScoped
-    @Provides
-    fun provideExoPlayer(@ApplicationContext context: Context, audioAttributes: AudioAttributes) =
-        ExoPlayer.Builder(context).build()
-            .apply {
-                setAudioAttributes(audioAttributes, true)
-                setHandleAudioBecomingNoisy(true)
-            }
-
-
-    @ServiceScoped
-    @Provides
     fun provideDataSourceFactory(
         @ApplicationContext context: Context
     ): DefaultDataSource.Factory {
@@ -44,11 +28,18 @@ object ServiceModule {
         return DefaultDataSource.Factory(context)
     }
 
-
     @ServiceScoped
     @Provides
-    fun provideMusicSource(repository: SongRepository): LocalMusicSource {
-        return LocalMusicSource(repository)
+    fun provideMediaSession(@ApplicationContext context: Context, player: ExoPlayer): MediaSession {
+
+        val activityIntent = Intent(context, MainActivity::class.java)
+        val pendingIntent =
+            PendingIntent.getActivity(context, 0, activityIntent, PendingIntent.FLAG_MUTABLE)
+
+        return MediaSession.Builder(context, player)
+            .setSessionActivity(pendingIntent)
+            .build()
+
     }
 
 }

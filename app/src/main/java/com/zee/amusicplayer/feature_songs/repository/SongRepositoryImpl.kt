@@ -3,22 +3,22 @@ package com.zee.amusicplayer.feature_songs.repository
 import android.database.Cursor
 import android.provider.MediaStore
 import android.provider.MediaStore.Audio.AudioColumns.IS_MUSIC
-import com.zee.amusicplayer.domain.model.SongItem
 import com.zee.amusicplayer.domain.repository.SongRepository
 import com.zee.amusicplayer.feature_songs.data_source.AudioOfflineDataSource
 import com.zee.amusicplayer.utils.SortOrder
 import com.zee.amusicplayer.utils.log
+import org.json.JSONObject
 
 class SongRepositoryImpl(private val dataSource: AudioOfflineDataSource) : SongRepository {
 
-    override fun songs(): List<SongItem> {
+    override fun songs(): List<JSONObject> {
         return songs(makeSongCursor(null, null, SortOrder.SongSortOrder.SONG_A_Z))
     }
 
 
-    override fun songs(cursor: Cursor?): List<SongItem> {
+    override fun songs(cursor: Cursor?): List<JSONObject> {
 
-        val songs = arrayListOf<SongItem>()
+        val songs = arrayListOf<JSONObject>()
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 val song =getSongFromCursorImpl(cursor)
@@ -31,7 +31,7 @@ class SongRepositoryImpl(private val dataSource: AudioOfflineDataSource) : SongR
         return songs
     }
 
-    override fun songs(query: String): List<SongItem> {
+    override fun songs(query: String): List<JSONObject> {
 
         return songs(
 
@@ -43,7 +43,7 @@ class SongRepositoryImpl(private val dataSource: AudioOfflineDataSource) : SongR
         )
     }
 
-    override fun songsByFilePath(filePath: String): List<SongItem> {
+    override fun songsByFilePath(filePath: String): List<JSONObject> {
         return songs(
             makeSongCursor(
                 MediaStore.Audio.AudioColumns.DATA + "=?",
@@ -53,12 +53,12 @@ class SongRepositoryImpl(private val dataSource: AudioOfflineDataSource) : SongR
         )
     }
 
-    override fun song(cursor: Cursor?): SongItem? {
+    override fun song(cursor: Cursor?): JSONObject? {
         log("song(cursor) called")
         return cursor?.let { getSongFromCursorImpl(it) }
     }
 
-    override fun song(songId: Long): SongItem? {
+    override fun song(songId: Long): JSONObject? {
         return song(
             makeSongCursor(
                 MediaStore.Audio.AudioColumns._ID + "=?",
@@ -97,7 +97,7 @@ class SongRepositoryImpl(private val dataSource: AudioOfflineDataSource) : SongR
 
     override fun getSongFromCursorImpl(
         cursor: Cursor
-    ): SongItem {
+    ): JSONObject {
         return dataSource.getSongFromCursor(cursor)
     }
 }

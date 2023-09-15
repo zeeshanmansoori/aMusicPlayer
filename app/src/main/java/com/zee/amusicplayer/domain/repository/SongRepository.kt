@@ -1,21 +1,21 @@
 package com.zee.amusicplayer.domain.repository
 
 import android.database.Cursor
-import com.zee.amusicplayer.domain.model.SongItem
+import org.json.JSONObject
 
 
 interface SongRepository {
-    fun songs(): List<SongItem>
+    fun songs(): List<JSONObject>
 
-    fun songs(cursor: Cursor?): List<SongItem>
+    fun songs(cursor: Cursor?): List<JSONObject>
 
-    fun songs(query: String): List<SongItem>
+    fun songs(query: String): List<JSONObject>
 
-    fun songsByFilePath(filePath: String): List<SongItem>
+    fun songsByFilePath(filePath: String): List<JSONObject>
 
-    fun song(cursor: Cursor?): SongItem?
+    fun song(cursor: Cursor?): JSONObject?
 
-    fun song(songId: Long): SongItem?
+    fun song(songId: Long): JSONObject?
 
     fun makeSongCursor(
         selection: String?,
@@ -25,5 +25,5 @@ interface SongRepository {
 
     fun getSongFromCursorImpl(
         cursor: Cursor
-    ): SongItem?
+    ): JSONObject?
 }

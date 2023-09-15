@@ -1,9 +1,7 @@
 package com.zee.amusicplayer.feature_artists.repository
 
 import android.provider.MediaStore
-import com.zee.amusicplayer.domain.model.AlbumItem.Companion.toArtists
 import com.zee.amusicplayer.domain.model.ArtistItem
-import com.zee.amusicplayer.domain.model.SongItem.Companion.toAlbums
 import com.zee.amusicplayer.domain.repository.ArtistRepository
 import com.zee.amusicplayer.domain.repository.SongRepository
 import com.zee.amusicplayer.utils.Constants.ALBUM_ARTIST
@@ -19,7 +17,7 @@ class ArtistRepositoryImpl(private val songRepository: SongRepository) : ArtistR
             )
 
         )
-        return songs.toAlbums().toArtists()
+        return emptyList()
     }
 
     override suspend fun albumArtists(query: String): List<ArtistItem> {
@@ -30,7 +28,7 @@ class ArtistRepositoryImpl(private val songRepository: SongRepository) : ArtistR
             )
 
         )
-        return songs.toAlbums().toArtists()
+        return emptyList()
     }
 
     override suspend fun artists(query: String): List<ArtistItem> {
@@ -41,7 +39,7 @@ class ArtistRepositoryImpl(private val songRepository: SongRepository) : ArtistR
             )
 
         )
-        return songs.toAlbums().toArtists()
+        return emptyList()
     }
 
     override suspend fun artist(artistId: Long): ArtistItem {
@@ -55,8 +53,8 @@ class ArtistRepositoryImpl(private val songRepository: SongRepository) : ArtistR
 
         return ArtistItem(
             artistId,
-            artistName = songs.first().artistName,
-            albums = songs.toAlbums()
+            artistName = "",
+            albums = emptyList()
         )
     }
 
@@ -69,9 +67,9 @@ class ArtistRepositoryImpl(private val songRepository: SongRepository) : ArtistR
             )
         )
         return ArtistItem(
-            id = songs.toAlbums().first().artistId,
+            id = 1,
             artistName = artistName,
-            albums = songs.toAlbums()
+            albums = emptyList()
         )
     }
 

@@ -35,10 +35,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.zee.amusicplayer.common.MusicImage
-import com.zee.amusicplayer.exo_player.isPlaying
 import com.zee.amusicplayer.presentation.player_screen.component.PlayerControllerBar
 import com.zee.amusicplayer.presentation.player_screen.component.TrackBar
-import com.zee.amusicplayer.presentation.songs_screen.SongsVieModel
+import com.zee.amusicplayer.presentation.songs_screen.SongsViewModel
 import com.zee.amusicplayer.utils.Constants
 import com.zee.amusicplayer.utils.MarqueeText
 import kotlinx.coroutines.launch
@@ -51,7 +50,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun PlayerScreen(
     modifier: Modifier = Modifier,
-    songsVieModel: SongsVieModel,
+    songsVieModel: SongsViewModel,
     visibility: Float = 1f,
     bottomSheetState: BottomSheetScaffoldState,
 ) {
@@ -62,11 +61,10 @@ fun PlayerScreen(
 
     val scaleFactor by animateFloatAsState(targetValue = if (doAnimate) 0.85f else 1f, label = "")
 
-    val currentPlaying = songsVieModel.curPlayingSong.value
+    val currentPlaying = songsVieModel.currentMediaItem.value
     val scope = rememberCoroutineScope()
-    val playbackState = songsVieModel.playbackState.value
-    val currentPosition = songsVieModel.curPlayerPosition.value
-    val curSongDuration = songsVieModel.curSongDuration.value
+    val currentPosition = songsVieModel.progress
+    val curSongDuration = songsVieModel.duration
 
     BackHandler(bottomSheetState.bottomSheetState.isExpanded) {
         scope.launch {
@@ -106,17 +104,18 @@ fun PlayerScreen(
             ) {
 
                 MusicImage(
-                    Modifier.fillMaxSize()
+                    Modifier
+                        .fillMaxSize()
                         .pointerInteropFilter {
                             doAnimate = when (it.action) {
-                                    MotionEvent.ACTION_DOWN -> true
-                                    MotionEvent.ACTION_UP, MotionEvent.ACTION_SCROLL -> false
-                                    else -> false
-                                }
+                                MotionEvent.ACTION_DOWN -> true
+                                MotionEvent.ACTION_UP, MotionEvent.ACTION_SCROLL -> false
+                                else -> false
+                            }
 
                             true
                         },
-                    contentUri = songsVieModel.curPlayingSong.value?.description?.mediaUri?.toString(),
+                    contentUri = songsVieModel.currentMediaItem.value?.mediaId,
                 )
             }
 
@@ -130,23 +129,24 @@ fun PlayerScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 10.dp),
-                text = currentPlaying?.description?.title.toString(),
+                text = currentPlaying?.mediaMetadata?.title.toString(),
                 style = MaterialTheme.typography.subtitle1.copy(fontSize = 18.sp)
             )
 
             Text(
-                text = currentPlaying?.description?.subtitle.toString(),
+                text = currentPlaying?.mediaMetadata?.subtitle.toString(),
                 Modifier.padding(vertical = 30.dp)
             )
 
             PlayerControllerBar(
-                isPlaying = playbackState?.isPlaying == true,
+//                isPlaying = playbackState?.is == true,
+                isPlaying = false,
                 onPlayingStateChange = {
-                    songsVieModel.playOrToggleSong(currentPlaying?.description?.mediaId, true)
+//                    songsVieModel.playOrToggleSong(null, true)
 
                 },
-                playNext = songsVieModel::skipToNextSong,
-                playPrevious =  songsVieModel::skipToPreviousSong,
+                playNext = songsVieModel::seekToNext,
+                playPrevious = songsVieModel::seekToPrevious,
             )
 
         }

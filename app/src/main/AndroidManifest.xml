@@ -16,8 +16,9 @@
 
 
         <service
-            android:name=".exo_player.MusicService"
+            android:name=".exo_player.PlaybackService"
             android:exported="false"
+            android:foregroundServiceType="mediaPlayback"
             >
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService" />
