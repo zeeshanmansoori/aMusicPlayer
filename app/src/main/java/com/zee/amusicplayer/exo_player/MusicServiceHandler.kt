@@ -2,7 +2,6 @@ package com.zee.amusicplayer.exo_player
 
 import android.content.Context
 import androidx.core.content.ContextCompat
-import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
@@ -56,29 +55,6 @@ class MusicServiceHandler @Inject constructor(
         onBrowserInitListener = listener
     }
 
-    private fun addMediaItems(mediaItems: List<MediaItem>) {
-        val command = {
-            browser?.run {
-                clearMediaItems()
-                //setMediaItems(mediaItems)
-                setMediaItems(
-                    mediaItems,
-                    /* startIndex= */ 0,
-                    /* startPositionMs= */ C.TIME_UNSET
-                )
-                prepare()
-                playWhenReady = true
-            }
-
-            Unit
-        }
-
-        if (browser != null) {
-            command.invoke()
-        } else commands.add(command)
-
-    }
-
 
     fun onPlayerEvents(
         playerEvent: PlayerEvent
@@ -98,7 +74,9 @@ class MusicServiceHandler @Inject constructor(
     }
 
     private fun playSongAt(mediaItemIndex: Int) = browser?.run {
-        println("zeeshan playSongAt mediaItemIndex $mediaItemIndex currentMediaItemIndex $currentMediaItemIndex")
+        println("zeeshan playSongAt mediaItemIndex $mediaItemIndex " +
+                "getSongAtMediaItemIndex ${getMediaItemAt(mediaItemIndex).mediaMetadata.title} " +
+                "\ncurrentMediaItemIndex $currentMediaItemIndex getSongAtCurrentMediaItemIndex ${getMediaItemAt(currentMediaItemIndex).mediaMetadata.title}")
         if (mediaItemIndex == currentMediaItemIndex) {
             if (!isPlaying)
                 playPausePlayer()
@@ -170,6 +148,7 @@ class MusicServiceHandler @Inject constructor(
         data object PlayNext : PlayerEvent()
         data object Stop : PlayerEvent()
         data class PlayAtIndex(val mediaItemIndex: Int) : PlayerEvent()
+        data class PlayByMediaId(val mediaId: String) : PlayerEvent()
         data class SeekTo(val position: Long) : PlayerEvent()
 
 

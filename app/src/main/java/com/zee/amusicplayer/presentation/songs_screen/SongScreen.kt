@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterialApi
 @Composable
 fun SongsScreen(
-    viewModel: SongsViewModel,
+    viewModel: HomeViewModel,
     bottomSheetState: BottomSheetScaffoldState,
     modifier: Modifier = Modifier,
 ) {
@@ -51,7 +51,7 @@ fun SongContent(
     songs: List<MediaItem>,
     currentMediaItemId: String?,
     modifier: Modifier = Modifier,
-    togglePlay: (index: Int) -> Unit
+    togglePlay: (mediaId: String) -> Unit
 ) {
     LazyColumn(
         modifier = modifier,
@@ -59,12 +59,12 @@ fun SongContent(
         state = rememberLazyListState()
     ) {
 
-        itemsIndexed(songs) { index, song ->
+        itemsIndexed(songs) { index,song ->
             SingleSongItem(
                 modifier = Modifier
                     .clip(RoundedCornerShape(Constants.rectanglesCorner))
                     .clickable {
-                        togglePlay(index)
+                        togglePlay(index.toString())
                     }
                     .padding(
                         end = Constants.paddingStart, start = Constants.paddingStart

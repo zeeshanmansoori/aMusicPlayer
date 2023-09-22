@@ -32,6 +32,7 @@ import com.zee.amusicplayer.presentation.home_screen.HomeScreen
 import com.zee.amusicplayer.presentation.home_screen.components.PlayerCollapseBar
 import com.zee.amusicplayer.presentation.play_list_screen.PlayListScreen
 import com.zee.amusicplayer.presentation.player_screen.PlayerScreen
+import com.zee.amusicplayer.presentation.songs_screen.HomeViewModel
 import com.zee.amusicplayer.presentation.songs_screen.SongsViewModel
 import com.zee.amusicplayer.utils.Constants
 import com.zee.amusicplayer.utils.Screen
@@ -80,7 +81,7 @@ object MainActivityComponent {
     @Composable
     fun BottomSheetContent(
         bottomSheetState: BottomSheetScaffoldState,
-        songViewModel: SongsViewModel
+        songViewModel: HomeViewModel
     ) {
         Column(Modifier.fillMaxSize()) {
             PlayerCollapseBar(
@@ -102,7 +103,7 @@ object MainActivityComponent {
     @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
     @Composable
     fun MainActivityContent(
-        songViewModel: SongsViewModel,
+        homeViewModel: HomeViewModel,
         bottomSheetState: BottomSheetScaffoldState,
         navController: NavHostController,
         modifier: Modifier = Modifier
@@ -127,7 +128,7 @@ object MainActivityComponent {
             ) {
 
                 composable(Screen.HomeScreen.route) {
-                    HomeScreen(songViewModel, bottomSheetState)
+                    HomeScreen(homeViewModel, bottomSheetState)
                 }
 
 //                                    composable(Screen.SongsScreen.route) {

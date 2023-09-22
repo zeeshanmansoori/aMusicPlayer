@@ -37,6 +37,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.zee.amusicplayer.common.MusicImage
 import com.zee.amusicplayer.presentation.player_screen.component.PlayerControllerBar
 import com.zee.amusicplayer.presentation.player_screen.component.TrackBar
+import com.zee.amusicplayer.presentation.songs_screen.HomeViewModel
 import com.zee.amusicplayer.presentation.songs_screen.SongsViewModel
 import com.zee.amusicplayer.utils.Constants
 import com.zee.amusicplayer.utils.MarqueeText
@@ -50,7 +51,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun PlayerScreen(
     modifier: Modifier = Modifier,
-    songsVieModel: SongsViewModel,
+    songsVieModel: HomeViewModel,
     visibility: Float = 1f,
     bottomSheetState: BottomSheetScaffoldState,
 ) {

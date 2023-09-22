@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 @UnstableApi
 @HiltViewModel
-class SongsViewModel @Inject constructor(
+class HomeViewModel @Inject constructor(
     private val serviceHandler: MusicServiceHandler,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
@@ -59,10 +59,11 @@ class SongsViewModel @Inject constructor(
             val children = childrenFuture.get() ?: return@addListener
 
             val items = children.value ?: emptyList()
-            println("zeeshan items titles mediaId ${items.map { it.mediaId to it.mediaMetadata.title}}")
-            _mediaItems.value = items
-            addMediaItems(items)
+            setMediaItems(items,true)
             prepare()
+            _mediaItems.value = items
+
+//            play()
 
         }, MoreExecutors.directExecutor())
 

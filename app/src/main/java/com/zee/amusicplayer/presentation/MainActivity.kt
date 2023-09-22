@@ -24,7 +24,7 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.zee.amusicplayer.presentation.home_screen.HomeScreen
 import com.zee.amusicplayer.presentation.home_screen.components.PermissionNotGranted
-import com.zee.amusicplayer.presentation.songs_screen.SongsViewModel
+import com.zee.amusicplayer.presentation.songs_screen.HomeViewModel
 import com.zee.amusicplayer.presentation.z_components.MainActivityComponent
 import com.zee.amusicplayer.ui.theme.AMusicPlayerTheme
 import com.zee.amusicplayer.utils.Constants
@@ -85,7 +85,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun PermissionGrantedUI(navController: NavHostController) {
 
-        val songViewModel: SongsViewModel = hiltViewModel()
+        val homeViewModel: HomeViewModel = hiltViewModel()
 
         val bottomSheetState = rememberBottomSheetScaffoldState()
 
@@ -110,12 +110,12 @@ class MainActivity : ComponentActivity() {
                     .padding(it),
 //                sheetPeekHeight = toolBarHeight + Constants.bottomBarHeight + 4.dp,
                 sheetContent = {
-                    MainActivityComponent.BottomSheetContent(bottomSheetState, songViewModel)
+                    MainActivityComponent.BottomSheetContent(bottomSheetState, homeViewModel)
                 },
                 scaffoldState = bottomSheetState
             ) {
                 MainActivityComponent.MainActivityContent(
-                    songViewModel,
+                    homeViewModel,
                     bottomSheetState,
                     navController,
                     modifier = Modifier.fillMaxSize().padding(bottom = Constants.bottomSheetBottomMargin)
@@ -134,7 +134,7 @@ class MainActivity : ComponentActivity() {
 fun DefaultPreview() {
     AMusicPlayerTheme {
         HomeScreen(
-            songViewModel = viewModel(), bottomSheetState = rememberBottomSheetScaffoldState()
+            homeViewModel = viewModel(), bottomSheetState = rememberBottomSheetScaffoldState()
         )
     }
 }

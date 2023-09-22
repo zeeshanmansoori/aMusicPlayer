@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.zee.amusicplayer.presentation.songs_screen.HomeViewModel
 import com.zee.amusicplayer.presentation.songs_screen.SongsViewModel
 import com.zee.amusicplayer.utils.Constants
 import com.zee.amusicplayer.utils.MarqueeText
@@ -30,7 +31,7 @@ import com.zee.amusicplayer.utils.MarqueeText
 @Composable
 fun PlayerCollapseBar(
     modifier: Modifier = Modifier,
-    songsVieModel: SongsViewModel
+    songsVieModel: HomeViewModel
 ) {
     val currentSong = songsVieModel.currentMediaItem.value
     val currentSongDuration = songsVieModel.duration

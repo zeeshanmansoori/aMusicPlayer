@@ -22,15 +22,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.zee.amusicplayer.presentation.home_screen.components.HomeScreenActionBar
 import com.zee.amusicplayer.presentation.home_screen.components.HomeScreenTopBar
+import com.zee.amusicplayer.presentation.songs_screen.HomeViewModel
 import com.zee.amusicplayer.presentation.songs_screen.SongsScreen
-import com.zee.amusicplayer.presentation.songs_screen.SongsViewModel
 import com.zee.amusicplayer.ui.theme.AMusicPlayerTheme
 import com.zee.amusicplayer.utils.Constants.bottomBarHeight
 import com.zee.amusicplayer.utils.Constants.paddingStart
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun HomeScreen(songViewModel: SongsViewModel, bottomSheetState: BottomSheetScaffoldState) {
+fun HomeScreen(homeViewModel: HomeViewModel, bottomSheetState: BottomSheetScaffoldState) {
 
     val toolbarHeightPx = with(LocalDensity.current) { bottomBarHeight.toPx() }
 
@@ -72,7 +72,7 @@ fun HomeScreen(songViewModel: SongsViewModel, bottomSheetState: BottomSheetScaff
                     .offset { IntOffset(0, toolbarOffsetHeightPx.floatValue.toInt()) }
             )
             SongsScreen(
-                viewModel = songViewModel,
+                viewModel = homeViewModel,
                 bottomSheetState = bottomSheetState,
                 modifier = Modifier
                     .fillMaxSize()
@@ -89,7 +89,7 @@ fun HomeScreen(songViewModel: SongsViewModel, bottomSheetState: BottomSheetScaff
 fun DefaultPreview() {
     AMusicPlayerTheme {
         HomeScreen(
-            songViewModel = viewModel(), bottomSheetState = rememberBottomSheetScaffoldState()
+            homeViewModel = viewModel(), bottomSheetState = rememberBottomSheetScaffoldState()
         )
     }
 }
