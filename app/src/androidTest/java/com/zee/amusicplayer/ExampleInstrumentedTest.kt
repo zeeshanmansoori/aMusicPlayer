@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.zee.amusicplayer", appContext.packageName)
+        assertEquals("com.zee.media3demo", appContext.packageName)
     }
 }

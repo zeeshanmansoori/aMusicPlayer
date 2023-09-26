@@ -2,7 +2,6 @@
 <resources>
 
     <style name="Theme.AppTheme" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">@color/lightColorSurface</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@color/darkColorSurface</item>
     </style>
 </resources>
