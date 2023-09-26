@@ -12,7 +12,7 @@
  * See the GNU General Public License for more details.
  *
  */
-package com.zee.amusicplayer.utils
+package com.zee.amusciplayer.utils
 
 import android.provider.MediaStore
 
@@ -58,7 +58,7 @@ class SortOrder {
             const val SONG_ARTIST = MediaStore.Audio.Artists.DEFAULT_SORT_ORDER
 
             /* Song sort order album artist */
-            const val SONG_ALBUM_ARTIST = Constants.ALBUM_ARTIST
+//            const val SONG_ALBUM_ARTIST = Constants.ALBUM_ARTIST
 
             /* Song sort order album */
             const val SONG_ALBUM = MediaStore.Audio.Albums.DEFAULT_SORT_ORDER

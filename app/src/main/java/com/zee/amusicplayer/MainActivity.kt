@@ -1,4 +1,4 @@
-package com.zee.amusicplayer.presentation
+package com.zee.amusicplayer
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import androidx.media3.common.util.UnstableApi
 import com.zee.amusicplayer.presentation.home.HomeScreen
-import com.zee.amusicplayer.presentation.theme.AMusicPlayerTheme
 import com.zee.amusicplayer.presentation.home.HomeViewModel
+import com.zee.amusicplayer.presentation.theme.AMusicPlayerTheme
 
 @UnstableApi
 class MainActivity : ComponentActivity() {

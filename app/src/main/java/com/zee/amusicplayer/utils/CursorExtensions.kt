@@ -12,10 +12,11 @@
  * See the GNU General Public License for more details.
  *
  */
-package com.zee.amusicplayer.utils
+package com.zee.amusciplayer.utils
 
 import android.annotation.SuppressLint
 import android.database.Cursor
+import org.json.JSONObject
 
 // exception is rethrown manually in order to have a readable stacktrace
 
@@ -29,28 +30,31 @@ internal fun Cursor.getInt(columnName: String): Int {
 }
 
 @SuppressLint("Range")
-internal fun Cursor.getLong(columnName: String): Long {
-    try {
-        return this.getLong(this.getColumnIndex(columnName))
+internal fun Cursor.getLong(columnName: String, default: Long = -1): Long {
+    return try {
+        this.getLong(this.getColumnIndex(columnName))
     } catch (ex: Exception) {
-        throw IllegalStateException("invalid column $columnName", ex)
-    }
-}
-
-@SuppressLint("Range")
-internal fun Cursor.getString(columnName: String): String {
-    try {
-        return this.getString(this.getColumnIndex(columnName))
-    } catch (ex: Throwable) {
-        throw IllegalStateException("invalid column $columnName", ex)
+        ex.printStackTrace()
+        default
     }
 }
 
 @SuppressLint("Range")
 internal fun Cursor.getStringOrNull(columnName: String): String? {
-    try {
-        return this.getString(this.getColumnIndex(columnName))
-    } catch (ex: Throwable) {
-        throw IllegalStateException("invalid column $columnName", ex)
+    return try {
+        this.getString(this.getColumnIndex(columnName))
+    } catch (ex: Exception) {
+        ex.printStackTrace()
+        null
+    }
+}
+
+
+internal fun JSONObject.getStringSafely(name: String): String {
+    return try {
+        getString(name)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ""
     }
 }
