@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.zee.amusicplayer"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.zee.amusicplayer"
         minSdk = 27
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -18,12 +18,19 @@ android {
     }
 
     buildTypes {
+        debug{
+            applicationIdSuffix = ".debug"
+            resValue("string","app_name","aMusicPlayer Debug")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+            resValue("string","app_name","aMusicPlayer")
+
         }
     }
     compileOptions {
@@ -62,10 +69,28 @@ dependencies {
 
     //compose
     implementation("androidx.activity:activity-compose:1.7.2")
-    implementation(platform("androidx.compose:compose-bom:2023.03.00"))
+    val bom = platform("androidx.compose:compose-bom:2023.09.00")
+
+    implementation(bom)
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material:material")
+    implementation ("androidx.navigation:navigation-compose:2.7.3")
+
+
+    // accompanist
+    implementation("com.google.accompanist:accompanist-permissions:0.30.1")
+
+    //lottie
+    implementation ("com.airbnb.android:lottie-compose:4.2.2")
+
+
+    // breaking while updating
+    implementation ("androidx.compose.material:material-icons-extended:$1.4.0")
+
+
+    //glide
+    implementation("com.github.bumptech.glide:compose:1.0.0-alpha.5")
 
 }

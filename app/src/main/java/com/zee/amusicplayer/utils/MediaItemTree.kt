@@ -17,11 +17,12 @@ package com.zee.amusicplayer.utils
 
 import android.content.res.AssetManager
 import android.net.Uri
+import androidx.core.os.bundleOf
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaItem.RequestMetadata
 import androidx.media3.common.MediaItem.SubtitleConfiguration
 import androidx.media3.common.MediaMetadata
 import com.google.common.collect.ImmutableList
-import com.zee.amusciplayer.utils.getStringSafely
 import com.zee.amusicplayer.dataSource.SongRepositoryImpl
 import java.io.BufferedReader
 import org.json.JSONObject
@@ -71,7 +72,7 @@ object MediaItemTree {
         artist: String? = null,
         genre: String? = null,
         sourceUri: Uri? = null,
-        imageUri: Uri? = null
+        imageUri: Uri? = null,
     ): MediaItem {
         val metadata =
             MediaMetadata.Builder()
@@ -83,12 +84,19 @@ object MediaItemTree {
                 .setIsPlayable(isPlayable)
                 .setArtworkUri(imageUri)
                 .setMediaType(mediaType)
+                // Need an empty bundle for setting up extension properties
+                .setExtras(bundleOf())
                 .build()
+
+        val requestMetadata = RequestMetadata.Builder()
+            .setMediaUri(sourceUri)
+            .build()
 
         return MediaItem.Builder()
             .setMediaId(mediaId)
             .setSubtitleConfigurations(subtitleConfigurations)
             .setMediaMetadata(metadata)
+            .setRequestMetadata(requestMetadata)
             .setUri(sourceUri)
             .build()
     }
@@ -155,12 +163,15 @@ object MediaItemTree {
 
     private fun addNodeToTree(mediaObject: JSONObject) {
 
-        val id = mediaObject.getString("id")
-        val album = mediaObject.getString("album")
-        val title = mediaObject.getString("title")
-        val artist = mediaObject.getString("artist")
+        val id = mediaObject.getStringSafely("id")
+        val album = mediaObject.getStringSafely("album")
+        val title = mediaObject.getStringSafely("title")
+        val artist = mediaObject.getStringSafely("artist")
         val genre = mediaObject.getStringSafely("genre")
         val subtitleConfigurations: MutableList<SubtitleConfiguration> = mutableListOf()
+        val dateModified = mediaObject.getStringSafely("dateModified")
+
+
         if (mediaObject.has("subtitles")) {
             val subtitlesJson = mediaObject.getJSONArray("subtitles")
             for (i in 0 until subtitlesJson.length()) {
@@ -195,7 +206,9 @@ object MediaItemTree {
                     genre = genre,
                     sourceUri = sourceUri,
                     imageUri = imageUri
-                )
+                ).also {
+                    it.dateModified = dateModified
+                }
             )
 
         titleMap[title.lowercase()] = treeNodes[idInTree]!!

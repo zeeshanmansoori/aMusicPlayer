@@ -11,14 +11,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import androidx.media3.common.util.UnstableApi
-import com.zee.amusicplayer.presentation.home.HomeScreen
-import com.zee.amusicplayer.presentation.home.HomeViewModel
+import com.zee.amusicplayer.presentation.main.MainScreen
+import com.zee.amusicplayer.presentation.main.MainViewModel
 import com.zee.amusicplayer.presentation.theme.AMusicPlayerTheme
 
 @UnstableApi
 class MainActivity : ComponentActivity() {
 
-    private val viewModel by viewModels<HomeViewModel> {
+    private val viewModel by viewModels<MainViewModel> {
         ViewModelProvider.AndroidViewModelFactory.getInstance(application)
     }
 
@@ -27,17 +27,12 @@ class MainActivity : ComponentActivity() {
         setContent {
             AMusicPlayerTheme {
                 // A surface container using the 'background' color from the theme
-
-                val mediaItems = viewModel.items.collectAsState()
-                val currentIndex = viewModel.currentIndex.collectAsState()
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
 
-                    HomeScreen(items = mediaItems.value,currentIndex =currentIndex.value ) { _, index ->
-                        viewModel.onItemClick(index)
-                    }
+                    MainScreen(viewModel = viewModel)
                 }
             }
         }

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="207f3cbc-df24-46f4-8e98-661e5efcfd13" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Shape.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../../AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../../AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MainActivity.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Color.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Color.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Theme.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Theme.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Type.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Type.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../../res/drawable/divider.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../../res/drawable/divider.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../../res/values-night/themes.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../../res/values-night/themes.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../../res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../../res/values/colors.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../../res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../../res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../../res/values/themes.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../../res/values/themes.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ProjectId" id="2Vw355aRJhDvE0AxJs60pziKTvZ" />
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/user/Downloads/projects/aMusicPlayer2&quot;
+  }
+}</component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="207f3cbc-df24-46f4-8e98-661e5efcfd13" name="Changes" comment="" />
+      <created>1695733129298</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1695733129298</updated>
+    </task>
+    <servers />
+  </component>
+</project>

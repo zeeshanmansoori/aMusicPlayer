@@ -1,64 +1,80 @@
 package com.zee.amusicplayer.presentation.theme
 
-
-import android.app.Activity
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
+import androidx.compose.material.ripple.LocalRippleTheme
+import androidx.compose.material.ripple.RippleAlpha
+import androidx.compose.material.ripple.RippleTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.graphics.Color
 
-private val DarkColorScheme = darkColors(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-//    tertiary = Pink80
+private val darkColorPalette = darkColors(
+    primary = colorPrimary,
+    primaryVariant = colorPrimary700,
+    secondary = Teal200,
+    surface = DarkColorSurface,
 )
 
-private val LightColorScheme = lightColors(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-//    tertiary = Pink40
+private val lightColorPalette = lightColors(
+    primary = colorPrimary,
+    primaryVariant = colorPrimary700,
+    secondary = Teal200,
+    surface = LightColorSurface,
+    background = lightBackGroundColor
+
 
     /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
+    background = Color.White,
+    surface = Color.White,
     onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
+    onSecondary = Color.Black,
+    onBackground = Color.Black,
+    onSurface = Color.Black,
     */
 )
 
 @Composable
 fun AMusicPlayerTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+    content: @Composable() () -> Unit
 ) {
-    val colorScheme = when {
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-    val view = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
-        }
+    val colors = if (darkTheme) {
+        darkColorPalette
+    } else {
+        lightColorPalette
     }
 
+
     MaterialTheme(
+        colors = colors,
         typography = Typography,
-        content = content,
-        colors = colorScheme,
+        shapes = Shapes,
     )
+    {
+        CompositionLocalProvider(
+            LocalRippleTheme provides MRippleTheme,
+            content = content
+        )
+    }
 }
+
+
+private object MRippleTheme : RippleTheme {
+    // Here you should return the ripple color you want
+    // and not use the defaultRippleColor extension on RippleTheme.
+    // Using that will override the ripple color set in DarkMode
+    // or when you set light parameter to false
+    @Composable
+    override fun defaultColor(): Color = MaterialTheme.colors.primary
+
+    @Composable
+    override fun rippleAlpha(): RippleAlpha = RippleTheme.defaultRippleAlpha(
+        Color.Black,
+        lightTheme = !isSystemInDarkTheme()
+    )
+
+}
+

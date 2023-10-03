@@ -7,9 +7,9 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import com.zee.amusciplayer.utils.SortOrder
-import com.zee.amusciplayer.utils.getInt
-import com.zee.amusciplayer.utils.getLong
-import com.zee.amusciplayer.utils.getStringOrNull
+import com.zee.amusicplayer.utils.getInt
+import com.zee.amusicplayer.utils.getLong
+import com.zee.amusicplayer.utils.getStringOrNull
 import org.json.JSONObject
 
 
@@ -66,6 +66,7 @@ class AudioOfflineDataSource(private val context: Context) {
         jsonObject.put("genre", genre)
         jsonObject.put("source", contentUri)
         jsonObject.put("image", albumUri)
+        jsonObject.put("dateModified", dateModified)
         return jsonObject
     }
 
