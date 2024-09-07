@@ -37,6 +37,7 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.zee.amusicplayer.presentation.home.HomeScreen
 import com.zee.amusicplayer.presentation.main.components.BottomNavBar
+import com.zee.amusicplayer.presentation.main.components.HomeScreenTopBar
 import com.zee.amusicplayer.presentation.pbSheet.PlayerBottomSheetScreen
 import com.zee.amusicplayer.presentation.utils.Screen
 import com.zee.amusicplayer.utils.Constants
@@ -84,6 +85,7 @@ private fun PermissionGrantedUI(navController: NavHostController, viewModel: Mai
         BottomSheetScaffold(
             modifier = Modifier
                 .fillMaxSize(),
+            topBar = { HomeScreenTopBar()},
             sheetPeekHeight = bottomMargin,
             sheetContent = {
                 PlayerBottomSheetScreen(

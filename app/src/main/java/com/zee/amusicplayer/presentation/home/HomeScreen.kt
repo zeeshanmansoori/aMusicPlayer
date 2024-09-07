@@ -49,7 +49,6 @@ fun HomeScreen(
 
         HomeScreenActionBar(
             modifier = Modifier
-                .padding(4.dp)
                 .padding(bottom = 4.dp),
         )
 
@@ -65,12 +64,10 @@ fun HomeScreen(
             }) { index, item ->
                 SongItemUi(
                     modifier = Modifier
+                        .padding(vertical = 3.dp)
                         .clip(RoundedCornerShape(Constants.rectanglesCorner))
                         .clickable { onItemClick(index) }
-                        .padding(
-                            end = Constants.SIDE_PADDING,
-                            start = Constants.SIDE_PADDING
-                        ),
+                        .padding(horizontal = 10.dp, vertical = 10.dp),
                     song = item,
                     showEqualizer = item.mediaId == mediaItem?.mediaId,
                 )

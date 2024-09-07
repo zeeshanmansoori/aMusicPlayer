@@ -37,8 +37,7 @@ fun SongItemUi(
     showEqualizer: Boolean = false,
 ) {
     Row(
-        modifier = modifier
-            .padding(vertical = 10.dp),
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
         MusicImage(

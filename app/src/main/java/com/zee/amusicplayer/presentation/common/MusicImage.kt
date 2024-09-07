@@ -7,6 +7,7 @@ import android.os.Build
 import android.util.Size
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
@@ -52,6 +53,7 @@ fun MusicImage(
         }
 
         AsyncImage(
+            modifier = Modifier.fillMaxSize(),
             model = thumbnail.value,
             contentDescription = null,
             contentScale = ContentScale.Crop,
