@@ -16,14 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
+import coil.compose.AsyncImage
 import com.zee.amusicplayer.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun MusicImage(
     modifier: Modifier = Modifier,
@@ -42,7 +40,7 @@ fun MusicImage(
 
     Box(modifier=modifier,contentAlignment = Alignment.Center) {
         if (thumbnail.value != null) {
-            GlideImage(
+            AsyncImage(
                 model = thumbnail.value,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,

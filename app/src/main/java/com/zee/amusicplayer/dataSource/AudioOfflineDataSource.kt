@@ -6,7 +6,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import com.zee.amusciplayer.utils.SortOrder
+import com.zee.amusicplayer.utils.SortOrder
 import com.zee.amusicplayer.utils.getInt
 import com.zee.amusicplayer.utils.getLong
 import com.zee.amusicplayer.utils.getStringOrNull

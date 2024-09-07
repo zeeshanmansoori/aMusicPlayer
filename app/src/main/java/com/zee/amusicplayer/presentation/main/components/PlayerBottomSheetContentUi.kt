@@ -2,9 +2,7 @@ package com.zee.amusicplayer.presentation.main.components
 
 import android.view.MotionEvent
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
@@ -14,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -39,11 +36,7 @@ import com.zee.amusicplayer.utils.Constants
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-@ExperimentalFoundationApi
-@OptIn(
-    ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class,
-    ExperimentalAnimationApi::class
-)
+@ExperimentalComposeUiApi
 @Composable
 fun PlayerBottomSheetContentUi(
     modifier: Modifier = Modifier,

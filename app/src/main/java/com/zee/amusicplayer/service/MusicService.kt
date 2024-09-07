@@ -1,18 +1,3 @@
-/*
- * Copyright 2021 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.zee.amusicplayer.service
 
 import android.annotation.SuppressLint
@@ -22,7 +7,6 @@ import android.app.PendingIntent
 import android.app.PendingIntent.*
 import android.app.TaskStackBuilder
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -31,18 +15,17 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.common.util.Util
 import androidx.media3.datasource.DataSourceBitmapLoader
-import com.zee.amusicplayer.utils.MediaItemTree
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.*
-import androidx.media3.session.LibraryResult.RESULT_ERROR_NOT_SUPPORTED
 import androidx.media3.session.MediaSession.ConnectionResult
 import androidx.media3.session.MediaSession.ControllerInfo
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
+import com.zee.amusicplayer.MainActivity
 import com.zee.amusicplayer.dataSource.AudioOfflineDataSource
 import com.zee.amusicplayer.dataSource.SongRepositoryImpl
-import com.zee.amusicplayer.MainActivity
+import com.zee.amusicplayer.utils.MediaItemTree
 
 @UnstableApi
 class MusicService : MediaLibraryService() {
@@ -61,7 +44,7 @@ class MusicService : MediaLibraryService() {
       "android.media3.session.demo.SHUFFLE_OFF"
     private const val NOTIFICATION_ID = 123
     private const val CHANNEL_ID = "demo_session_notification_channel_id"
-    private val immutableFlag = if (Build.VERSION.SDK_INT >= 23) FLAG_IMMUTABLE else 0
+    private val immutableFlag = FLAG_IMMUTABLE
   }
 
   override fun onCreate() {
@@ -140,7 +123,7 @@ class MusicService : MediaLibraryService() {
         // The service currently does not support playback resumption. Tell System UI by returning
         // an error of type 'RESULT_ERROR_NOT_SUPPORTED' for a `params.isRecent` request. See
         // https://github.com/androidx/media/issues/355
-        return Futures.immediateFuture(LibraryResult.ofError(RESULT_ERROR_NOT_SUPPORTED))
+        return Futures.immediateFuture(LibraryResult.ofError(SessionError.ERROR_NOT_SUPPORTED))
       }
       return Futures.immediateFuture(LibraryResult.ofItem(MediaItemTree.getRootItem(), params))
     }
@@ -153,7 +136,7 @@ class MusicService : MediaLibraryService() {
       val item =
         MediaItemTree.getItem(mediaId)
           ?: return Futures.immediateFuture(
-            LibraryResult.ofError(LibraryResult.RESULT_ERROR_BAD_VALUE)
+            LibraryResult.ofError(SessionError.ERROR_BAD_VALUE)
           )
       return Futures.immediateFuture(LibraryResult.ofItem(item, /* params= */ null))
     }
@@ -167,7 +150,7 @@ class MusicService : MediaLibraryService() {
       val children =
         MediaItemTree.getChildren(parentId)
           ?: return Futures.immediateFuture(
-            LibraryResult.ofError(LibraryResult.RESULT_ERROR_BAD_VALUE)
+            LibraryResult.ofError(SessionError.ERROR_BAD_VALUE)
           )
       session.notifyChildrenChanged(browser, parentId, children.size, params)
       return Futures.immediateFuture(LibraryResult.ofVoid())
@@ -184,7 +167,7 @@ class MusicService : MediaLibraryService() {
       val children =
         MediaItemTree.getChildren(parentId)
           ?: return Futures.immediateFuture(
-            LibraryResult.ofError(LibraryResult.RESULT_ERROR_BAD_VALUE)
+            LibraryResult.ofError(SessionError.ERROR_BAD_VALUE)
           )
 
       return Futures.immediateFuture(LibraryResult.ofItemList(children, params))

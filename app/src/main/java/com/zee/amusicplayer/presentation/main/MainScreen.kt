@@ -2,7 +2,6 @@
 
 package com.zee.amusicplayer.presentation.main
 
-import android.annotation.SuppressLint
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -63,7 +62,7 @@ fun MainScreen(viewModel: MainViewModel) {
 
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
+
 @Composable
 private fun PermissionDeniedUI(readPermissionState: PermissionState) {
     PermissionNotGranted {
@@ -71,8 +70,6 @@ private fun PermissionDeniedUI(readPermissionState: PermissionState) {
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
-@SuppressLint("UnrememberedGetBackStackEntry")
 @Composable
 private fun PermissionGrantedUI(navController: NavHostController, viewModel: MainViewModel) {
 

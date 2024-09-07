@@ -27,8 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.zee.amusicplayer.presentation.main.MainViewModel
 import com.zee.amusicplayer.utils.Constants
 
-@ExperimentalFoundationApi
-@ExperimentalMaterialApi
+
 @Composable
 fun PlayerCollapseBar(
     modifier: Modifier = Modifier,
@@ -62,7 +61,8 @@ fun PlayerCollapseBar(
 }
 
 
-@ExperimentalMaterialApi
+
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PlayPauseBtnWithProgressBar(
     play: Boolean = false,

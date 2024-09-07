@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.IntOffset
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.zee.amusicplayer.presentation.z_components.CustomBottomNavigation
 import com.zee.amusicplayer.utils.Constants
 import com.zee.amusicplayer.utils.currentFraction
 import kotlin.math.roundToInt

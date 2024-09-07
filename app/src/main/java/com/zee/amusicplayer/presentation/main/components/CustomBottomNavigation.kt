@@ -1,4 +1,4 @@
-package com.zee.amusicplayer.presentation.z_components
+package com.zee.amusicplayer.presentation.main.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
