@@ -1,7 +1,12 @@
 package com.zee.amusicplayer.utils
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.database.Cursor
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Build
+import android.util.Size
 import androidx.media3.common.MediaItem
 import org.json.JSONObject
 
@@ -61,3 +66,14 @@ internal var MediaItem.dateModified
         this.mediaMetadata.extras?.putString("dateModified", value)
     }
     get() = this.requestMetadata.extras?.getString("dateModified") ?: ""
+
+
+fun Context.getBitmapFromContentUri(contentUri: Uri?): Bitmap? {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return null
+
+    return try {
+        contentResolver.loadThumbnail(contentUri!!, Size(500, 500), null)
+    } catch (e: Exception) {
+        null
+    }
+}

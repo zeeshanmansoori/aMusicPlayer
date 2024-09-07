@@ -1,15 +1,13 @@
 package com.zee.amusicplayer.presentation.common
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Build
-import android.util.Size
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -20,6 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImage
 import com.zee.amusicplayer.R
+import com.zee.amusicplayer.utils.getBitmapFromContentUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -31,18 +30,17 @@ fun MusicImage(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val thumbnail = remember {
+    val thumbnail = remember(artUri) {
         mutableStateOf<Bitmap?>(null)
     }
 
-
-    DisposableEffect(key1 = artUri) {
+    LaunchedEffect(key1 = artUri) {
         scope.launch(Dispatchers.IO) {
-            thumbnail.value = getBitmapFromContentUri(context, artUri)
+            thumbnail.value = context.getBitmapFromContentUri(artUri)
         }
-        onDispose {
-            thumbnail.value = null
-        }
+//        onDispose {
+//            thumbnail.value = null
+//        }
     }
 
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
@@ -72,16 +70,4 @@ fun PlaceHolder() {
             contentDescription = "",
         )
     }
-}
-
-fun getBitmapFromContentUri(context: Context, contentUri: Uri?): Bitmap? {
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return null
-
-    return try {
-        context.contentResolver.loadThumbnail(contentUri!!, Size(500, 500), null)
-    } catch (e: Exception) {
-        null
-    }
-
-
 }

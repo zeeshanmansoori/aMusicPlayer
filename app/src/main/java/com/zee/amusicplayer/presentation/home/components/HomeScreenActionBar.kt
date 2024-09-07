@@ -85,7 +85,6 @@ fun HomeActionBarChip(
             text = item.title,
             style = MaterialTheme.typography.subtitle1.copy(
                 fontSize = 14.sp,
-                color = if (selected) Color.White else Color.DarkGray,
                 fontWeight = if(selected) FontWeight.Bold else FontWeight.Normal
             )
         )

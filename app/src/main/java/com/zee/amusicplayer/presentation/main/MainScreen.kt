@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.Button
 import androidx.compose.material.ExperimentalMaterialApi
@@ -27,10 +29,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
@@ -41,7 +39,6 @@ import com.zee.amusicplayer.presentation.main.components.HomeScreenTopBar
 import com.zee.amusicplayer.presentation.pbSheet.PlayerBottomSheetScreen
 import com.zee.amusicplayer.presentation.utils.Screen
 import com.zee.amusicplayer.utils.Constants
-import com.zee.amusicplayer.utils.Constants.toolBarHeight
 import kotlinx.coroutines.launch
 
 
@@ -49,7 +46,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainScreen(viewModel: MainViewModel) {
 
-    val navController = rememberNavController()
     val readPermissionState =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             rememberPermissionState(android.Manifest.permission.READ_MEDIA_AUDIO)
@@ -57,7 +53,7 @@ fun MainScreen(viewModel: MainViewModel) {
             rememberPermissionState(android.Manifest.permission.READ_EXTERNAL_STORAGE)
         }
     if (readPermissionState.status.isGranted)
-        PermissionGrantedUI(navController, viewModel)
+        PermissionGrantedUI( viewModel)
     else PermissionDeniedUI(readPermissionState)
 
 
@@ -74,13 +70,17 @@ private fun PermissionDeniedUI(readPermissionState: PermissionState) {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun PermissionGrantedUI(navController: NavHostController, viewModel: MainViewModel) {
+private fun PermissionGrantedUI( viewModel: MainViewModel) {
 
     val bottomSheetState = rememberBottomSheetScaffoldState()
     val scope = rememberCoroutineScope()
-    val bottomMargin = toolBarHeight + Constants.bottomBarHeight + 4.dp
+    val bottomMargin = Constants.toolBarHeight + Constants.bottomBarHeight
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+
+        val pagerState = rememberPagerState {
+            Screen.size
+        }
 
         BottomSheetScaffold(
             modifier = Modifier
@@ -96,57 +96,60 @@ private fun PermissionGrantedUI(navController: NavHostController, viewModel: Mai
             scaffoldState = bottomSheetState
         ) {
 
-            NavHost(
-                navController = navController,
-                startDestination = Screen.HomeScreen.route,
-                modifier = Modifier
+            HorizontalPager(
+                state = pagerState, modifier = Modifier
                     .fillMaxSize()
                     .padding(bottom = bottomMargin)
-            ) {
+            ) { position ->
+                when (position) {
+                    Screen.HomeScreen.position -> {
+                        val homeState = viewModel.playerScreenState.collectAsState()
+                        val playerState = viewModel.playerState.collectAsState()
 
-                composable(Screen.HomeScreen.route) {
-                    val homeState = viewModel.playerScreenState.collectAsState()
-                    val playerState = viewModel.playerState.collectAsState()
+                        HomeScreen(
+                            state = homeState.value,
+                            mediaItem = playerState.value.item,
+                            onItemClick = { itemPosition ->
+                                val bottomSheetCollapsed =
+                                    bottomSheetState.bottomSheetState.isCollapsed
+                                if (bottomSheetCollapsed) scope.launch {
+                                    bottomSheetState.bottomSheetState.expand()
+                                }
+                                viewModel.onItemClick(itemPosition)
+                            },
+                        )
+                    }
 
-                    HomeScreen(
-                        state = homeState.value,
-                        mediaItem = playerState.value.item,
-                        onItemClick = { position ->
-                            val bottomSheetCollapsed =
-                                bottomSheetState.bottomSheetState.isCollapsed
-                            if (bottomSheetCollapsed) scope.launch {
-                                bottomSheetState.bottomSheetState.expand()
-                            }
-                            viewModel.onItemClick(position)
+                    else -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(text = "Under Construction")
+                        }
+                    }
 
-                        },
-                    )
-                }
+//                    Screen.AlbumScreen.position -> {
+//
+//                    }
+//
+//                    Screen.ArtistsScreen.position -> {
+//
+//                    }
+//
+//                    Screen.PlayListScreen.position -> {
+//
+//                    }
 
-
-                composable(Screen.AlbumScreen.route) {
-//                        val parentEntry = remember(backStackEntry) {
-//                            navController.getBackStackEntry(Screen.HomeScreen.route)
-//                        }
-//                        AlbumScreen(hiltViewModel(parentEntry))
-                }
-
-                composable(Screen.ArtistsScreen.route) { backStackEntry ->
-//                        val parentEntry = remember(backStackEntry) {
-//                            navController.getBackStackEntry(Screen.HomeScreen.route)
-//                        }
-//                        ArtistScreen(hiltViewModel<ArtistVieModel>(parentEntry))
-                }
-
-                composable(Screen.PlayListScreen.route) {
-//                        PlayListScreen()
                 }
             }
+
         }
+
         BottomNavBar(
             bottomBarHeight = Constants.bottomBarHeight,
             bottomSheetState = bottomSheetState,
-            navController = navController
+            pagerState = pagerState
         )
     }
 

@@ -34,7 +34,10 @@ fun HomeScreen(
     val mediaItems = state.items
 
     if (state == MainViewModel.PlayerScreenState.Loading) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
             CircularProgressIndicator()
         }
         return
@@ -43,7 +46,6 @@ fun HomeScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = Constants.SIDE_PADDING)
     ) {
 
 

@@ -73,12 +73,8 @@ fun PlayerBottomSheetContent(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(
-                color = MaterialTheme.colors.surface
-            )
+            .background(color = MaterialTheme.colors.surface)
             .padding(horizontal = Constants.SIDE_PADDING)
-
-
     ) {
 
         Column(
@@ -95,9 +91,8 @@ fun PlayerBottomSheetContent(
                     .scale(scaleFactor),
                 elevation = if (scaleFactor == 1f) 5.dp else 0.dp,
                 shape = RoundedCornerShape(Constants.rectanglesCorner),
-                color = Color.LightGray
+                color = Color.LightGray,
             ) {
-
                 MusicImage(
                     Modifier
                         .fillMaxSize()

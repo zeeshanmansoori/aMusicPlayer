@@ -27,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.zee.amusicplayer.presentation.theme.IconTintColor
 import com.zee.amusicplayer.presentation.theme.TextColor
 import com.zee.amusicplayer.presentation.utils.Screen
 
@@ -36,7 +37,7 @@ fun BottomNavBarItem(
     modifier: Modifier,
     screen: Screen,
     isSelected: Boolean,
-    onItemSelected: (String) -> Unit,
+    onItemSelected: (Int) -> Unit,
 ) {
 
     Column(
@@ -45,7 +46,7 @@ fun BottomNavBarItem(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(bounded = false, radius = 45.dp),
             ) {
-                onItemSelected(screen.route)
+                onItemSelected(screen.position)
             }
             .padding(start = 8.dp, end = 8.dp, top = 10.dp, bottom = 5.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -63,7 +64,7 @@ fun BottomNavBarItem(
         )
 
         val iconColor: Color by animateColorAsState(
-            if (isSelected) MaterialTheme.colors.primary else TextColor, label = ""
+            if (isSelected) MaterialTheme.colors.primary else IconTintColor, label = ""
         )
 
         Box(

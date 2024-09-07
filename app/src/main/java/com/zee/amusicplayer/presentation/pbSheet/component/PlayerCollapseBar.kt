@@ -84,7 +84,6 @@ fun PlayPauseBtnWithProgressBar(
                 contentDescription = null
             )
 
-            println("zeeshan indicator progress $progress")
             CircularProgressIndicator(modifier = Modifier.fillMaxSize(), progress = progress)
 
         }

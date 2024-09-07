@@ -50,7 +50,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val executor = ContextCompat.getMainExecutor(application)
     private var progressTrackingJob: Job? = null
 
-    private val _sortByE = MutableStateFlow<SortByE>(SortByE.Name)
+    private val _sortByE = MutableStateFlow(SortByE.Name)
     val sortByE = _sortByE.asStateFlow()
 
     init {
@@ -59,22 +59,22 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             setController()
         }, executor)
 
-        viewModelScope.launch(Dispatchers.IO) {
-            _sortByE.collectLatest { sortBy ->
-                val state = playerScreenState.value
-
-                if (state is PlayerScreenState.Loaded) {
-                    val oldList = state.items.toMutableList()
-                    val list = when(sortBy){
-                        SortByE.Name -> oldList.sortedBy { it.mediaMetadata.title.toString() }
-                        SortByE.LastAdded -> oldList.sortedBy { it.dateModified }
-                        else -> oldList
-
-                    }
-                    _playerScreenState.value = state.copy(items = list)
-                }
-            }
-        }
+//        viewModelScope.launch(Dispatchers.IO) {
+//            _sortByE.collectLatest { sortBy ->
+//                val state = playerScreenState.value
+//
+//                if (state is PlayerScreenState.Loaded) {
+//                    val oldList = state.items.toMutableList()
+//                    val list = when(sortBy){
+//                        SortByE.Name -> oldList.sortedBy { it.mediaMetadata.title.toString() }
+//                        SortByE.LastAdded -> oldList.sortedBy { it.dateModified }
+//                        else -> oldList
+//
+//                    }
+//                    _playerScreenState.value = state.copy(items = list)
+//                }
+//            }
+//        }
     }
 
     private fun pushRoot() {
