@@ -1,4 +1,4 @@
-package com.zee.amusicplayer.dataSource
+package com.zee.amusicplayer.data.dataSource
 
 import android.content.ContentUris
 import android.content.Context
@@ -6,7 +6,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import com.zee.amusicplayer.utils.SortOrder
+import com.zee.amusicplayer.presentation.utils.SortOrder
 import com.zee.amusicplayer.utils.getInt
 import com.zee.amusicplayer.utils.getLong
 import com.zee.amusicplayer.utils.getStringOrNull

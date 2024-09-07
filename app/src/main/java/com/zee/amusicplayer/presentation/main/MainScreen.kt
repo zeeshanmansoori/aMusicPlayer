@@ -5,6 +5,7 @@ package com.zee.amusicplayer.presentation.main
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,7 +15,6 @@ import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.Button
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
@@ -23,7 +23,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,11 +35,12 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import com.zee.amusicplayer.presentation.homeTab.HomeScreen
-import com.zee.amusicplayer.presentation.main.components.BottomBar
-import com.zee.amusicplayer.presentation.main.components.PlayerBottomSheetUi
+import com.zee.amusicplayer.presentation.home.HomeScreen
+import com.zee.amusicplayer.presentation.main.components.BottomNavBar
+import com.zee.amusicplayer.presentation.pbSheet.PlayerBottomSheetScreen
+import com.zee.amusicplayer.presentation.utils.Screen
 import com.zee.amusicplayer.utils.Constants
-import com.zee.amusicplayer.utils.Screen
+import com.zee.amusicplayer.utils.Constants.toolBarHeight
 import kotlinx.coroutines.launch
 
 
@@ -63,6 +63,7 @@ fun MainScreen(viewModel: MainViewModel) {
 }
 
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 private fun PermissionDeniedUI(readPermissionState: PermissionState) {
     PermissionNotGranted {
@@ -70,35 +71,22 @@ private fun PermissionDeniedUI(readPermissionState: PermissionState) {
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun PermissionGrantedUI(navController: NavHostController, viewModel: MainViewModel) {
 
     val bottomSheetState = rememberBottomSheetScaffoldState()
-
-    val bottomBarHeightInPx = with(LocalDensity.current) { Constants.bottomBarHeight.toPx() }
-
     val scope = rememberCoroutineScope()
+    val bottomMargin = toolBarHeight + Constants.bottomBarHeight + 4.dp
 
-
-    Scaffold(
-        Modifier.fillMaxSize(),
-        bottomBar = {
-            BottomBar(
-                bottomBarHeightInPx,
-                bottomSheetState,
-                navController
-            )
-        },
-    )
-    {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
 
         BottomSheetScaffold(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(it),
-//                sheetPeekHeight = toolBarHeight + Constants.bottomBarHeight + 4.dp,
+                .fillMaxSize(),
+            sheetPeekHeight = bottomMargin,
             sheetContent = {
-                PlayerBottomSheetUi(
+                PlayerBottomSheetScreen(
                     bottomSheetState,
                     viewModel
                 )
@@ -111,17 +99,19 @@ private fun PermissionGrantedUI(navController: NavHostController, viewModel: Mai
                 startDestination = Screen.HomeScreen.route,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(bottom = Constants.bottomSheetBottomMargin)
+                    .padding(bottom = bottomMargin)
             ) {
 
                 composable(Screen.HomeScreen.route) {
                     val homeState = viewModel.playerScreenState.collectAsState()
                     val playerState = viewModel.playerState.collectAsState()
+
                     HomeScreen(
                         state = homeState.value,
                         mediaItem = playerState.value.item,
                         onItemClick = { position ->
-                            val bottomSheetCollapsed = bottomSheetState.bottomSheetState.isCollapsed
+                            val bottomSheetCollapsed =
+                                bottomSheetState.bottomSheetState.isCollapsed
                             if (bottomSheetCollapsed) scope.launch {
                                 bottomSheetState.bottomSheetState.expand()
                             }
@@ -151,8 +141,14 @@ private fun PermissionGrantedUI(navController: NavHostController, viewModel: Mai
                 }
             }
         }
-
+        BottomNavBar(
+            bottomBarHeight = Constants.bottomBarHeight,
+            bottomSheetState = bottomSheetState,
+            navController = navController
+        )
     }
+
+
 }
 
 

@@ -8,9 +8,10 @@ import android.util.Size
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -28,25 +29,33 @@ fun MusicImage(
     artUri: Uri? = null,
 ) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     val thumbnail = remember {
         mutableStateOf<Bitmap?>(null)
     }
 
-    LaunchedEffect(key1 = artUri) {
-        launch(Dispatchers.IO) {
+
+    DisposableEffect(key1 = artUri) {
+        scope.launch(Dispatchers.IO) {
             thumbnail.value = getBitmapFromContentUri(context, artUri)
+        }
+        onDispose {
+            thumbnail.value = null
         }
     }
 
-    Box(modifier=modifier,contentAlignment = Alignment.Center) {
-        if (thumbnail.value != null) {
-            AsyncImage(
-                model = thumbnail.value,
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-            )
+    Box(modifier = modifier, contentAlignment = Alignment.Center) {
 
-        } else PlaceHolder()
+        if (thumbnail.value == null) {
+            PlaceHolder()
+            return@Box
+        }
+
+        AsyncImage(
+            model = thumbnail.value,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+        )
     }
 
 
@@ -63,7 +72,7 @@ fun PlaceHolder() {
     }
 }
 
-suspend fun getBitmapFromContentUri(context: Context, contentUri: Uri?): Bitmap? {
+fun getBitmapFromContentUri(context: Context, contentUri: Uri?): Bitmap? {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return null
 
     return try {

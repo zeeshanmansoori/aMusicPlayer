@@ -1,4 +1,4 @@
-package com.zee.amusicplayer.presentation.main.components
+package com.zee.amusicplayer.presentation.pbSheet.component
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun PlayerControllerBar(
+fun PlayerController(
     modifier: Modifier = Modifier,
     isPlaying: Boolean = false,
     onPlayingStateChange: () -> Unit = {},
@@ -91,7 +91,7 @@ fun PlayerControllerBar(
 @Preview
 @Composable
 fun PlayerControllerBarPreview() {
-    PlayerControllerBar()
+    PlayerController()
 }
 
 

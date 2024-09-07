@@ -1,6 +1,5 @@
-package com.zee.amusicplayer.presentation.main.components
+package com.zee.amusicplayer.presentation.pbSheet.component
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row

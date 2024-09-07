@@ -1,4 +1,4 @@
-package com.zee.amusicplayer.presentation.homeTab.components
+package com.zee.amusicplayer.presentation.home.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

@@ -1,4 +1,4 @@
-package com.zee.amusicplayer.presentation.main.components
+package com.zee.amusicplayer.presentation.pbSheet.component
 
 import android.view.MotionEvent
 import androidx.activity.compose.BackHandler
@@ -38,7 +38,7 @@ import kotlinx.coroutines.launch
 
 @ExperimentalComposeUiApi
 @Composable
-fun PlayerBottomSheetContentUi(
+fun PlayerBottomSheetContent(
     modifier: Modifier = Modifier,
     visibility: Float = 1f,
     playerState: MainViewModel.PlayerState = MainViewModel.PlayerState.EMPTY,
@@ -134,7 +134,7 @@ fun PlayerBottomSheetContentUi(
                 Modifier.padding(vertical = 30.dp)
             )
 
-            PlayerControllerBar(
+            PlayerController(
                 isPlaying = playerState.isPlaying,
                 onPlayingStateChange = onPlayPauseClick,
                 playNext = onNextButtonClick,

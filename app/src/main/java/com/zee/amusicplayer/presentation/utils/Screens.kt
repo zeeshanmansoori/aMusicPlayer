@@ -1,4 +1,4 @@
-package com.zee.amusicplayer.utils
+package com.zee.amusicplayer.presentation.utils
 
 import androidx.annotation.DrawableRes
 import com.zee.amusicplayer.R
@@ -13,9 +13,12 @@ sealed class Screen(val title: String, val route: String, @DrawableRes val IconI
 
     companion object {
         fun toList(): List<Screen> {
-            return listOf(HomeScreen,
-//                SongsScreen ,
-        AlbumScreen, ArtistsScreen, PlayListScreen)
+            return listOf(
+                HomeScreen,
+                AlbumScreen,
+                ArtistsScreen,
+                PlayListScreen
+            )
         }
 
 

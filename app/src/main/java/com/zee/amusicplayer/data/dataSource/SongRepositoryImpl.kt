@@ -1,9 +1,9 @@
-package com.zee.amusicplayer.dataSource
+package com.zee.amusicplayer.data.dataSource
 
 import android.database.Cursor
 import android.provider.MediaStore
 import android.provider.MediaStore.Audio.AudioColumns.IS_MUSIC
-import com.zee.amusicplayer.utils.SortOrder
+import com.zee.amusicplayer.presentation.utils.SortOrder
 import org.json.JSONObject
 
 class SongRepositoryImpl(private val dataSource: AudioOfflineDataSource)  {

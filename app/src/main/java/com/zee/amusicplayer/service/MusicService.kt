@@ -22,9 +22,9 @@ import androidx.media3.session.MediaSession.ControllerInfo
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
-import com.zee.amusicplayer.MainActivity
-import com.zee.amusicplayer.dataSource.AudioOfflineDataSource
-import com.zee.amusicplayer.dataSource.SongRepositoryImpl
+import com.zee.amusicplayer.presentation.MainActivity
+import com.zee.amusicplayer.data.dataSource.AudioOfflineDataSource
+import com.zee.amusicplayer.data.dataSource.SongRepositoryImpl
 import com.zee.amusicplayer.utils.MediaItemTree
 
 @UnstableApi

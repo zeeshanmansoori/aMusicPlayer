@@ -1,4 +1,4 @@
-package com.zee.amusicplayer.presentation.main.components
+package com.zee.amusicplayer.presentation.pbSheet.component
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth

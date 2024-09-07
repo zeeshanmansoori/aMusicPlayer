@@ -23,7 +23,7 @@ import androidx.media3.common.MediaItem.RequestMetadata
 import androidx.media3.common.MediaItem.SubtitleConfiguration
 import androidx.media3.common.MediaMetadata
 import com.google.common.collect.ImmutableList
-import com.zee.amusicplayer.dataSource.SongRepositoryImpl
+import com.zee.amusicplayer.data.dataSource.SongRepositoryImpl
 import java.io.BufferedReader
 import org.json.JSONObject
 

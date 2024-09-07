@@ -1,4 +1,4 @@
-package com.zee.amusicplayer.presentation.main.components
+package com.zee.amusicplayer.presentation.pbSheet
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -12,11 +12,13 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import com.zee.amusicplayer.presentation.main.MainViewModel
-import com.zee.amusicplayer.utils.currentFraction
+import com.zee.amusicplayer.presentation.pbSheet.component.PlayerBottomSheetContent
+import com.zee.amusicplayer.presentation.pbSheet.component.PlayerCollapseBar
+import com.zee.amusicplayer.presentation.utils.currentFraction
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Composable
-fun PlayerBottomSheetUi(
+fun PlayerBottomSheetScreen(
     bottomSheetState: BottomSheetScaffoldState,
     viewModel: MainViewModel,
 ) {
@@ -30,7 +32,7 @@ fun PlayerBottomSheetUi(
             playerState = playerState.value,
             onPlayPauseClick = viewModel::onPlayPauseClick
         )
-        PlayerBottomSheetContentUi(
+        PlayerBottomSheetContent(
             modifier = Modifier,
             visibility = bottomSheetState.currentFraction,
             playerState = playerState.value,

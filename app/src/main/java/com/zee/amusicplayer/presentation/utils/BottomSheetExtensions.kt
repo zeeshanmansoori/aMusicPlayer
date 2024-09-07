@@ -1,4 +1,4 @@
-package com.zee.amusicplayer.utils
+package com.zee.amusicplayer.presentation.utils
 
 import androidx.compose.material.BottomSheetScaffoldState
 import androidx.compose.material.BottomSheetValue

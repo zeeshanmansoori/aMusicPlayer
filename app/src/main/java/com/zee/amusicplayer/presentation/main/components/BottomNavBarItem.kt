@@ -7,14 +7,12 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
@@ -30,45 +28,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zee.amusicplayer.presentation.theme.TextColor
-import com.zee.amusicplayer.utils.Screen
+import com.zee.amusicplayer.presentation.utils.Screen
 
-
-@Preview
-@Composable
-fun CustomBottomNavPreview() {
-    CustomBottomNavigation(modifier = Modifier
-        .background(color = MaterialTheme.colors.background)
-        .padding(vertical = 4.dp), currentRoute = Screen.HomeScreen.route, onItemSelected = {})
-}
 
 @Composable
-fun CustomBottomNavigation(
-    modifier: Modifier, currentRoute: String?, onItemSelected: (String) -> Unit
-) {
-
-
-    // in order to clip the ripple effect vertically i putted content inside surface
-    // other than surface nothing working
-    Surface(modifier = modifier) {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
-
-            Screen.toList().forEach { screen ->
-                SingleBottomNavigationItem(
-                    modifier = Modifier.weight(1f),
-                    screen = screen,
-                    isSelected = currentRoute == screen.route,
-                    onItemSelected = onItemSelected
-                )
-            }
-        }
-    }
-
-}
-
-@Composable
-fun SingleBottomNavigationItem(
-    modifier: Modifier, screen: Screen, isSelected: Boolean, onItemSelected: (String) -> Unit
-
+fun BottomNavBarItem(
+    modifier: Modifier,
+    screen: Screen,
+    isSelected: Boolean,
+    onItemSelected: (String) -> Unit,
 ) {
 
     Column(
@@ -124,7 +92,7 @@ fun SingleBottomNavigationItem(
 @Preview(showBackground = true)
 @Composable
 fun SingleBottomNavigationItemPreview1() {
-    SingleBottomNavigationItem(
+    BottomNavBarItem(
         Modifier,
         screen = Screen.HomeScreen,
         isSelected = true,

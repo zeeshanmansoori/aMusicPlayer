@@ -1,4 +1,4 @@
-package com.zee.amusicplayer
+package com.zee.amusicplayer.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

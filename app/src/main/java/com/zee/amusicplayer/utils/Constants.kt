@@ -7,7 +7,6 @@ object Constants {
     const val UPDATE_PLAYER_POSITION_INTERVAL = 950L
     const val NETWORK_ERROR = "network_error"
     val toolBarHeight = 48.dp
-    val bottomSheetBottomMargin = 40.dp
     val bottomBarHeight = 80.dp
     val SIDE_PADDING = 10.dp
     val rectanglesCorner = 8.dp

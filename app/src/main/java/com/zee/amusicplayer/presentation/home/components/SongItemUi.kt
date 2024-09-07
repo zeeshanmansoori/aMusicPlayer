@@ -1,4 +1,4 @@
-package com.zee.amusicplayer.presentation.homeTab.components
+package com.zee.amusicplayer.presentation.home.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -70,7 +70,7 @@ fun SongItemUi(
         }
 
         if (showEqualizer)
-            Loader()
+            EqualizerLoader()
 
         IconButton(modifier = Modifier
             .size(22.dp)
@@ -83,22 +83,3 @@ fun SongItemUi(
 
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun SingleItemPreview() {
-//    SingleSongItem(song = SongItem(), showEqualizer = true)
-//}
-
-@Composable
-fun Loader() {
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.equailizer))
-    val progress by animateLottieCompositionAsState(
-        composition,
-        iterations = LottieConstants.IterateForever
-    )
-    LottieAnimation(
-        modifier = Modifier.size(25.dp),
-        composition = composition,
-        progress = progress,
-    )
-}
