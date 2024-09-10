@@ -17,11 +17,10 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.CacheBitmapLoader
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession.ControllerInfo
-import com.google.common.collect.ImmutableList
 import com.zee.amusicplayer.data.dataSource.AudioOfflineDataSource
-import com.zee.amusicplayer.data.dataSource.SongRepositoryImpl
+import com.zee.amusicplayer.data.repository.SongRepositoryImpl
+import com.zee.amusicplayer.domain.repository.ISongRepository
 import com.zee.amusicplayer.presentation.MainActivity
-import com.zee.amusicplayer.utils.MediaItemTree
 
 @UnstableApi
 class MusicService : MediaLibraryService() {
@@ -29,6 +28,9 @@ class MusicService : MediaLibraryService() {
   private lateinit var player: ExoPlayer
   private lateinit var mediaLibrarySession: MediaLibrarySession
   private lateinit var librarySessionCallback: MediaLibrarySessionCallback
+  private val repository: ISongRepository by lazy {
+    SongRepositoryImpl(AudioOfflineDataSource(this))
+  }
 
   companion object {
     private const val SEARCH_QUERY_PREFIX_COMPAT = "androidx://media3-session/playFromSearch"
@@ -67,12 +69,9 @@ class MusicService : MediaLibraryService() {
 
   private fun initializeSessionAndPlayer() {
     player = ExoPlayer.Builder(this)
-        .setAudioAttributes(AudioAttributes.DEFAULT, /* handleAudioFocus= */ true)
-        .build()
-    librarySessionCallback = MediaLibrarySessionCallback(player)
-    val repo = SongRepositoryImpl(AudioOfflineDataSource(this))
-    MediaItemTree.initialize(repo)
-
+      .setAudioAttributes(AudioAttributes.DEFAULT, /* handleAudioFocus= */ true)
+      .build()
+    librarySessionCallback = MediaLibrarySessionCallback(player, repository =repository)
     mediaLibrarySession =
       MediaLibrarySession.Builder(this, player, librarySessionCallback)
         .setSessionActivity(getSingleTopActivity())

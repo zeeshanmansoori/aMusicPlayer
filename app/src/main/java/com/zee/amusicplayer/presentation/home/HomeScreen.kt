@@ -16,24 +16,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.media3.common.MediaItem
+import com.zee.amusicplayer.domain.model.Song
 import com.zee.amusicplayer.presentation.home.components.HomeScreenActionBar
 import com.zee.amusicplayer.presentation.home.components.SongItemUi
-import com.zee.amusicplayer.presentation.main.MainViewModel
 import com.zee.amusicplayer.utils.Constants
 
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    state: MainViewModel.PlayerScreenState = MainViewModel.PlayerScreenState.Loading,
-    mediaItem: MediaItem? = null,
+    songs: List<Song> = emptyList(),
+    currentSong: Song? = null,
     onItemClick: (index: Int) -> Unit = {}
 ) {
 
-    val mediaItems = state.items
 
-    if (state == MainViewModel.PlayerScreenState.Loading) {
+    if (songs.isEmpty()) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
@@ -61,8 +59,8 @@ fun HomeScreen(
             state = rememberLazyListState(),
         ) {
 
-            itemsIndexed(mediaItems, key = { _, b ->
-                b.mediaId
+            itemsIndexed(songs, key = { _, b ->
+                b.id
             }) { index, item ->
                 SongItemUi(
                     modifier = Modifier
@@ -71,7 +69,7 @@ fun HomeScreen(
                         .clickable { onItemClick(index) }
                         .padding(horizontal = 10.dp, vertical = 10.dp),
                     song = item,
-                    showEqualizer = item.mediaId == mediaItem?.mediaId,
+                    showEqualizer = item.id == currentSong?.id,
                 )
             }
         }

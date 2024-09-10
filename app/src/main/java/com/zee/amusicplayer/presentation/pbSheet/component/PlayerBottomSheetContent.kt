@@ -51,7 +51,7 @@ fun PlayerBottomSheetContent(
     seekTo: (Long) -> Unit = {},
 ) {
 
-    val item = playerState.item
+    val song = playerState.item
     val duration = playerState.duration
     val progress = playerState.progress
 
@@ -105,7 +105,7 @@ fun PlayerBottomSheetContent(
 
                             true
                         },
-                    artUri = item?.requestMetadata?.mediaUri,
+                    artUri = song?.artUri,
                 )
             }
 
@@ -120,12 +120,12 @@ fun PlayerBottomSheetContent(
                     .basicMarquee()
                     .fillMaxWidth()
                     .padding(top = 10.dp),
-                text = item?.mediaMetadata?.title.toString(),
+                text = song?.title.toString(),
                 style = MaterialTheme.typography.subtitle1.copy(fontSize = 18.sp)
             )
 
             Text(
-                text = item?.mediaMetadata?.artist.toString(),
+                text = song?.artistName.toString(),
                 Modifier.padding(vertical = 30.dp)
             )
 

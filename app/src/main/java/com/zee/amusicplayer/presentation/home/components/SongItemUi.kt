@@ -27,13 +27,14 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.zee.amusicplayer.R
+import com.zee.amusicplayer.domain.model.Song
 import com.zee.amusicplayer.presentation.common.MusicImage
 import com.zee.amusicplayer.utils.Constants
 
 @Composable
 fun SongItemUi(
     modifier: Modifier = Modifier,
-    song: MediaItem,
+    song: Song,
     showEqualizer: Boolean = false,
 ) {
     Row(
@@ -45,7 +46,7 @@ fun SongItemUi(
                 .size(40.dp)
                 .clip(RoundedCornerShape(Constants.rectanglesCorner))
                 .background(color = Color.LightGray),
-            artUri = song.requestMetadata.mediaUri,
+            artUri = song.artUri,
         )
 
         Column(
@@ -56,13 +57,13 @@ fun SongItemUi(
         ) {
 
             Text(
-                text = song.mediaMetadata.title.toString(),
+                text = song.title,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.body1
             )
             Text(
-                text = song.mediaMetadata.artist.toString(),
+                text = song.artistName,
                 maxLines = 1,
                 style = MaterialTheme.typography.body2
             )

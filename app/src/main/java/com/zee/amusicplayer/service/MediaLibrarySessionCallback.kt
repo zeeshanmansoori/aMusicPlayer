@@ -1,30 +1,25 @@
 package com.zee.amusicplayer.service
 
 import android.annotation.SuppressLint
-import android.os.Bundle
 import android.util.Log
-import androidx.annotation.OptIn
-import androidx.core.os.bundleOf
 import androidx.media3.common.MediaItem
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.session.CommandButton
 import androidx.media3.session.LibraryResult
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSession.ControllerInfo
-import androidx.media3.session.SessionCommand
-import androidx.media3.session.SessionError
-import androidx.media3.session.SessionResult
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
-import com.zee.amusicplayer.service.MusicService.Companion.CUSTOM_COMMAND_TOGGLE_SHUFFLE_MODE_OFF
-import com.zee.amusicplayer.service.MusicService.Companion.CUSTOM_COMMAND_TOGGLE_SHUFFLE_MODE_ON
-import com.zee.amusicplayer.utils.MediaItemTree
+import com.google.gson.Gson
+import com.zee.amusicplayer.domain.repository.ISongRepository
+import com.zee.amusicplayer.utils.MediaItemHelper
 
 @SuppressLint("UnsafeOptInUsageError")
-class MediaLibrarySessionCallback(private val player: ExoPlayer) :
+class MediaLibrarySessionCallback(
+    private val player: ExoPlayer,
+    private val repository: ISongRepository
+) :
     MediaLibraryService.MediaLibrarySession.Callback {
 
 //    val customCommands: List<CommandButton> = listOf(
@@ -36,19 +31,16 @@ class MediaLibrarySessionCallback(private val player: ExoPlayer) :
 //        )
 //    )
 
+    private val root = MediaItemHelper.Root
+
 
     override fun onGetLibraryRoot(
         session: MediaLibraryService.MediaLibrarySession,
         browser: ControllerInfo,
         params: MediaLibraryService.LibraryParams?
     ): ListenableFuture<LibraryResult<MediaItem>> {
-        if (params != null && params.isRecent) {
-            // The service currently does not support playback resumption. Tell System UI by returning
-            // an error of type 'RESULT_ERROR_NOT_SUPPORTED' for a `params.isRecent` request. See
-            // https://github.com/androidx/media/issues/355
-            return Futures.immediateFuture(LibraryResult.ofError(SessionError.ERROR_NOT_SUPPORTED))
-        }
-        return Futures.immediateFuture(LibraryResult.ofItem(MediaItemTree.getRootItem(), params))
+
+        return Futures.immediateFuture(LibraryResult.ofItem(root, params))
     }
 
     override fun onGetChildren(
@@ -59,13 +51,18 @@ class MediaLibrarySessionCallback(private val player: ExoPlayer) :
         pageSize: Int,
         params: MediaLibraryService.LibraryParams?
     ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
-        val children =
-            MediaItemTree.getChildren(parentId)
-                ?: return Futures.immediateFuture(
-                    LibraryResult.ofError(SessionError.ERROR_BAD_VALUE)
-                )
-
+        val children = repository.getSongs()
         return Futures.immediateFuture(LibraryResult.ofItemList(children, params))
+    }
+
+    override fun onGetItem(
+        session: MediaLibraryService.MediaLibrarySession,
+        browser: ControllerInfo,
+        mediaId: String
+    ): ListenableFuture<LibraryResult<MediaItem>> {
+        val item = repository.getSong(mediaId)
+        Log.d("zeeshan", "onGetItem: id $mediaId item ${Gson().toJson(item)}")
+        return Futures.immediateFuture(LibraryResult.ofItem(item, null))
     }
 
 //    override fun onGetItem(
@@ -97,35 +94,44 @@ class MediaLibrarySessionCallback(private val player: ExoPlayer) :
 //    }
 //
 
-    //
     override fun onAddMediaItems(
         mediaSession: MediaSession,
         controller: ControllerInfo,
         mediaItems: List<MediaItem>
     ): ListenableFuture<List<MediaItem>> {
-        val updatedMediaItems: List<MediaItem> =
-            mediaItems.map { mediaItem ->
-                val new = if (mediaItem.requestMetadata.searchQuery != null)
-                    getMediaItemFromSearchQuery(mediaItem.requestMetadata.searchQuery!!)
-                else MediaItemTree.getItem(mediaItem.mediaId) ?: mediaItem
-                new
-            }
-        return Futures.immediateFuture(updatedMediaItems)
+        val newList = mediaItems.map {
+            it.buildUpon().setUri(it.requestMetadata.mediaUri).build()
+        }
+        return Futures.immediateFuture(newList)
     }
+//    override fun onAddMediaItems(
+//        mediaSession: MediaSession,
+//        controller: ControllerInfo,
+//        mediaItems: List<MediaItem>
+//    ): ListenableFuture<List<MediaItem>> {
+//        val updatedMediaItems: List<MediaItem> =
+//            mediaItems.map { mediaItem ->
+//                val new = if (mediaItem.requestMetadata.searchQuery != null)
+//                    getMediaItemFromSearchQuery(mediaItem.requestMetadata.searchQuery!!)
+//                else MediaItemTree.getItem(mediaItem.mediaId) ?: mediaItem
+//                new
+//            }
+//        return Futures.immediateFuture(updatedMediaItems)
+//    }
 
-    private fun getMediaItemFromSearchQuery(query: String): MediaItem {
-        // Only accept query with pattern "play [Title]" or "[Title]"
-        // Where [Title]: must be exactly matched
-        // If no media with exact name found, play a random media instead
-        val mediaTitle =
-            if (query.startsWith("play ", ignoreCase = true)) {
-                query.drop(5)
-            } else {
-                query
-            }
-
-        return MediaItemTree.getItemFromTitle(mediaTitle) ?: MediaItemTree.getRandomItem()
-    }
+//    private fun getMediaItemFromSearchQuery(query: String): MediaItem {
+//        // Only accept query with pattern "play [Title]" or "[Title]"
+//        // Where [Title]: must be exactly matched
+//        // If no media with exact name found, play a random media instead
+//        val mediaTitle =
+//            if (query.startsWith("play ", ignoreCase = true)) {
+//                query.drop(5)
+//            } else {
+//                query
+//            }
+//
+//        return MediaItemTree.getItemFromTitle(mediaTitle) ?: MediaItemTree.getRandomItem()
+//    }
 
 
 //    @SuppressLint("UnsafeOptInUsageError")

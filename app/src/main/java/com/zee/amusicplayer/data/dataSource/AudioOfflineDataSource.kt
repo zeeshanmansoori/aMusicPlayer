@@ -7,9 +7,17 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import com.zee.amusicplayer.presentation.utils.SortOrder
+import com.zee.amusicplayer.utils.albumName
+import com.zee.amusicplayer.utils.albumCoverUri
+import com.zee.amusicplayer.utils.artistName
+import com.zee.amusicplayer.utils.contentUri
+import com.zee.amusicplayer.utils.dateModified
+import com.zee.amusicplayer.utils.genre
 import com.zee.amusicplayer.utils.getInt
 import com.zee.amusicplayer.utils.getLong
 import com.zee.amusicplayer.utils.getStringOrNull
+import com.zee.amusicplayer.utils.id
+import com.zee.amusicplayer.utils.title
 import org.json.JSONObject
 
 
@@ -55,18 +63,19 @@ class AudioOfflineDataSource(private val context: Context) {
         }
         val composer = cursor.getStringOrNull(MediaStore.Audio.AudioColumns.COMPOSER)
         val contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id)
-        val albumUri =
-            if (artistName == null) null else getMediaStoreAlbumCoverUri(albumId).toString()
+        val albumUri = if (artistName == null) null else getMediaStoreAlbumCoverUri(albumId).toString()
 
         val jsonObject = JSONObject()
-        jsonObject.put("id", id.toString())
-        jsonObject.put("album", albumName.toString())
-        jsonObject.put("title", title)
-        jsonObject.put("artist", artistName.toString())
-        jsonObject.put("genre", genre)
-        jsonObject.put("source", contentUri)
-        jsonObject.put("image", albumUri)
-        jsonObject.put("dateModified", dateModified)
+        jsonObject.id = id.toString()
+        jsonObject.title = title.toString()
+        jsonObject.albumName =  albumName.toString()
+        jsonObject.artistName =  artistName.toString()
+        jsonObject.albumCoverUri =  albumUri.toString()
+        jsonObject.dateModified =  dateModified
+        jsonObject.contentUri =  contentUri.toString()
+        jsonObject.genre =  genre.toString()
+//        jsonObject.put("image", albumUri)
+//        jsonObject.put("dateModified", dateModified)
         return jsonObject
     }
 

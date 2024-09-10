@@ -20,6 +20,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -29,16 +30,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import com.zee.amusicplayer.presentation.album.AlbumScreen
+import com.zee.amusicplayer.presentation.album.AlbumViewModel
 import com.zee.amusicplayer.presentation.home.HomeScreen
 import com.zee.amusicplayer.presentation.main.components.BottomNavBar
 import com.zee.amusicplayer.presentation.main.components.HomeScreenTopBar
 import com.zee.amusicplayer.presentation.pbSheet.PlayerBottomSheetScreen
 import com.zee.amusicplayer.presentation.utils.Screen
 import com.zee.amusicplayer.utils.Constants
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
@@ -107,8 +112,8 @@ private fun PermissionGrantedUI( viewModel: MainViewModel) {
                         val playerState = viewModel.playerState.collectAsState()
 
                         HomeScreen(
-                            state = homeState.value,
-                            mediaItem = playerState.value.item,
+                            songs = homeState.value,
+                            currentSong = playerState.value.item,
                             onItemClick = { itemPosition ->
                                 val bottomSheetCollapsed =
                                     bottomSheetState.bottomSheetState.isCollapsed
@@ -118,6 +123,20 @@ private fun PermissionGrantedUI( viewModel: MainViewModel) {
                                 viewModel.onItemClick(itemPosition)
                             },
                         )
+                    }
+
+                    Screen.AlbumScreen.position -> {
+//                        val viewModel by viewModel<AlbumVieModel>(currentCompositionLocalContext)
+
+//                        val controller = remeberna
+//                        NavHost(navController = , graph = )
+                        val albumViewModel = AlbumViewModel()
+                        LaunchedEffect(key1 = viewModel) {
+                            viewModel.playerScreenState.collectLatest {
+                                albumViewModel.setUpAlbum(songs = it)
+                            }
+                        }
+                        AlbumScreen(albumViewModel)
                     }
 
                     else -> {

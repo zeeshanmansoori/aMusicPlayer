@@ -18,13 +18,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.zee.amusicplayer.data.models.SortByE
+import com.zee.amusicplayer.domain.utils.SortBy
 import com.zee.amusicplayer.presentation.main.MainViewModel
 
 @Composable
@@ -62,7 +61,7 @@ fun HomeActionBarChip(
     modifier: Modifier = Modifier,
     item: SortAction = SortAction.getItems().first(),
     selected: Boolean = false,
-    onSortActionChange: (item: SortByE) -> Unit = {},
+    onSortActionChange: (item: SortBy) -> Unit = {},
 ) {
     Row(verticalAlignment = Alignment.CenterVertically,
         modifier = modifier

@@ -49,7 +49,7 @@ fun PlayerCollapseBar(
 
         Text(
             modifier = Modifier.basicMarquee().weight(1f),
-            text = item?.mediaMetadata?.title?.toString() ?: "No song is playing"
+            text = item?.title ?: "No song is playing"
         )
         PlayPauseBtnWithProgressBar(
             playerState.isPlaying,

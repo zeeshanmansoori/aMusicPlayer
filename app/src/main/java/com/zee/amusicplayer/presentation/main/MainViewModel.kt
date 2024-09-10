@@ -13,18 +13,19 @@ import androidx.media3.common.Tracks
 import androidx.media3.session.LibraryResult
 import androidx.media3.session.MediaBrowser
 import androidx.media3.session.SessionToken
-import com.zee.amusicplayer.data.models.SortByE
+import com.zee.amusicplayer.domain.utils.SortBy
+import com.zee.amusicplayer.domain.model.Song
+import com.zee.amusicplayer.domain.model.toSong
 import com.zee.amusicplayer.service.MusicService
 import com.zee.amusicplayer.utils.Constants
-import com.zee.amusicplayer.utils.dateModified
-import com.zee.amusicplayer.utils.itemIndex
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -41,8 +42,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val browser: MediaBrowser?
         get() = if (browserFuture.isDone && !browserFuture.isCancelled) browserFuture.get() else null
 
-    private val _playerScreenState = MutableStateFlow<PlayerScreenState>(PlayerScreenState.Loading)
-    val playerScreenState: StateFlow<PlayerScreenState> = _playerScreenState
+    private val _playerScreenState = MutableStateFlow<List<Song>>(emptyList())
+    private val _sortBy = MutableStateFlow<SortBy>(SortBy.Name)
+
+    val playerScreenState = combine(_playerScreenState, _sortBy) { list, sortBy ->
+        sortBy.sortList(list)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     private val _playerState = MutableStateFlow(PlayerState.EMPTY)
     val playerState = _playerState.asStateFlow()
@@ -50,8 +55,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val executor = ContextCompat.getMainExecutor(application)
     private var progressTrackingJob: Job? = null
 
-    private val _sortByE = MutableStateFlow(SortByE.Name)
-    val sortByE = _sortByE.asStateFlow()
+    val sortByE = _sortBy.asStateFlow()
 
     init {
         browserFuture.addListener({
@@ -95,23 +99,19 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private fun displayChildrenList(mediaItem: MediaItem) {
         val browser = this.browser ?: return
 
-        val childrenFuture =
-            browser.getChildren(
-                mediaItem.mediaId,
-                /* page= */ 0,
-                /* pageSize= */ Int.MAX_VALUE,
-                /* params= */ null
-            )
+        val childrenFuture = browser.getChildren(
+            mediaItem.mediaId,
+            /* page= */ 0,
+            /* pageSize= */ Int.MAX_VALUE,
+            /* params= */ null
+        )
 
         childrenFuture.addListener(
             {
                 val result = childrenFuture.get()!!
                 val children = result.value!!
                 // setting itemIndex to track the position of mediaItem within player
-                children.forEachIndexed { index, item ->
-                    item.itemIndex = index
-                }
-                _playerScreenState.value = PlayerScreenState.Loaded(children.toList())
+                _playerScreenState.value = children.map { it.toSong() }
                 browser.setMediaItems(children)
                 browser.prepare()
 //                browser.playWhenReady = true
@@ -126,7 +126,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         controller.addListener(
             object : Player.Listener {
                 override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-                    _playerState.value = playerState.value.copy(item = mediaItem)
+                    _playerState.value = playerState.value.copy(item = mediaItem?.toSong())
                     trackPlayerProgress()
                 }
 
@@ -206,8 +206,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         browser?.seekToPrevious()
     }
 
-    fun onSortActionChange(sortByE: SortByE) {
-        _sortByE.value = sortByE
+    fun onSortActionChange(sortBy: SortBy) {
+        _sortBy.value = sortBy
     }
 
     fun onSeekToClick(positionInMs: Long) {
@@ -218,7 +218,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     data class PlayerState(
         val isPlaying: Boolean = false,
-        val item: MediaItem? = null,
+        val item: Song? = null,
         val error: PlaybackException? = null,
         val progress: Long = 0L,
         val duration: Long = 0L,
@@ -226,11 +226,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         companion object {
             val EMPTY = PlayerState()
         }
-    }
-
-    sealed class PlayerScreenState(open val items: List<MediaItem>) {
-        object Loading : PlayerScreenState(emptyList())
-        data class Loaded(override val items: List<MediaItem>) : PlayerScreenState(items)
     }
 
 }

@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun MusicImage(
     modifier: Modifier = Modifier,
-    artUri: Uri? = null,
+    artUri: String? = null,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -38,9 +38,6 @@ fun MusicImage(
         scope.launch(Dispatchers.IO) {
             thumbnail.value = context.getBitmapFromContentUri(artUri)
         }
-//        onDispose {
-//            thumbnail.value = null
-//        }
     }
 
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
