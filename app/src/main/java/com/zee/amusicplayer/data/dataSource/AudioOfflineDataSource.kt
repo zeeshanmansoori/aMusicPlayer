@@ -7,17 +7,17 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import com.zee.amusicplayer.presentation.utils.SortOrder
-import com.zee.amusicplayer.utils.albumName
-import com.zee.amusicplayer.utils.albumCoverUri
-import com.zee.amusicplayer.utils.artistName
-import com.zee.amusicplayer.utils.contentUri
-import com.zee.amusicplayer.utils.dateModified
-import com.zee.amusicplayer.utils.genre
-import com.zee.amusicplayer.utils.getInt
-import com.zee.amusicplayer.utils.getLong
-import com.zee.amusicplayer.utils.getStringOrNull
-import com.zee.amusicplayer.utils.id
-import com.zee.amusicplayer.utils.title
+import com.zee.amusicplayer.domain.utils.albumName
+import com.zee.amusicplayer.domain.utils.albumCoverUri
+import com.zee.amusicplayer.domain.utils.artistName
+import com.zee.amusicplayer.domain.utils.contentUri
+import com.zee.amusicplayer.domain.utils.dateModified
+import com.zee.amusicplayer.domain.utils.genre
+import com.zee.amusicplayer.domain.utils.getInt
+import com.zee.amusicplayer.domain.utils.getLong
+import com.zee.amusicplayer.domain.utils.getStringOrNull
+import com.zee.amusicplayer.domain.utils.id
+import com.zee.amusicplayer.domain.utils.title
 import org.json.JSONObject
 
 

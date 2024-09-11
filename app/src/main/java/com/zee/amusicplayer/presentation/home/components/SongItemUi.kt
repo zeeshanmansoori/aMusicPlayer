@@ -12,7 +12,6 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,16 +19,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.media3.common.MediaItem
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.animateLottieCompositionAsState
-import com.airbnb.lottie.compose.rememberLottieComposition
 import com.zee.amusicplayer.R
 import com.zee.amusicplayer.domain.model.Song
 import com.zee.amusicplayer.presentation.common.MusicImage
-import com.zee.amusicplayer.utils.Constants
+import com.zee.amusicplayer.presentation.utils.UiConstants
 
 @Composable
 fun SongItemUi(
@@ -44,7 +37,7 @@ fun SongItemUi(
         MusicImage(
             modifier = Modifier
                 .size(40.dp)
-                .clip(RoundedCornerShape(Constants.rectanglesCorner))
+                .clip(RoundedCornerShape(UiConstants.rectanglesCorner))
                 .background(color = Color.LightGray),
             artUri = song.artUri,
         )

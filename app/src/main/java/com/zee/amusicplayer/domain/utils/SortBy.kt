@@ -2,7 +2,6 @@ package com.zee.amusicplayer.domain.utils
 
 
 import com.zee.amusicplayer.domain.model.Song
-import com.zee.amusicplayer.utils.dateModified
 
 sealed class SortBy {
     abstract fun sortList(items: List<Song>): List<Song>
@@ -11,7 +10,7 @@ sealed class SortBy {
         override fun sortList(items: List<Song>): List<Song> {
             val list = items.toMutableList()
             list.sortBy {
-                it.title
+                it.title.lowercase()
             }
 
             return list

@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterialApi::class)
-
 package com.zee.amusicplayer.presentation.main
 
 import android.os.Build
@@ -30,11 +28,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.NavHost
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionState
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.MultiplePermissionsState
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.zee.amusicplayer.presentation.album.AlbumScreen
 import com.zee.amusicplayer.presentation.album.AlbumViewModel
 import com.zee.amusicplayer.presentation.home.HomeScreen
@@ -42,7 +38,7 @@ import com.zee.amusicplayer.presentation.main.components.BottomNavBar
 import com.zee.amusicplayer.presentation.main.components.HomeScreenTopBar
 import com.zee.amusicplayer.presentation.pbSheet.PlayerBottomSheetScreen
 import com.zee.amusicplayer.presentation.utils.Screen
-import com.zee.amusicplayer.utils.Constants
+import com.zee.amusicplayer.presentation.utils.UiConstants
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -50,16 +46,23 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun MainScreen(viewModel: MainViewModel) {
+    val permissions = mutableListOf<String>()
 
-    val readPermissionState =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            rememberPermissionState(android.Manifest.permission.READ_MEDIA_AUDIO)
-        } else {
-            rememberPermissionState(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-        }
-    if (readPermissionState.status.isGranted)
-        PermissionGrantedUI( viewModel)
-    else PermissionDeniedUI(readPermissionState)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        permissions.add(android.Manifest.permission.READ_MEDIA_AUDIO)
+    } else {
+        permissions.add(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+    }
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        permissions.add(android.Manifest.permission.POST_NOTIFICATIONS)
+    }
+
+    val permissionState = rememberMultiplePermissionsState(permissions = permissions)
+
+    if (permissionState.allPermissionsGranted)
+        PermissionGrantedUI(viewModel)
+    else PermissionDeniedUI(permissionState)
 
 
 }
@@ -67,9 +70,11 @@ fun MainScreen(viewModel: MainViewModel) {
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-private fun PermissionDeniedUI(readPermissionState: PermissionState) {
+private fun PermissionDeniedUI(
+    readPermissionState: MultiplePermissionsState,
+) {
     PermissionNotGranted {
-        readPermissionState.launchPermissionRequest()
+        readPermissionState.launchMultiplePermissionRequest()
     }
 }
 
@@ -79,7 +84,7 @@ private fun PermissionGrantedUI( viewModel: MainViewModel) {
 
     val bottomSheetState = rememberBottomSheetScaffoldState()
     val scope = rememberCoroutineScope()
-    val bottomMargin = Constants.toolBarHeight + Constants.bottomBarHeight
+    val bottomMargin = UiConstants.toolBarHeight + UiConstants.bottomBarHeight
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
 
@@ -166,7 +171,7 @@ private fun PermissionGrantedUI( viewModel: MainViewModel) {
         }
 
         BottomNavBar(
-            bottomBarHeight = Constants.bottomBarHeight,
+            bottomBarHeight = UiConstants.bottomBarHeight,
             bottomSheetState = bottomSheetState,
             pagerState = pagerState
         )

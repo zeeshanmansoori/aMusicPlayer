@@ -16,7 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.zee.amusicplayer.domain.model.Album
 import com.zee.amusicplayer.presentation.album.component.SingleAlbumUi
-import com.zee.amusicplayer.utils.Constants
+import com.zee.amusicplayer.presentation.utils.UiConstants
 
 
 @Composable
@@ -26,14 +26,14 @@ fun AlbumScreen(viewModel: AlbumViewModel) {
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
         columns = GridCells.Fixed(2),
-        contentPadding = PaddingValues(horizontal = Constants.SIDE_PADDING)
+        contentPadding = PaddingValues(horizontal = UiConstants.SIDE_PADDING)
     ) {
 
         itemsIndexed(albums) { index: Int, album: Album ->
 
             SingleAlbumUi(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(Constants.rectanglesCorner))
+                    .clip(RoundedCornerShape(UiConstants.rectanglesCorner))
                     .clickable {
 //                        showToast(
 //                            context = context,

@@ -1,26 +1,33 @@
 package com.zee.amusicplayer.service
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.app.PendingIntent.getActivity
 import android.app.TaskStackBuilder
 import android.content.Intent
-import androidx.core.app.NotificationManagerCompat
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.common.util.Util
 import androidx.media3.datasource.DataSourceBitmapLoader
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.CacheBitmapLoader
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession.ControllerInfo
-import com.zee.amusicplayer.data.dataSource.AudioOfflineDataSource
-import com.zee.amusicplayer.data.repository.SongRepositoryImpl
-import com.zee.amusicplayer.domain.repository.ISongRepository
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import com.zee.amusicplayer.domain.utils.Constants
+import com.zee.amusicplayer.domain.utils.MediaItemHelper
 import com.zee.amusicplayer.presentation.MainActivity
+import com.zee.amusicplayer.worker.FetchMusicWorker
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import java.util.UUID
 
 @UnstableApi
 class MusicService : MediaLibraryService() {
@@ -28,9 +35,24 @@ class MusicService : MediaLibraryService() {
   private lateinit var player: ExoPlayer
   private lateinit var mediaLibrarySession: MediaLibrarySession
   private lateinit var librarySessionCallback: MediaLibrarySessionCallback
-  private val repository: ISongRepository by lazy {
-    SongRepositoryImpl(AudioOfflineDataSource(this))
+  private val workManager by lazy { WorkManager.getInstance(this) }
+  private val fetchWorkerRequestId = UUID.randomUUID()
+  private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+
+  init {
+    scope.launch {
+      workManager.getWorkInfoByIdFlow(fetchWorkerRequestId).collectLatest { workInfo ->
+        workInfo ?: return@collectLatest
+        if (workInfo.state == WorkInfo.State.SUCCEEDED) {
+          val parentId = workInfo.outputData.getString(Constants.PARENT_ID_KEY) ?: ""
+          val outPutCount = workInfo.outputData.getInt(Constants.ITEM_COUNT_KEY, 0)
+          mediaLibrarySession.notifyChildrenChanged(parentId, outPutCount, null)
+        }
+      }
+    }
   }
+
 
   companion object {
     private const val SEARCH_QUERY_PREFIX_COMPAT = "androidx://media3-session/playFromSearch"
@@ -39,14 +61,34 @@ class MusicService : MediaLibraryService() {
       "android.media3.session.demo.SHUFFLE_ON"
     const val CUSTOM_COMMAND_TOGGLE_SHUFFLE_MODE_OFF =
       "android.media3.session.demo.SHUFFLE_OFF"
-    const val NOTIFICATION_ID = 123
-    const val CHANNEL_ID = "demo_session_notification_channel_id"
   }
 
   override fun onCreate() {
     super.onCreate()
     initializeSessionAndPlayer()
     setListener(MediaSessionServiceListener(this))
+    scheduleFetchTask()
+  }
+
+  private fun initializeSessionAndPlayer() {
+    player = ExoPlayer.Builder(this)
+      .setAudioAttributes(AudioAttributes.DEFAULT, /* handleAudioFocus= */ true)
+      .build()
+    librarySessionCallback = MediaLibrarySessionCallback(player)
+    mediaLibrarySession =
+      MediaLibrarySession.Builder(this, player, librarySessionCallback)
+        .setSessionActivity(getSingleTopActivity())
+//        .setCustomLayout(ImmutableList.of(librarySessionCallback.customCommands[0]))
+        .setBitmapLoader(CacheBitmapLoader(DataSourceBitmapLoader(/* context= */ this)))
+        .build()
+  }
+
+  private fun scheduleFetchTask() {
+    val request = OneTimeWorkRequest.Builder(FetchMusicWorker::class.java)
+      .setId(fetchWorkerRequestId)
+      .setInputData(Data.Builder().putString("parentId", MediaItemHelper.Root.mediaId).build())
+      .build()
+    workManager.enqueue(request)
   }
 
   override fun onGetSession(controllerInfo: ControllerInfo): MediaLibrarySession {
@@ -64,20 +106,8 @@ class MusicService : MediaLibraryService() {
     mediaLibrarySession.release()
     player.release()
     clearListener()
+    scope.cancel()
     super.onDestroy()
-  }
-
-  private fun initializeSessionAndPlayer() {
-    player = ExoPlayer.Builder(this)
-      .setAudioAttributes(AudioAttributes.DEFAULT, /* handleAudioFocus= */ true)
-      .build()
-    librarySessionCallback = MediaLibrarySessionCallback(player, repository =repository)
-    mediaLibrarySession =
-      MediaLibrarySession.Builder(this, player, librarySessionCallback)
-        .setSessionActivity(getSingleTopActivity())
-//        .setCustomLayout(ImmutableList.of(librarySessionCallback.customCommands[0]))
-        .setBitmapLoader(CacheBitmapLoader(DataSourceBitmapLoader(/* context= */ this)))
-        .build()
   }
 
   private fun getSingleTopActivity(): PendingIntent {
@@ -97,17 +127,4 @@ class MusicService : MediaLibraryService() {
     }
   }
 
-  fun ensureNotificationChannel(notificationManagerCompat: NotificationManagerCompat) {
-    if (Util.SDK_INT < 26 || notificationManagerCompat.getNotificationChannel(CHANNEL_ID) != null) {
-      return
-    }
-
-    val channel =
-      NotificationChannel(
-        CHANNEL_ID,
-        "channel_name_zee",
-        NotificationManager.IMPORTANCE_DEFAULT
-      )
-    notificationManagerCompat.createNotificationChannel(channel)
-  }
 }

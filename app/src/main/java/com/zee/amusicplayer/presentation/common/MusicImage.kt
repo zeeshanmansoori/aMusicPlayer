@@ -1,8 +1,6 @@
 package com.zee.amusicplayer.presentation.common
 
 import android.graphics.Bitmap
-import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImage
 import com.zee.amusicplayer.R
-import com.zee.amusicplayer.utils.getBitmapFromContentUri
+import com.zee.amusicplayer.domain.utils.getBitmapFromContentUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

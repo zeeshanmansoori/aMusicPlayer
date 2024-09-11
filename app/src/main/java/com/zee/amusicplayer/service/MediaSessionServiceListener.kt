@@ -1,18 +1,10 @@
 package com.zee.amusicplayer.service
 
 import android.annotation.SuppressLint
-import android.app.PendingIntent
-import android.app.PendingIntent.FLAG_UPDATE_CURRENT
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import androidx.core.app.TaskStackBuilder
-import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
-import com.zee.amusicplayer.service.MusicService.Companion.CHANNEL_ID
-import com.zee.amusicplayer.service.MusicService.Companion.NOTIFICATION_ID
 
 @SuppressLint("UnsafeOptInUsageError")
-class MediaSessionServiceListener(private val service: MusicService) :
+class MediaSessionServiceListener(service: MusicService) :
     MediaSessionService.Listener {
 
     /**

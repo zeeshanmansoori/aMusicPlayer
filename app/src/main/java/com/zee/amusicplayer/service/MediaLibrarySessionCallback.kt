@@ -1,7 +1,6 @@
 package com.zee.amusicplayer.service
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.LibraryResult
@@ -11,14 +10,11 @@ import androidx.media3.session.MediaSession.ControllerInfo
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
-import com.google.gson.Gson
-import com.zee.amusicplayer.domain.repository.ISongRepository
-import com.zee.amusicplayer.utils.MediaItemHelper
+import com.zee.amusicplayer.domain.utils.MediaItemHelper
 
 @SuppressLint("UnsafeOptInUsageError")
 class MediaLibrarySessionCallback(
     private val player: ExoPlayer,
-    private val repository: ISongRepository
 ) :
     MediaLibraryService.MediaLibrarySession.Callback {
 
@@ -31,8 +27,6 @@ class MediaLibrarySessionCallback(
 //        )
 //    )
 
-    private val root = MediaItemHelper.Root
-
 
     override fun onGetLibraryRoot(
         session: MediaLibraryService.MediaLibrarySession,
@@ -40,7 +34,7 @@ class MediaLibrarySessionCallback(
         params: MediaLibraryService.LibraryParams?
     ): ListenableFuture<LibraryResult<MediaItem>> {
 
-        return Futures.immediateFuture(LibraryResult.ofItem(root, params))
+        return Futures.immediateFuture(LibraryResult.ofItem(MediaItemHelper.Root, params))
     }
 
     override fun onGetChildren(
@@ -51,7 +45,7 @@ class MediaLibrarySessionCallback(
         pageSize: Int,
         params: MediaLibraryService.LibraryParams?
     ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
-        val children = repository.getSongs()
+        val children = MediaItemHelper.getChildren(parentId)
         return Futures.immediateFuture(LibraryResult.ofItemList(children, params))
     }
 
@@ -60,8 +54,7 @@ class MediaLibrarySessionCallback(
         browser: ControllerInfo,
         mediaId: String
     ): ListenableFuture<LibraryResult<MediaItem>> {
-        val item = repository.getSong(mediaId)
-        Log.d("zeeshan", "onGetItem: id $mediaId item ${Gson().toJson(item)}")
+        val item = MediaItemHelper.getChild(mediaId)
         return Futures.immediateFuture(LibraryResult.ofItem(item, null))
     }
 
@@ -92,7 +85,7 @@ class MediaLibrarySessionCallback(
 //        session.notifyChildrenChanged(browser, parentId, children.size, params)
 //        return Futures.immediateFuture(LibraryResult.ofVoid())
 //    }
-//
+
 
     override fun onAddMediaItems(
         mediaSession: MediaSession,
@@ -104,20 +97,6 @@ class MediaLibrarySessionCallback(
         }
         return Futures.immediateFuture(newList)
     }
-//    override fun onAddMediaItems(
-//        mediaSession: MediaSession,
-//        controller: ControllerInfo,
-//        mediaItems: List<MediaItem>
-//    ): ListenableFuture<List<MediaItem>> {
-//        val updatedMediaItems: List<MediaItem> =
-//            mediaItems.map { mediaItem ->
-//                val new = if (mediaItem.requestMetadata.searchQuery != null)
-//                    getMediaItemFromSearchQuery(mediaItem.requestMetadata.searchQuery!!)
-//                else MediaItemTree.getItem(mediaItem.mediaId) ?: mediaItem
-//                new
-//            }
-//        return Futures.immediateFuture(updatedMediaItems)
-//    }
 
 //    private fun getMediaItemFromSearchQuery(query: String): MediaItem {
 //        // Only accept query with pattern "play [Title]" or "[Title]"

@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zee.amusicplayer.R
 import com.zee.amusicplayer.presentation.theme.IconTintColor
-import com.zee.amusicplayer.utils.Constants
+import com.zee.amusicplayer.presentation.utils.UiConstants
 import kotlin.math.roundToInt
 
 @Composable
@@ -35,7 +35,7 @@ fun HomeScreenTopBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(Constants.toolBarHeight)
+            .height(UiConstants.toolBarHeight)
             .offset { IntOffset(0, offset.roundToInt()) }
             .background(color = MaterialTheme.colors.surface)
             .padding(vertical = 2.dp, horizontal = 2.dp),

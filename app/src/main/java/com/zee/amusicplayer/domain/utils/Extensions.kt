@@ -1,4 +1,4 @@
-package com.zee.amusicplayer.utils
+package com.zee.amusicplayer.domain.utils
 
 import android.annotation.SuppressLint
 import android.content.Context

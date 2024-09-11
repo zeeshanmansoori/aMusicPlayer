@@ -10,14 +10,15 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.Tracks
-import androidx.media3.session.LibraryResult
 import androidx.media3.session.MediaBrowser
+import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.SessionToken
 import com.zee.amusicplayer.domain.utils.SortBy
 import com.zee.amusicplayer.domain.model.Song
 import com.zee.amusicplayer.domain.model.toSong
 import com.zee.amusicplayer.service.MusicService
-import com.zee.amusicplayer.utils.Constants
+import com.zee.amusicplayer.presentation.utils.UiConstants
+import com.zee.amusicplayer.domain.utils.MediaItemHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -30,14 +31,16 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MainViewModel(application: Application) : AndroidViewModel(application) {
+class MainViewModel(application: Application) : AndroidViewModel(application),
+    MediaBrowser.Listener {
+
+    private val executor = ContextCompat.getMainExecutor(application)
 
     @SuppressLint("UnsafeOptInUsageError")
     private val browserFuture = MediaBrowser.Builder(
         application,
         SessionToken(application, ComponentName(application, MusicService::class.java))
-    )
-        .buildAsync()
+    ).setListener(this).buildAsync()
 
     private val browser: MediaBrowser?
         get() = if (browserFuture.isDone && !browserFuture.isCancelled) browserFuture.get() else null
@@ -52,55 +55,26 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _playerState = MutableStateFlow(PlayerState.EMPTY)
     val playerState = _playerState.asStateFlow()
 
-    private val executor = ContextCompat.getMainExecutor(application)
     private var progressTrackingJob: Job? = null
 
     val sortByE = _sortBy.asStateFlow()
 
     init {
         browserFuture.addListener({
-            pushRoot()
+            val browser = this.browser ?: return@addListener
+            browser.subscribe(MediaItemHelper.Root.mediaId, null)
             setController()
         }, executor)
 
-//        viewModelScope.launch(Dispatchers.IO) {
-//            _sortByE.collectLatest { sortBy ->
-//                val state = playerScreenState.value
-//
-//                if (state is PlayerScreenState.Loaded) {
-//                    val oldList = state.items.toMutableList()
-//                    val list = when(sortBy){
-//                        SortByE.Name -> oldList.sortedBy { it.mediaMetadata.title.toString() }
-//                        SortByE.LastAdded -> oldList.sortedBy { it.dateModified }
-//                        else -> oldList
-//
-//                    }
-//                    _playerScreenState.value = state.copy(items = list)
-//                }
-//            }
-//        }
     }
 
-    private fun pushRoot() {
 
-        val browser = this.browser ?: return
-        val rootFuture = browser.getLibraryRoot(/* params= */ null)
-        rootFuture.addListener(
-            {
-                val result: LibraryResult<MediaItem> = rootFuture.get()!!
-                val root: MediaItem = result.value!!
-                displayChildrenList(root)
+    private fun getChildren(rootId: String) {
 
-            },
-            executor
-        )
-    }
-
-    private fun displayChildrenList(mediaItem: MediaItem) {
         val browser = this.browser ?: return
 
         val childrenFuture = browser.getChildren(
-            mediaItem.mediaId,
+            rootId,
             /* page= */ 0,
             /* pageSize= */ Int.MAX_VALUE,
             /* params= */ null
@@ -165,7 +139,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                         duration = duration,
                         progress = progress
                     )
-                delay(Constants.UPDATE_PLAYER_POSITION_INTERVAL)
+                delay(UiConstants.UPDATE_PLAYER_POSITION_INTERVAL)
             }
         }
     }
@@ -208,11 +182,21 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun onSortActionChange(sortBy: SortBy) {
         _sortBy.value = sortBy
+
     }
 
     fun onSeekToClick(positionInMs: Long) {
         _playerState.value = playerState.value.copy(progress = positionInMs)
         browser?.seekTo(positionInMs)
+    }
+
+    override fun onChildrenChanged(
+        browser: MediaBrowser,
+        parentId: String,
+        itemCount: Int,
+        params: MediaLibraryService.LibraryParams?
+    ) {
+        getChildren(parentId)
     }
 
 

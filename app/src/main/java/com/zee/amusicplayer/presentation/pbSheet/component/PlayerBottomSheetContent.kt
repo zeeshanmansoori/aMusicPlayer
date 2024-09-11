@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zee.amusicplayer.presentation.common.MusicImage
 import com.zee.amusicplayer.presentation.main.MainViewModel
-import com.zee.amusicplayer.utils.Constants
+import com.zee.amusicplayer.presentation.utils.UiConstants
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -74,7 +74,7 @@ fun PlayerBottomSheetContent(
         modifier = modifier
             .fillMaxSize()
             .background(color = MaterialTheme.colors.surface)
-            .padding(horizontal = Constants.SIDE_PADDING)
+            .padding(horizontal = UiConstants.SIDE_PADDING)
     ) {
 
         Column(
@@ -90,7 +90,7 @@ fun PlayerBottomSheetContent(
                     .aspectRatio(1f)
                     .scale(scaleFactor),
                 elevation = if (scaleFactor == 1f) 5.dp else 0.dp,
-                shape = RoundedCornerShape(Constants.rectanglesCorner),
+                shape = RoundedCornerShape(UiConstants.rectanglesCorner),
                 color = Color.LightGray,
             ) {
                 MusicImage(
