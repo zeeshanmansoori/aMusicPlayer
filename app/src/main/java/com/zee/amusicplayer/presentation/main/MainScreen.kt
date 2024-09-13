@@ -28,6 +28,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -37,6 +40,8 @@ import com.zee.amusicplayer.presentation.home.HomeScreen
 import com.zee.amusicplayer.presentation.main.components.BottomNavBar
 import com.zee.amusicplayer.presentation.main.components.HomeScreenTopBar
 import com.zee.amusicplayer.presentation.pbSheet.PlayerBottomSheetScreen
+import com.zee.amusicplayer.presentation.search.SearchScreen
+import com.zee.amusicplayer.presentation.utils.AppScreen
 import com.zee.amusicplayer.presentation.utils.Screen
 import com.zee.amusicplayer.presentation.utils.UiConstants
 import kotlinx.coroutines.flow.collectLatest
@@ -80,78 +85,83 @@ private fun PermissionDeniedUI(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun PermissionGrantedUI( viewModel: MainViewModel) {
+private fun PermissionGrantedUI(viewModel: MainViewModel) {
 
     val bottomSheetState = rememberBottomSheetScaffoldState()
     val scope = rememberCoroutineScope()
     val bottomMargin = UiConstants.toolBarHeight + UiConstants.bottomBarHeight
+    val controller = rememberNavController()
 
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+    NavHost(navController = controller, startDestination = AppScreen.DashBoardScreen.name) {
+        composable(AppScreen.DashBoardScreen.name) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
 
-        val pagerState = rememberPagerState {
-            Screen.size
-        }
+                val pagerState = rememberPagerState {
+                    Screen.size
+                }
 
-        BottomSheetScaffold(
-            modifier = Modifier
-                .fillMaxSize(),
-            topBar = { HomeScreenTopBar()},
-            sheetPeekHeight = bottomMargin,
-            sheetContent = {
-                PlayerBottomSheetScreen(
-                    bottomSheetState,
-                    viewModel
-                )
-            },
-            scaffoldState = bottomSheetState
-        ) {
-
-            HorizontalPager(
-                state = pagerState, modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = bottomMargin)
-            ) { position ->
-                when (position) {
-                    Screen.HomeScreen.position -> {
-                        val homeState = viewModel.playerScreenState.collectAsState()
-                        val playerState = viewModel.playerState.collectAsState()
-
-                        HomeScreen(
-                            songs = homeState.value,
-                            currentSong = playerState.value.item,
-                            onItemClick = { itemPosition ->
-                                val bottomSheetCollapsed =
-                                    bottomSheetState.bottomSheetState.isCollapsed
-                                if (bottomSheetCollapsed) scope.launch {
-                                    bottomSheetState.bottomSheetState.expand()
-                                }
-                                viewModel.onItemClick(itemPosition)
-                            },
+                BottomSheetScaffold(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    topBar = { HomeScreenTopBar(controller) },
+                    sheetPeekHeight = bottomMargin,
+                    sheetContent = {
+                        PlayerBottomSheetScreen(
+                            bottomSheetState,
+                            viewModel
                         )
-                    }
+                    },
+                    scaffoldState = bottomSheetState
+                ) {
 
-                    Screen.AlbumScreen.position -> {
+                    Box(Modifier.fillMaxSize()) {
+
+                        HorizontalPager(
+                            state = pagerState, modifier = Modifier
+                                .fillMaxSize()
+                                .padding(bottom = bottomMargin)
+                        ) { position ->
+                            when (position) {
+                                Screen.HomeScreen.position -> {
+                                    val homeState = viewModel.playerScreenState.collectAsState()
+                                    val playerState = viewModel.playerState.collectAsState()
+
+                                    HomeScreen(
+                                        songs = homeState.value,
+                                        currentSong = playerState.value.item,
+                                        onItemClick = { itemPosition ->
+                                            val bottomSheetCollapsed =
+                                                bottomSheetState.bottomSheetState.isCollapsed
+                                            if (bottomSheetCollapsed) scope.launch {
+                                                bottomSheetState.bottomSheetState.expand()
+                                            }
+                                            viewModel.onItemClick(itemPosition)
+                                        },
+                                    )
+                                }
+
+                                Screen.AlbumScreen.position -> {
 //                        val viewModel by viewModel<AlbumVieModel>(currentCompositionLocalContext)
 
 //                        val controller = remeberna
 //                        NavHost(navController = , graph = )
-                        val albumViewModel = AlbumViewModel()
-                        LaunchedEffect(key1 = viewModel) {
-                            viewModel.playerScreenState.collectLatest {
-                                albumViewModel.setUpAlbum(songs = it)
-                            }
-                        }
-                        AlbumScreen(albumViewModel)
-                    }
+                                    val albumViewModel = AlbumViewModel()
+                                    LaunchedEffect(key1 = viewModel) {
+                                        viewModel.playerScreenState.collectLatest {
+                                            albumViewModel.setUpAlbum(songs = it)
+                                        }
+                                    }
+                                    AlbumScreen(albumViewModel)
+                                }
 
-                    else -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(text = "Under Construction")
-                        }
-                    }
+                                else -> {
+                                    Box(
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(text = "Under Construction")
+                                    }
+                                }
 
 //                    Screen.AlbumScreen.position -> {
 //
@@ -165,16 +175,24 @@ private fun PermissionGrantedUI( viewModel: MainViewModel) {
 //
 //                    }
 
-                }
-            }
+                            }
+                        }
+                    }
 
+
+                }
+
+                BottomNavBar(
+                    bottomBarHeight = UiConstants.bottomBarHeight,
+                    bottomSheetState = bottomSheetState,
+                    pagerState = pagerState
+                )
+            }
         }
 
-        BottomNavBar(
-            bottomBarHeight = UiConstants.bottomBarHeight,
-            bottomSheetState = bottomSheetState,
-            pagerState = pagerState
-        )
+        composable(AppScreen.SearchScreen.name) {
+            SearchScreen()
+        }
     }
 
 

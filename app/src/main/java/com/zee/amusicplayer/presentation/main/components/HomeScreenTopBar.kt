@@ -18,13 +18,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.zee.amusicplayer.R
 import com.zee.amusicplayer.presentation.theme.IconTintColor
+import com.zee.amusicplayer.presentation.utils.AppScreen
 import com.zee.amusicplayer.presentation.utils.UiConstants
 import kotlin.math.roundToInt
 
 @Composable
 fun HomeScreenTopBar(
+    controller: NavController,
     modifier: Modifier = Modifier,
     offset: Float = 0f,
     route: String? = null
@@ -42,7 +45,9 @@ fun HomeScreenTopBar(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(onClick = { }) {
+        IconButton(onClick = {
+            controller.navigate(AppScreen.SearchScreen.name)
+        }) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_serch),
                 contentDescription = "search",
