@@ -6,7 +6,8 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import com.zee.amusicplayer.presentation.utils.SortOrder
+import androidx.media3.common.MediaItem
+import com.zee.amusicplayer.domain.utils.MediaItemHelper
 import com.zee.amusicplayer.domain.utils.albumName
 import com.zee.amusicplayer.domain.utils.albumCoverUri
 import com.zee.amusicplayer.domain.utils.artistName
@@ -43,7 +44,7 @@ class AudioOfflineDataSource(private val context: Context) {
     )
 
 
-    fun getSongFromCursor(cursor: Cursor): JSONObject {
+    private fun getSongFromCursor(cursor: Cursor): JSONObject {
         //log("getSongFromCursor cursor called from source $cursor")
         val id = cursor.getLong(MediaStore.Audio.AudioColumns._ID)
         val title = cursor.getStringOrNull(MediaStore.Audio.AudioColumns.TITLE)
@@ -86,16 +87,64 @@ class AudioOfflineDataSource(private val context: Context) {
     }
 
 
-    fun getCursor(
+    private fun getCursor(
         selection: String?,
         selectionArgs: Array<String>?,
-        sortOrder: String = SortOrder.SongSortOrder.SONG_A_Z
+        sortOrder: String
     ): Cursor? {
 
         return context.contentResolver.query(
             uri,
             projection, selection, selectionArgs, sortOrder
         )
+    }
+
+
+    fun songs(): List<MediaItem> {
+
+        val songs = arrayListOf<MediaItem>()
+        val cursor = makeSongCursor(null, null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER)
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                val song = MediaItemHelper.buildMediaItem(getSongFromCursorImpl(cursor))
+                songs.add(song)
+
+            } while (cursor.moveToNext())
+        }
+        cursor?.close()
+
+        return songs
+    }
+
+    private fun makeSongCursor(
+        selection: String?,
+        selectionValues: Array<String>?,
+        sortOrder: String
+    ): Cursor? {
+
+        var selectionFinal = selection
+        selectionFinal = if (selection != null && selection.trim { it <= ' ' } != "") {
+            "${MediaStore.Audio.AudioColumns.IS_MUSIC} AND $selectionFinal"
+        } else {
+            MediaStore.Audio.AudioColumns.IS_MUSIC
+        }
+
+
+        selectionFinal =
+            selectionFinal + " AND " + MediaStore.Audio.Media.DURATION + ">= " + 1000
+
+        return try {
+            getCursor(selectionFinal, selectionValues, sortOrder)
+        } catch (ex: Exception) {
+            return null
+        }
+    }
+
+
+    private fun getSongFromCursorImpl(
+        cursor: Cursor
+    ): JSONObject {
+        return getSongFromCursor(cursor)
     }
 
 }

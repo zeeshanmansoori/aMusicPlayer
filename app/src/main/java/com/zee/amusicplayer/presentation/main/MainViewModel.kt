@@ -19,6 +19,7 @@ import com.zee.amusicplayer.domain.model.toSong
 import com.zee.amusicplayer.service.MusicService
 import com.zee.amusicplayer.presentation.utils.UiConstants
 import com.zee.amusicplayer.domain.utils.MediaItemHelper
+import com.zee.amusicplayer.domain.utils.fixedItemIndex
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -157,16 +158,24 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
     }
 
     fun onPlayPauseClick() {
-        val index = browser?.currentMediaItemIndex ?: return
-        onItemClick(index)
+        val controller = browser ?: return
+        controller.playWhenReady = !controller.playWhenReady
     }
 
     fun onItemClick(position: Int) {
+        val songs = playerScreenState.value
+        val song = songs[position]
+        //updating the metaData Here...
+        song.lastPlayedDate = System.currentTimeMillis()
+        song.playedCount++
+
+        val mediaItemIndex = song.mediaItem.fixedItemIndex
+
         browser?.let { controller ->
-            if (controller.currentMediaItemIndex == position) {
+            if (controller.currentMediaItemIndex == mediaItemIndex) {
                 controller.playWhenReady = !controller.playWhenReady
             } else {
-                controller.seekToDefaultPosition(position)
+                controller.seekToDefaultPosition(mediaItemIndex)
                 controller.playWhenReady = true
             }
         }
@@ -182,7 +191,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
 
     fun onSortActionChange(sortBy: SortBy) {
         _sortBy.value = sortBy
-
     }
 
     fun onSeekToClick(positionInMs: Long) {

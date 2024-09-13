@@ -1,82 +1,58 @@
 package com.zee.amusicplayer.data.repository
 
-import android.database.Cursor
-import android.provider.MediaStore
-import android.provider.MediaStore.Audio.AudioColumns.IS_MUSIC
 import androidx.media3.common.MediaItem
+import com.zee.amusicplayer.data.dataSource.AppDatabase
 import com.zee.amusicplayer.data.dataSource.AudioOfflineDataSource
+import com.zee.amusicplayer.data.db.entity.OtherMediaMetaData
+import com.zee.amusicplayer.di.AppModule
 import com.zee.amusicplayer.domain.repository.ISongRepository
-import com.zee.amusicplayer.presentation.utils.SortOrder
 import com.zee.amusicplayer.domain.utils.MediaItemHelper
-import org.json.JSONObject
+import com.zee.amusicplayer.domain.utils.fixedItemIndex
+import com.zee.amusicplayer.domain.utils.otherMediaMetaData
 
-class SongRepositoryImpl(private val dataSource: AudioOfflineDataSource) : ISongRepository {
-
-    private val songs = mutableMapOf<String, MediaItem>()
+class SongRepositoryImpl(
+    private val dataSource: AudioOfflineDataSource,
+    private val database: AppDatabase,
+) : ISongRepository {
 
     override fun getRootItem(): MediaItem {
         return MediaItemHelper.Root
     }
 
-    override fun getSong(id: String): MediaItem {
-        return songs[id] ?: MediaItemHelper.Root
+    override fun getMediaItem(id: String): MediaItem {
+        return MediaItemHelper.getChild(id)
     }
 
-    override fun getSongs(): List<MediaItem> {
-        songs.clear()
-        val newSongs = songs(makeSongCursor(null, null, SortOrder.SongSortOrder.SONG_A_Z))
-        newSongs.map {
-            songs[it.mediaId] = it
+    override fun getMediaItems(): List<MediaItem> {
+        return MediaItemHelper.getChildren(getRootItem().mediaId)
+    }
+
+    override suspend fun updateMediaTree() {
+        val data = dataSource.songs()
+        val dao = database.mediaMetaDataDao()
+        val metaData = mutableMapOf<String, OtherMediaMetaData>()
+        dao.getAll().map {
+            metaData[it.id] = it
+        }
+        val songs = AppModule.provideSortByNameUseCase<MediaItem>()(data) { item ->
+            item.mediaMetadata.title.toString()
         }
 
-        return newSongs
-    }
-
-
-    private fun songs(cursor: Cursor?): List<MediaItem> {
-
-        val songs = arrayListOf<MediaItem>()
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                val song = MediaItemHelper.buildMediaItem(getSongFromCursorImpl(cursor))
-                songs.add(song)
-
-            } while (cursor.moveToNext())
-        }
-        cursor?.close()
-
-        return songs
-    }
-
-    private fun makeSongCursor(
-        selection: String?,
-        selectionValues: Array<String>?,
-        sortOrder: String
-    ): Cursor? {
-
-        var selectionFinal = selection
-        selectionFinal = if (selection != null && selection.trim { it <= ' ' } != "") {
-            "$IS_MUSIC AND $selectionFinal"
-        } else {
-            IS_MUSIC
+        songs.forEachIndexed { index, mediaItem ->
+            mediaItem.otherMediaMetaData = metaData[mediaItem.mediaId]
+            mediaItem.fixedItemIndex = index
         }
 
 
-        selectionFinal =
-            selectionFinal + " AND " + MediaStore.Audio.Media.DURATION + ">= " + 1000
-
-        return try {
-            dataSource.getCursor(selectionFinal, selectionValues, sortOrder)
-        } catch (ex: Exception) {
-            return null
-        }
+        MediaItemHelper.addChildren(getRootItem().mediaId, songs)
     }
 
-
-    private fun getSongFromCursorImpl(
-        cursor: Cursor
-    ): JSONObject {
-        return dataSource.getSongFromCursor(cursor)
+    override suspend fun updateDataBaseWithMetaData(): Int {
+        val dao = database.mediaMetaDataDao()
+        val metaDataList = getMediaItems().mapNotNull {
+            it.otherMediaMetaData
+        }
+        return dao.updateAll(metaDataList)
     }
 
 }

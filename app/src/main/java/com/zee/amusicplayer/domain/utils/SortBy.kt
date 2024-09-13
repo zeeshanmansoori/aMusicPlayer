@@ -1,6 +1,7 @@
 package com.zee.amusicplayer.domain.utils
 
-
+import android.util.Log
+import com.zee.amusicplayer.di.AppModule
 import com.zee.amusicplayer.domain.model.Song
 
 sealed class SortBy {
@@ -8,12 +9,10 @@ sealed class SortBy {
 
     data object Name : SortBy() {
         override fun sortList(items: List<Song>): List<Song> {
-            val list = items.toMutableList()
-            list.sortBy {
-                it.title.lowercase()
+            val useCase = AppModule.provideSortByNameUseCase<Song>()
+            return useCase(items) {
+                it.title
             }
-
-            return list
         }
     }
 
@@ -32,6 +31,7 @@ sealed class SortBy {
         override fun sortList(items: List<Song>): List<Song> {
             val list = items.toMutableList()
             list.sortByDescending {
+
                 it.mediaItem.dateModified
             }
 
@@ -43,7 +43,7 @@ sealed class SortBy {
         override fun sortList(items: List<Song>): List<Song> {
             val list = items.toMutableList()
             list.sortBy {
-                it.mostPlayedCount
+                it.playedCount
             }
 
             return list

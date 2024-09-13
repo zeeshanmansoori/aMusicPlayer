@@ -20,7 +20,7 @@ data class SortAction(
         fun getItems() = listOf(
             SortAction(Orange500, "Name", R.drawable.ic_trending, SortBy.Name),
             SortAction(Blue500, "History", R.drawable.ic_history, SortBy.History),
-            SortAction(Red500, "Last added", R.drawable.ic_recently_added, SortBy.LastAdded),
+            SortAction(Red500, "Recently added", R.drawable.ic_recently_added, SortBy.LastAdded),
             SortAction(Purple500, "Most played", R.drawable.ic_trending, SortBy.MostPlayed),
             SortAction(Green500, "Shuffle", R.drawable.ic_shuffle, SortBy.Shuffle),
         )

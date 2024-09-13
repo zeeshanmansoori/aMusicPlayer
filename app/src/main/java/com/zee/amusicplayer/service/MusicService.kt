@@ -1,11 +1,13 @@
 package com.zee.amusicplayer.service
 
+import android.app.Notification
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.app.PendingIntent.getActivity
 import android.app.TaskStackBuilder
 import android.content.Intent
+import androidx.core.app.NotificationCompat
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSourceBitmapLoader
@@ -20,7 +22,8 @@ import androidx.work.WorkManager
 import com.zee.amusicplayer.domain.utils.Constants
 import com.zee.amusicplayer.domain.utils.MediaItemHelper
 import com.zee.amusicplayer.presentation.MainActivity
-import com.zee.amusicplayer.worker.FetchMusicWorker
+import com.zee.amusicplayer.worker.FetchMediaWorker
+import com.zee.amusicplayer.worker.SaveMetaDataWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -74,6 +77,7 @@ class MusicService : MediaLibraryService() {
     player = ExoPlayer.Builder(this)
       .setAudioAttributes(AudioAttributes.DEFAULT, /* handleAudioFocus= */ true)
       .build()
+
     librarySessionCallback = MediaLibrarySessionCallback(player)
     mediaLibrarySession =
       MediaLibrarySession.Builder(this, player, librarySessionCallback)
@@ -84,7 +88,7 @@ class MusicService : MediaLibraryService() {
   }
 
   private fun scheduleFetchTask() {
-    val request = OneTimeWorkRequest.Builder(FetchMusicWorker::class.java)
+    val request = OneTimeWorkRequest.Builder(FetchMediaWorker::class.java)
       .setId(fetchWorkerRequestId)
       .setInputData(Data.Builder().putString("parentId", MediaItemHelper.Root.mediaId).build())
       .build()
@@ -102,6 +106,7 @@ class MusicService : MediaLibraryService() {
   }
 
   override fun onDestroy() {
+    workManager.enqueue(OneTimeWorkRequest.from(SaveMetaDataWorker::class.java))
     mediaLibrarySession.setSessionActivity(getBackStackedActivity())
     mediaLibrarySession.release()
     player.release()
@@ -126,5 +131,7 @@ class MusicService : MediaLibraryService() {
       getPendingIntent(0, FLAG_IMMUTABLE or FLAG_UPDATE_CURRENT)
     }
   }
+
+
 
 }

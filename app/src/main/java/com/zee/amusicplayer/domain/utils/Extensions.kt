@@ -6,8 +6,10 @@ import android.database.Cursor
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import android.util.Size
 import androidx.media3.common.MediaItem
+import com.zee.amusicplayer.data.db.entity.OtherMediaMetaData
 import org.json.JSONObject
 
 
@@ -53,7 +55,7 @@ internal fun JSONObject.getStringSafely(name: String): String {
 /**
  * Returns the index of the mediaItem within player, default value is -1
  * */
-internal var MediaItem.itemIndex
+internal var MediaItem.fixedItemIndex
     set(value) {
         this.mediaMetadata.extras?.putInt("itemIndex", value)
     }
@@ -62,10 +64,16 @@ internal var MediaItem.itemIndex
 
 internal var MediaItem.dateModified
     set(value) {
-        this.mediaMetadata.extras?.putLong("dateModified", value?:0L)
+        this.mediaMetadata.extras?.putLong("dateModified", value)
     }
-    get() = this.requestMetadata.extras?.getLong("dateModified")
+    get() = this.mediaMetadata.extras?.getLong("dateModified") ?: 0L
 
+
+var MediaItem.otherMediaMetaData: OtherMediaMetaData?
+    set(value) {
+        this.mediaMetadata.extras?.putParcelable("otherMetaData", value)
+    }
+    get() = mediaMetadata.extras?.getParcelable("otherMetaData", OtherMediaMetaData::class.java)
 
 fun Context.getBitmapFromContentUri(contentUri: String?): Bitmap? {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return null

@@ -85,7 +85,7 @@ object MediaItemHelper {
             sourceUri = Uri.parse(jsonObject.contentUri),
             imageUri = Uri.parse(jsonObject.albumCoverUri)
         ).also {
-            it.dateModified = it.dateModified
+            it.dateModified = jsonObject.dateModified
         }
     }
 
