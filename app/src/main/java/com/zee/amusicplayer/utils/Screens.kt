@@ -1,8 +1,13 @@
-package com.zee.amusicplayer.presentation.utils
+package com.zee.amusicplayer.utils
 
 import androidx.annotation.DrawableRes
 import com.zee.amusicplayer.R
 
+
+enum class AppScreen {
+    DashBoardScreen,
+    SearchScreen
+}
 
 sealed class Screen(
     val position: Int,

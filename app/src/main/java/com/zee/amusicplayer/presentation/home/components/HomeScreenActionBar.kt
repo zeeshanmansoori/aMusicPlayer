@@ -23,7 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.zee.amusicplayer.domain.utils.SortBy
+import com.zee.amusicplayer.utils.SortBy
 import com.zee.amusicplayer.presentation.main.MainViewModel
 
 @Composable

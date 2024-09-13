@@ -19,8 +19,8 @@ import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import com.zee.amusicplayer.domain.utils.Constants
-import com.zee.amusicplayer.domain.utils.MediaItemHelper
+import com.zee.amusicplayer.utils.Constants
+import com.zee.amusicplayer.utils.MediaItemHelper
 import com.zee.amusicplayer.presentation.MainActivity
 import com.zee.amusicplayer.worker.FetchMediaWorker
 import com.zee.amusicplayer.worker.SaveMetaDataWorker

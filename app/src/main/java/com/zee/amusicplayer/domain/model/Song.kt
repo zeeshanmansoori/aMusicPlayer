@@ -2,8 +2,8 @@ package com.zee.amusicplayer.domain.model
 
 import androidx.media3.common.MediaItem
 import com.zee.amusicplayer.data.db.entity.OtherMediaMetaData
-import com.zee.amusicplayer.domain.utils.dateModified
-import com.zee.amusicplayer.domain.utils.otherMediaMetaData
+import com.zee.amusicplayer.utils.dateModified
+import com.zee.amusicplayer.utils.otherMediaMetaData
 
 data class Song(
     val id: String,

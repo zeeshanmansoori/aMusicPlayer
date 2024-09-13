@@ -15,9 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
-import com.zee.amusicplayer.presentation.utils.Screen
-import com.zee.amusicplayer.presentation.utils.currentFraction
-import com.zee.amusicplayer.presentation.utils.UiConstants
+import com.zee.amusicplayer.utils.Screen
+import com.zee.amusicplayer.utils.currentFraction
+import com.zee.amusicplayer.utils.Constants
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -40,7 +40,7 @@ fun BottomNavBar(
                     0, (bottomBarHeightInPx * bottomSheetState.currentFraction).roundToInt()
                 )
             }
-            .height(UiConstants.bottomBarHeight)
+            .height(Constants.bottomBarHeight)
             .fillMaxWidth(),
     ) {
 

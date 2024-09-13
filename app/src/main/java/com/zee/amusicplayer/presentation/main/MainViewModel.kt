@@ -13,13 +13,13 @@ import androidx.media3.common.Tracks
 import androidx.media3.session.MediaBrowser
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.SessionToken
-import com.zee.amusicplayer.domain.utils.SortBy
+import com.zee.amusicplayer.utils.SortBy
 import com.zee.amusicplayer.domain.model.Song
 import com.zee.amusicplayer.domain.model.toSong
 import com.zee.amusicplayer.service.MusicService
-import com.zee.amusicplayer.presentation.utils.UiConstants
-import com.zee.amusicplayer.domain.utils.MediaItemHelper
-import com.zee.amusicplayer.domain.utils.fixedItemIndex
+import com.zee.amusicplayer.utils.Constants
+import com.zee.amusicplayer.utils.MediaItemHelper
+import com.zee.amusicplayer.utils.fixedItemIndex
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -140,7 +140,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
                         duration = duration,
                         progress = progress
                     )
-                delay(UiConstants.UPDATE_PLAYER_POSITION_INTERVAL)
+                delay(Constants.UPDATE_PLAYER_POSITION_INTERVAL)
             }
         }
     }

@@ -1,6 +1,5 @@
-package com.zee.amusicplayer.domain.utils
+package com.zee.amusicplayer.utils
 
-import android.util.Log
 import com.zee.amusicplayer.di.AppModule
 import com.zee.amusicplayer.domain.model.Song
 

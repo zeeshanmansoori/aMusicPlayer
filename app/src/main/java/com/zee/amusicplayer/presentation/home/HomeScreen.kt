@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.zee.amusicplayer.domain.model.Song
 import com.zee.amusicplayer.presentation.home.components.HomeScreenActionBar
 import com.zee.amusicplayer.presentation.home.components.SongItemUi
-import com.zee.amusicplayer.presentation.utils.UiConstants
+import com.zee.amusicplayer.utils.Constants
 
 
 @Composable
@@ -55,7 +55,7 @@ fun HomeScreen(
         LazyColumn(
             modifier = modifier
                 .fillMaxSize()
-                .padding(horizontal = UiConstants.SIDE_PADDING),
+                .padding(horizontal = Constants.SIDE_PADDING),
             state = rememberLazyListState(),
         ) {
 
@@ -65,7 +65,7 @@ fun HomeScreen(
                 SongItemUi(
                     modifier = Modifier
                         .padding(vertical = 3.dp)
-                        .clip(RoundedCornerShape(UiConstants.rectanglesCorner))
+                        .clip(RoundedCornerShape(Constants.rectanglesCorner))
                         .clickable { onItemClick(index) }
                         .padding(horizontal = 10.dp, vertical = 10.dp),
                     song = item,

@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zee.amusicplayer.presentation.theme.IconTintColor
 import com.zee.amusicplayer.presentation.theme.TextColor
-import com.zee.amusicplayer.presentation.utils.Screen
+import com.zee.amusicplayer.utils.Screen
 
 
 @Composable

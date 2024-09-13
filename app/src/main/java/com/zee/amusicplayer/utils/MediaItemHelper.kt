@@ -1,4 +1,4 @@
-package com.zee.amusicplayer.domain.utils
+package com.zee.amusicplayer.utils
 
 import android.net.Uri
 import android.util.Log

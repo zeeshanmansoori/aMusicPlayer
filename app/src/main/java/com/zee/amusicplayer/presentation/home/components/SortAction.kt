@@ -3,7 +3,7 @@ package com.zee.amusicplayer.presentation.home.components
 import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.Color
 import com.zee.amusicplayer.R
-import com.zee.amusicplayer.domain.utils.SortBy
+import com.zee.amusicplayer.utils.SortBy
 import com.zee.amusicplayer.presentation.theme.Blue500
 import com.zee.amusicplayer.presentation.theme.Green500
 import com.zee.amusicplayer.presentation.theme.Orange500
