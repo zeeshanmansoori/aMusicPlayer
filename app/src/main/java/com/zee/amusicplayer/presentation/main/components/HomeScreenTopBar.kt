@@ -21,8 +21,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.zee.amusicplayer.R
 import com.zee.amusicplayer.presentation.theme.IconTintColor
-import com.zee.amusicplayer.presentation.utils.AppScreen
-import com.zee.amusicplayer.presentation.utils.UiConstants
+import com.zee.amusicplayer.utils.AppScreen
+import com.zee.amusicplayer.utils.Constants
 import kotlin.math.roundToInt
 
 @Composable
@@ -38,23 +38,23 @@ fun HomeScreenTopBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(UiConstants.toolBarHeight)
+            .height(Constants.toolBarHeight)
             .offset { IntOffset(0, offset.roundToInt()) }
             .background(color = MaterialTheme.colors.surface)
             .padding(vertical = 2.dp, horizontal = 2.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(onClick = {
-            controller.navigate(AppScreen.SearchScreen.name)
-        }) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_serch),
-                contentDescription = "search",
-                tint = IconTintColor
-            )
-
-        }
+//        IconButton(onClick = {
+////            controller.navigate(AppScreen.SearchScreen.name)
+//        }) {
+//            Icon(
+//                painter = painterResource(id = R.drawable.ic_serch),
+//                contentDescription = "search",
+//                tint = IconTintColor
+//            )
+//
+//        }
 
 
         val annotatedString = buildAnnotatedString {
@@ -73,13 +73,13 @@ fun HomeScreenTopBar(
             letterSpacing = 1.sp
         )
 
-        IconButton(onClick = { }) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_more_vert),
-                contentDescription = "Settings",
-                tint = IconTintColor
-            )
-        }
+//        IconButton(onClick = { }) {
+//            Icon(
+//                painter = painterResource(id = R.drawable.ic_more_vert),
+//                contentDescription = "Settings",
+//                tint = IconTintColor
+//            )
+//        }
     }
 }
 

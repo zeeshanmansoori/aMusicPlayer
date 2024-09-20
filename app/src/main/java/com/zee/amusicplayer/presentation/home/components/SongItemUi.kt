@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.zee.amusicplayer.R
 import com.zee.amusicplayer.domain.model.Song
 import com.zee.amusicplayer.presentation.common.MusicImage
-import com.zee.amusicplayer.presentation.utils.UiConstants
+import com.zee.amusicplayer.utils.Constants
 
 @Composable
 fun SongItemUi(
@@ -37,7 +37,7 @@ fun SongItemUi(
         MusicImage(
             modifier = Modifier
                 .size(40.dp)
-                .clip(RoundedCornerShape(UiConstants.rectanglesCorner))
+                .clip(RoundedCornerShape(Constants.rectanglesCorner))
                 .background(color = Color.LightGray),
             artUri = song.artUri,
         )

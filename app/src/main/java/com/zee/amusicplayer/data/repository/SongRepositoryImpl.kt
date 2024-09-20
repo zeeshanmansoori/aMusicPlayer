@@ -6,9 +6,9 @@ import com.zee.amusicplayer.data.dataSource.AudioOfflineDataSource
 import com.zee.amusicplayer.data.db.entity.OtherMediaMetaData
 import com.zee.amusicplayer.di.AppModule
 import com.zee.amusicplayer.domain.repository.ISongRepository
-import com.zee.amusicplayer.domain.utils.MediaItemHelper
-import com.zee.amusicplayer.domain.utils.fixedItemIndex
-import com.zee.amusicplayer.domain.utils.otherMediaMetaData
+import com.zee.amusicplayer.utils.MediaItemHelper
+import com.zee.amusicplayer.utils.fixedItemIndex
+import com.zee.amusicplayer.utils.otherMediaMetaData
 
 class SongRepositoryImpl(
     private val dataSource: AudioOfflineDataSource,

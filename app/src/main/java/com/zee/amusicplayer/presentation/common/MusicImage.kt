@@ -16,7 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImage
 import com.zee.amusicplayer.R
-import com.zee.amusicplayer.domain.utils.getBitmapFromContentUri
+import com.zee.amusicplayer.utils.getBitmapFromContentUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

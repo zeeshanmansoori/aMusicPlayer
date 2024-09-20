@@ -14,7 +14,7 @@ import androidx.compose.ui.draw.alpha
 import com.zee.amusicplayer.presentation.main.MainViewModel
 import com.zee.amusicplayer.presentation.pbSheet.component.PlayerBottomSheetContent
 import com.zee.amusicplayer.presentation.pbSheet.component.PlayerCollapseBar
-import com.zee.amusicplayer.presentation.utils.currentFraction
+import com.zee.amusicplayer.utils.currentFraction
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Composable

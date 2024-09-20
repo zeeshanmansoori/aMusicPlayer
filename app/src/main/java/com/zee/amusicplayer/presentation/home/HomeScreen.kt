@@ -9,29 +9,44 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.BottomSheetScaffoldState
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.zee.amusicplayer.domain.model.Song
 import com.zee.amusicplayer.presentation.home.components.HomeScreenActionBar
 import com.zee.amusicplayer.presentation.home.components.SongItemUi
-import com.zee.amusicplayer.presentation.utils.UiConstants
+import com.zee.amusicplayer.presentation.main.MainViewModel
+import com.zee.amusicplayer.utils.Constants
+import kotlinx.coroutines.launch
 
 
+@ExperimentalMaterialApi
 @Composable
 fun HomeScreen(
+    viewModel: MainViewModel,
+    bottomSheetState: BottomSheetScaffoldState,
     modifier: Modifier = Modifier,
-    songs: List<Song> = emptyList(),
-    currentSong: Song? = null,
-    onItemClick: (index: Int) -> Unit = {}
 ) {
 
 
-    if (songs.isEmpty()) {
+    val playerState = viewModel.playerState.collectAsState()
+    val selectedSortState = viewModel.sortByE.collectAsState()
+    val songsState = viewModel.playerScreenState.collectAsState()
+    val filterKeyState = viewModel.filterKey.collectAsState()
+    val isSearchVisibleState = viewModel.isSearchVisible.collectAsState()
+    val scope = rememberCoroutineScope()
+
+    val songs = songsState.value
+    val currentSong = playerState.value.item
+
+
+    if (songs == null) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
@@ -48,6 +63,12 @@ fun HomeScreen(
 
 
         HomeScreenActionBar(
+            selectedSortBy = selectedSortState.value,
+            onSortActionChange = viewModel::onSortActionChange,
+            filterKey = filterKeyState.value,
+            onFilterKeyChanged = viewModel::onFilterKeyChanged,
+            isSearchVisible = isSearchVisibleState.value,
+            onSearchKeyClicked = viewModel::onSearchBtnClicked,
             modifier = Modifier
                 .padding(bottom = 4.dp),
         )
@@ -55,18 +76,25 @@ fun HomeScreen(
         LazyColumn(
             modifier = modifier
                 .fillMaxSize()
-                .padding(horizontal = UiConstants.SIDE_PADDING),
+                .padding(horizontal = Constants.SIDE_PADDING),
             state = rememberLazyListState(),
         ) {
 
             itemsIndexed(songs, key = { _, b ->
                 b.id
-            }) { index, item ->
+            }) { itemPosition, item ->
                 SongItemUi(
                     modifier = Modifier
                         .padding(vertical = 3.dp)
-                        .clip(RoundedCornerShape(UiConstants.rectanglesCorner))
-                        .clickable { onItemClick(index) }
+                        .clip(RoundedCornerShape(Constants.rectanglesCorner))
+                        .clickable {
+                            val bottomSheetCollapsed =
+                                bottomSheetState.bottomSheetState.isCollapsed
+                            if (bottomSheetCollapsed) scope.launch {
+                                bottomSheetState.bottomSheetState.expand()
+                            }
+                            viewModel.onItemClick(itemPosition)
+                        }
                         .padding(horizontal = 10.dp, vertical = 10.dp),
                     song = item,
                     showEqualizer = item.id == currentSong?.id,
@@ -74,12 +102,6 @@ fun HomeScreen(
             }
         }
 
-        }
+    }
 
-}
-
-@Preview
-@Composable
-fun HomeScreenPreview() {
-    HomeScreen()
 }

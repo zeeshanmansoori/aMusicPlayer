@@ -19,7 +19,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,11 +40,10 @@ import com.zee.amusicplayer.presentation.main.components.BottomNavBar
 import com.zee.amusicplayer.presentation.main.components.HomeScreenTopBar
 import com.zee.amusicplayer.presentation.pbSheet.PlayerBottomSheetScreen
 import com.zee.amusicplayer.presentation.search.SearchScreen
-import com.zee.amusicplayer.presentation.utils.AppScreen
-import com.zee.amusicplayer.presentation.utils.Screen
-import com.zee.amusicplayer.presentation.utils.UiConstants
+import com.zee.amusicplayer.utils.AppScreen
+import com.zee.amusicplayer.utils.Screen
+import com.zee.amusicplayer.utils.Constants
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -89,7 +87,7 @@ private fun PermissionGrantedUI(viewModel: MainViewModel) {
 
     val bottomSheetState = rememberBottomSheetScaffoldState()
     val scope = rememberCoroutineScope()
-    val bottomMargin = UiConstants.toolBarHeight + UiConstants.bottomBarHeight
+    val bottomMargin = Constants.toolBarHeight + Constants.bottomBarHeight
     val controller = rememberNavController()
 
     NavHost(navController = controller, startDestination = AppScreen.DashBoardScreen.name) {
@@ -123,20 +121,10 @@ private fun PermissionGrantedUI(viewModel: MainViewModel) {
                         ) { position ->
                             when (position) {
                                 Screen.HomeScreen.position -> {
-                                    val homeState = viewModel.playerScreenState.collectAsState()
-                                    val playerState = viewModel.playerState.collectAsState()
 
                                     HomeScreen(
-                                        songs = homeState.value,
-                                        currentSong = playerState.value.item,
-                                        onItemClick = { itemPosition ->
-                                            val bottomSheetCollapsed =
-                                                bottomSheetState.bottomSheetState.isCollapsed
-                                            if (bottomSheetCollapsed) scope.launch {
-                                                bottomSheetState.bottomSheetState.expand()
-                                            }
-                                            viewModel.onItemClick(itemPosition)
-                                        },
+                                        viewModel,
+                                        bottomSheetState
                                     )
                                 }
 
@@ -148,7 +136,7 @@ private fun PermissionGrantedUI(viewModel: MainViewModel) {
                                     val albumViewModel = AlbumViewModel()
                                     LaunchedEffect(key1 = viewModel) {
                                         viewModel.playerScreenState.collectLatest {
-                                            albumViewModel.setUpAlbum(songs = it)
+                                            albumViewModel.setUpAlbum(songs = it?: emptyList())
                                         }
                                     }
                                     AlbumScreen(albumViewModel)
@@ -183,7 +171,7 @@ private fun PermissionGrantedUI(viewModel: MainViewModel) {
                 }
 
                 BottomNavBar(
-                    bottomBarHeight = UiConstants.bottomBarHeight,
+                    bottomBarHeight = Constants.bottomBarHeight,
                     bottomSheetState = bottomSheetState,
                     pagerState = pagerState
                 )

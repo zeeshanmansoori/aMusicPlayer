@@ -24,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.zee.amusicplayer.presentation.main.MainViewModel
-import com.zee.amusicplayer.presentation.utils.UiConstants
+import com.zee.amusicplayer.utils.Constants
 
 
 @Composable
@@ -40,7 +40,7 @@ fun PlayerCollapseBar(
     Row(
         modifier
             .fillMaxWidth()
-            .height(UiConstants.toolBarHeight + 4.dp)
+            .height(Constants.toolBarHeight + 4.dp)
             .padding(horizontal = 5.dp, vertical = 2.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

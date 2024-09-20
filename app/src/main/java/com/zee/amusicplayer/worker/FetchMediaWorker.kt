@@ -5,7 +5,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.zee.amusicplayer.di.AppModule
-import com.zee.amusicplayer.domain.utils.Constants
+import com.zee.amusicplayer.utils.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

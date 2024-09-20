@@ -13,13 +13,13 @@ import androidx.media3.common.Tracks
 import androidx.media3.session.MediaBrowser
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.SessionToken
-import com.zee.amusicplayer.domain.utils.SortBy
+import com.zee.amusicplayer.utils.SortBy
 import com.zee.amusicplayer.domain.model.Song
 import com.zee.amusicplayer.domain.model.toSong
 import com.zee.amusicplayer.service.MusicService
-import com.zee.amusicplayer.presentation.utils.UiConstants
-import com.zee.amusicplayer.domain.utils.MediaItemHelper
-import com.zee.amusicplayer.domain.utils.fixedItemIndex
+import com.zee.amusicplayer.utils.Constants
+import com.zee.amusicplayer.utils.MediaItemHelper
+import com.zee.amusicplayer.utils.fixedItemIndex
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -35,6 +35,12 @@ import kotlinx.coroutines.withContext
 class MainViewModel(application: Application) : AndroidViewModel(application),
     MediaBrowser.Listener {
 
+    private val _isSearchVisible = MutableStateFlow<Boolean>(false)
+    val isSearchVisible = _isSearchVisible.asStateFlow()
+
+    private val _filterKey = MutableStateFlow<String>("")
+    val filterKey = _filterKey.asStateFlow()
+
     private val executor = ContextCompat.getMainExecutor(application)
 
     @SuppressLint("UnsafeOptInUsageError")
@@ -46,12 +52,20 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
     private val browser: MediaBrowser?
         get() = if (browserFuture.isDone && !browserFuture.isCancelled) browserFuture.get() else null
 
-    private val _playerScreenState = MutableStateFlow<List<Song>>(emptyList())
+    private val _songs = MutableStateFlow<List<Song>>(emptyList())
     private val _sortBy = MutableStateFlow<SortBy>(SortBy.Name)
 
-    val playerScreenState = combine(_playerScreenState, _sortBy) { list, sortBy ->
-        sortBy.sortList(list)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    val playerScreenState = combine(_songs, _sortBy, _filterKey) { list, sortBy, filterKey ->
+        var songs = sortBy.sortList(list)
+
+        if (filterKey.isNotBlank()) {
+            songs = songs.filter {
+                it.title.contains(filterKey, true)
+            }
+        }
+
+        songs
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
 
     private val _playerState = MutableStateFlow(PlayerState.EMPTY)
     val playerState = _playerState.asStateFlow()
@@ -70,6 +84,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
     }
 
 
+    fun onFilterKeyChanged(key: String) {
+        _filterKey.value = key
+    }
+
+    fun onSearchBtnClicked() {
+        _isSearchVisible.value = !_isSearchVisible.value
+    }
+
     private fun getChildren(rootId: String) {
 
         val browser = this.browser ?: return
@@ -86,7 +108,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
                 val result = childrenFuture.get()!!
                 val children = result.value!!
                 // setting itemIndex to track the position of mediaItem within player
-                _playerScreenState.value = children.map { it.toSong() }
+                _songs.value = children.map { it.toSong() }
                 browser.setMediaItems(children)
                 browser.prepare()
 //                browser.playWhenReady = true
@@ -140,7 +162,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
                         duration = duration,
                         progress = progress
                     )
-                delay(UiConstants.UPDATE_PLAYER_POSITION_INTERVAL)
+                delay(Constants.UPDATE_PLAYER_POSITION_INTERVAL)
             }
         }
     }
@@ -163,7 +185,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
     }
 
     fun onItemClick(position: Int) {
-        val songs = playerScreenState.value
+        val songs = playerScreenState.value ?: return
         val song = songs[position]
         //updating the metaData Here...
         song.lastPlayedDate = System.currentTimeMillis()
