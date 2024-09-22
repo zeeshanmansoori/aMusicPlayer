@@ -41,7 +41,7 @@ import kotlinx.coroutines.launch
 fun PlayerBottomSheetContent(
     modifier: Modifier = Modifier,
     visibility: Float = 1f,
-    playerState: MainViewModel.PlayerState = MainViewModel.PlayerState.EMPTY,
+    playerState: MainViewModel.PlayerState = MainViewModel.PlayerState.NotPlaying,
     scope: CoroutineScope = rememberCoroutineScope(),
     onPlayPauseClick: () -> Unit = {},
     onNextButtonClick: () -> Unit = {},

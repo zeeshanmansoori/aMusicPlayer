@@ -35,10 +35,10 @@ import kotlinx.coroutines.withContext
 class MainViewModel(application: Application) : AndroidViewModel(application),
     MediaBrowser.Listener {
 
-    private val _isSearchVisible = MutableStateFlow<Boolean>(false)
+    private val _isSearchVisible = MutableStateFlow(false)
     val isSearchVisible = _isSearchVisible.asStateFlow()
 
-    private val _filterKey = MutableStateFlow<String>("")
+    private val _filterKey = MutableStateFlow("")
     val filterKey = _filterKey.asStateFlow()
 
     private val executor = ContextCompat.getMainExecutor(application)
@@ -52,22 +52,24 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
     private val browser: MediaBrowser?
         get() = if (browserFuture.isDone && !browserFuture.isCancelled) browserFuture.get() else null
 
-    private val _songs = MutableStateFlow<List<Song>>(emptyList())
+    private val _songsState = MutableStateFlow(SongsState(isLoading = true))
     private val _sortBy = MutableStateFlow<SortBy>(SortBy.Name)
 
-    val playerScreenState = combine(_songs, _sortBy, _filterKey) { list, sortBy, filterKey ->
-        var songs = sortBy.sortList(list)
+    val songsState =
+        combine(_songsState, _sortBy, _filterKey) { songsState, sortBy, filterKey ->
+            val list = songsState.songs
+            var songs = sortBy.sortList(list)
 
-        if (filterKey.isNotBlank()) {
-            songs = songs.filter {
-                it.title.contains(filterKey, true)
+            if (filterKey.isNotBlank()) {
+                songs = songs.filter {
+                    it.title.contains(filterKey, true)
+                }
             }
-        }
 
-        songs
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
+            songsState.copy(songs = songs)
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), SongsState(isLoading = true))
 
-    private val _playerState = MutableStateFlow(PlayerState.EMPTY)
+    private val _playerState = MutableStateFlow(PlayerState.NotPlaying)
     val playerState = _playerState.asStateFlow()
 
     private var progressTrackingJob: Job? = null
@@ -83,6 +85,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
 
     }
 
+    fun triggerFetchMusicWorker() {
+        _songsState.value = _songsState.value.copy(isLoading = true)
+        MusicService.scheduleFetchTask(getApplication())
+    }
 
     fun onFilterKeyChanged(key: String) {
         _filterKey.value = key
@@ -108,7 +114,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
                 val result = childrenFuture.get()!!
                 val children = result.value!!
                 // setting itemIndex to track the position of mediaItem within player
-                _songs.value = children.map { it.toSong() }
+                _songsState.value = SongsState(isLoading = false,children.map { it.toSong() })
                 browser.setMediaItems(children)
                 browser.prepare()
 //                browser.playWhenReady = true
@@ -185,7 +191,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
     }
 
     fun onItemClick(position: Int) {
-        val songs = playerScreenState.value ?: return
+        val songs = songsState.value.songs
         val song = songs[position]
         //updating the metaData Here...
         song.lastPlayedDate = System.currentTimeMillis()
@@ -238,8 +244,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
         val duration: Long = 0L,
     ) {
         companion object {
-            val EMPTY = PlayerState()
+            val NotPlaying = PlayerState()
         }
     }
+
+    data class SongsState(
+        val isLoading: Boolean = false,
+        val songs: List<Song> = emptyList()
+    )
 
 }

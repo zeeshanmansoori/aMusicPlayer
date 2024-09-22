@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zee.amusicplayer.presentation.theme.TextColor
+import com.zee.amusicplayer.utils.toTwoDigitWord
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToLong
@@ -77,8 +78,6 @@ fun formattedTime(ms: Long): String {
     val seconds = (ms / 1000) % 60
     return mins.toTwoDigitWord() + ":" + seconds.toTwoDigitWord()
 }
-
-fun Long.toTwoDigitWord() = if (this > 10) "$this" else "0$this"
 
 
 //@Composable

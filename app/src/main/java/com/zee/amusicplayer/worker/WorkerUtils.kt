@@ -65,7 +65,6 @@ object WorkerUtils {
                 Manifest.permission.POST_NOTIFICATIONS
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            Toast.makeText(context, "notification permission is missing", Toast.LENGTH_SHORT).show()
             return
         }
 

@@ -37,16 +37,16 @@ fun HomeScreen(
 
     val playerState = viewModel.playerState.collectAsState()
     val selectedSortState = viewModel.sortByE.collectAsState()
-    val songsState = viewModel.playerScreenState.collectAsState()
+    val songsState = viewModel.songsState.collectAsState()
     val filterKeyState = viewModel.filterKey.collectAsState()
     val isSearchVisibleState = viewModel.isSearchVisible.collectAsState()
     val scope = rememberCoroutineScope()
 
-    val songs = songsState.value
+    val songs = songsState.value.songs
     val currentSong = playerState.value.item
 
 
-    if (songs == null) {
+    if (songsState.value.isLoading) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center

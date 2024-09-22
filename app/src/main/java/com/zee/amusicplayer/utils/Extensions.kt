@@ -84,6 +84,9 @@ fun Context.getBitmapFromContentUri(contentUri: String?): Bitmap? {
         null
     }
 }
+//==========================================
+
+fun Long.toTwoDigitWord() = if (this >= 10) "$this" else "0$this"
 
 //==========================================
 var JSONObject.id: String

@@ -53,15 +53,16 @@ fun MainScreen(viewModel: MainViewModel) {
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         permissions.add(android.Manifest.permission.READ_MEDIA_AUDIO)
+        permissions.add(android.Manifest.permission.POST_NOTIFICATIONS)
     } else {
         permissions.add(android.Manifest.permission.READ_EXTERNAL_STORAGE)
     }
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        permissions.add(android.Manifest.permission.POST_NOTIFICATIONS)
-    }
+    val permissionState = rememberMultiplePermissionsState(permissions = permissions) {
+        // permissions are granted, now we can trigger the fetching again.
+        viewModel.triggerFetchMusicWorker()
 
-    val permissionState = rememberMultiplePermissionsState(permissions = permissions)
+    }
 
     if (permissionState.allPermissionsGranted)
         PermissionGrantedUI(viewModel)
@@ -135,8 +136,8 @@ private fun PermissionGrantedUI(viewModel: MainViewModel) {
 //                        NavHost(navController = , graph = )
                                     val albumViewModel = AlbumViewModel()
                                     LaunchedEffect(key1 = viewModel) {
-                                        viewModel.playerScreenState.collectLatest {
-                                            albumViewModel.setUpAlbum(songs = it?: emptyList())
+                                        viewModel.songsState.collectLatest {
+                                            albumViewModel.setUpAlbum(songs = it?.songs ?: emptyList())
                                         }
                                     }
                                     AlbumScreen(albumViewModel)

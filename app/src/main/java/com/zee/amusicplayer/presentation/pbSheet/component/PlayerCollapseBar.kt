@@ -30,7 +30,7 @@ import com.zee.amusicplayer.utils.Constants
 @Composable
 fun PlayerCollapseBar(
     modifier: Modifier = Modifier,
-    playerState: MainViewModel.PlayerState = MainViewModel.PlayerState.EMPTY,
+    playerState: MainViewModel.PlayerState = MainViewModel.PlayerState.NotPlaying,
     onPlayPauseClick: () -> Unit,
 ) {
     val item = playerState.item
