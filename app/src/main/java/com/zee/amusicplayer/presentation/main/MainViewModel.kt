@@ -16,6 +16,9 @@ import androidx.media3.session.SessionToken
 import com.zee.amusicplayer.utils.SortBy
 import com.zee.amusicplayer.domain.model.Song
 import com.zee.amusicplayer.domain.model.toSong
+import com.zee.amusicplayer.domain.useCase.album.AlbumUseCase
+import com.zee.amusicplayer.domain.useCase.artist.ArtistsUseCase
+import com.zee.amusicplayer.domain.useCase.playlist.PlayListUseCase
 import com.zee.amusicplayer.service.MusicService
 import com.zee.amusicplayer.utils.Constants
 import com.zee.amusicplayer.utils.MediaItemHelper
@@ -76,6 +79,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
 
     val sortByE = _sortBy.asStateFlow()
 
+
+    val albumUseCase by lazy { AlbumUseCase(songsState, viewModelScope) }
+    val artistsUseCase by lazy { ArtistsUseCase(songsState, viewModelScope) }
+    val playListUseCase by lazy { PlayListUseCase( viewModelScope) }
+
     init {
         browserFuture.addListener({
             val browser = this.browser ?: return@addListener
@@ -114,7 +122,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
                 val result = childrenFuture.get()!!
                 val children = result.value!!
                 // setting itemIndex to track the position of mediaItem within player
-                _songsState.value = SongsState(isLoading = false,children.map { it.toSong() })
+                _songsState.value = SongsState(isLoading = false, children.map { it.toSong() })
                 browser.setMediaItems(children)
                 browser.prepare()
 //                browser.playWhenReady = true

@@ -15,14 +15,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.zee.amusicplayer.domain.model.Album
+import com.zee.amusicplayer.domain.useCase.album.AlbumUseCase
 import com.zee.amusicplayer.presentation.album.component.SingleAlbumUi
 import com.zee.amusicplayer.utils.Constants
 
 
 @Composable
-fun AlbumScreen(viewModel: AlbumViewModel) {
+fun AlbumScreen(useCase: AlbumUseCase) {
 
-    val albums by viewModel.allAlbums.collectAsState()
+    val albums by useCase.allAlbums.collectAsState()
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
         columns = GridCells.Fixed(2),

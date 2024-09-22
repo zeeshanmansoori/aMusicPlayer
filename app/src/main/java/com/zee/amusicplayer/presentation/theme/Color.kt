@@ -2,7 +2,6 @@ package com.zee.amusicplayer.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Teal200 = Color(0xFF03DAC5)
 val colorPrimary = Color(0xFF7c4dff)
 val colorPrimary700 = Color(0x707c4dff)
 val DarkColorSurface = Color(0xFF202124)

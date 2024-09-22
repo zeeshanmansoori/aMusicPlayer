@@ -14,14 +14,14 @@ import androidx.compose.ui.graphics.Color
 private val darkColorPalette = darkColors(
     primary = colorPrimary,
     primaryVariant = colorPrimary700,
-    secondary = Teal200,
+    secondary = colorPrimary,
     surface = DarkColorSurface,
 )
 
 private val lightColorPalette = lightColors(
     primary = colorPrimary,
     primaryVariant = colorPrimary700,
-    secondary = Teal200,
+    secondary = colorPrimary,
     surface = LightColorSurface,
     background = lightBackGroundColor
 

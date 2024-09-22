@@ -18,7 +18,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,11 +33,12 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.zee.amusicplayer.presentation.album.AlbumScreen
-import com.zee.amusicplayer.presentation.album.AlbumViewModel
+import com.zee.amusicplayer.presentation.artists.ArtistScreen
 import com.zee.amusicplayer.presentation.home.HomeScreen
 import com.zee.amusicplayer.presentation.main.components.BottomNavBar
 import com.zee.amusicplayer.presentation.main.components.HomeScreenTopBar
 import com.zee.amusicplayer.presentation.pbSheet.PlayerBottomSheetScreen
+import com.zee.amusicplayer.presentation.playList.PlayListScreen
 import com.zee.amusicplayer.presentation.search.SearchScreen
 import com.zee.amusicplayer.utils.AppScreen
 import com.zee.amusicplayer.utils.Screen
@@ -130,17 +130,16 @@ private fun PermissionGrantedUI(viewModel: MainViewModel) {
                                 }
 
                                 Screen.AlbumScreen.position -> {
-//                        val viewModel by viewModel<AlbumVieModel>(currentCompositionLocalContext)
+                                    AlbumScreen(viewModel.albumUseCase)
+                                }
 
-//                        val controller = remeberna
-//                        NavHost(navController = , graph = )
-                                    val albumViewModel = AlbumViewModel()
-                                    LaunchedEffect(key1 = viewModel) {
-                                        viewModel.songsState.collectLatest {
-                                            albumViewModel.setUpAlbum(songs = it?.songs ?: emptyList())
-                                        }
-                                    }
-                                    AlbumScreen(albumViewModel)
+
+                                Screen.ArtistsScreen.position -> {
+                                    ArtistScreen(viewModel.artistsUseCase)
+                                }
+
+                                Screen.PlayListScreen.position -> {
+                                    PlayListScreen(viewModel.playListUseCase)
                                 }
 
                                 else -> {
@@ -152,17 +151,6 @@ private fun PermissionGrantedUI(viewModel: MainViewModel) {
                                     }
                                 }
 
-//                    Screen.AlbumScreen.position -> {
-//
-//                    }
-//
-//                    Screen.ArtistsScreen.position -> {
-//
-//                    }
-//
-//                    Screen.PlayListScreen.position -> {
-//
-//                    }
 
                             }
                         }
