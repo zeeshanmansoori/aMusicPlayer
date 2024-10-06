@@ -1,7 +1,7 @@
 package com.zee.amusicplayer.domain.useCase.artist
 
 import com.zee.amusicplayer.domain.model.Artist
-import com.zee.amusicplayer.presentation.main.MainViewModel
+import com.zee.amusicplayer.ui.main.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
