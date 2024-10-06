@@ -1,6 +1,7 @@
 package com.zee.amusicplayer.ui.pbSheet.component
 
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,6 +33,7 @@ fun PlayerCollapseBar(
     modifier: Modifier = Modifier,
     playerState: MainViewModel.PlayerState = MainViewModel.PlayerState.NotPlaying,
     onPlayPauseClick: () -> Unit,
+    onHeaderClicked: () -> Unit,
 ) {
     val item = playerState.item
     val duration = playerState.duration
@@ -41,14 +43,17 @@ fun PlayerCollapseBar(
         modifier
             .fillMaxWidth()
             .height(Constants.toolBarHeight + 4.dp)
-            .padding(horizontal = 5.dp, vertical = 2.dp),
+            .padding(horizontal = 5.dp, vertical = 2.dp)
+            .clickable(interactionSource = null, indication = null, onClick = onHeaderClicked),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
         Icon(imageVector = Icons.Filled.KeyboardArrowUp, contentDescription = null)
 
         Text(
-            modifier = Modifier.basicMarquee().weight(1f),
+            modifier = Modifier
+                .basicMarquee()
+                .weight(1f),
             text = item?.title ?: "No song is playing"
         )
         PlayPauseBtnWithProgressBar(
@@ -58,7 +63,6 @@ fun PlayerCollapseBar(
         )
     }
 }
-
 
 
 @OptIn(ExperimentalMaterialApi::class)

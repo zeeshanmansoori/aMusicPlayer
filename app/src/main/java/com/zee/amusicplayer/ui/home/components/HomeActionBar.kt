@@ -1,6 +1,5 @@
 package com.zee.amusicplayer.ui.home.components
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -11,21 +10,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zee.amusicplayer.utils.SortBy
@@ -34,62 +27,32 @@ import com.zee.amusicplayer.utils.SortBy
 fun HomeActionBar(
     selectedSortBy: SortBy,
     onSortActionChange: (item: SortBy) -> Unit,
-    filterKey: String,
-    onFilterKeyChanged: (String) -> Unit,
-    isSearchVisible: Boolean,
-    onSearchKeyClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
-    Column(
-        modifier = Modifier
+    LazyRow(
+        modifier
             .background(MaterialTheme.colors.surface)
+            .padding(bottom = 5.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         val items = SortAction.getItems()
 
-        AnimatedVisibility(visible = isSearchVisible) {
-            TextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
-                value = filterKey,
-                onValueChange = onFilterKeyChanged,
-                shape = RoundedCornerShape(15.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent
+        itemsIndexed(items) { index, item ->
+            val padding = 10.dp
+            HomeActionBarChip(
+                modifier = Modifier.padding(
+                    start = if (index == 0) padding else 0.dp,
+                    end = padding,
+                    top = 5.dp,
+                    bottom = 5.dp,
                 ),
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(onDone = {
-                    onSearchKeyClicked.invoke()
-                })
+                item = item,
+                selected = item.sortBy == selectedSortBy,
+                onSortActionChange = onSortActionChange
             )
         }
 
-
-        LazyRow(
-            modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colors.surface),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            itemsIndexed(items) { index, item ->
-                val padding = 10.dp
-                HomeActionBarChip(
-                    modifier = Modifier.padding(
-                        start = if (index == 0) padding else 0.dp,
-                        end = padding,
-                        top = padding,
-                        bottom = padding,
-                    ),
-                    item = item,
-                    selected = item.sortBy == selectedSortBy,
-                    onSortActionChange = onSortActionChange
-                )
-            }
-
-        }
     }
 }
 

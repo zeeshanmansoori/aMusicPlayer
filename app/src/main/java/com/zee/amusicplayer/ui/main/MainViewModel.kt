@@ -82,7 +82,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
 
     val albumUseCase by lazy { AlbumUseCase(songsState, viewModelScope) }
     val artistsUseCase by lazy { ArtistsUseCase(songsState, viewModelScope) }
-    val playListUseCase by lazy { PlayListUseCase( viewModelScope) }
+    val playListUseCase by lazy { PlayListUseCase(viewModelScope) }
 
     init {
         browserFuture.addListener({
@@ -102,8 +102,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
         _filterKey.value = key
     }
 
-    fun onSearchBtnClicked() {
-        _isSearchVisible.value = !_isSearchVisible.value
+    fun changeSearchVisibility(isVisible: Boolean) {
+        _isSearchVisible.value = isVisible
     }
 
     private fun getChildren(rootId: String) {

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,7 +19,7 @@ import kotlin.math.roundToInt
 
 @Composable
 fun AMusicAppBar(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.height(Constants.toolBarHeight),
     offset: Float = 0f,
     content: @Composable BoxScope.() -> Unit = {
         AppNameUi(Modifier.align(Alignment.Center))
@@ -27,10 +28,8 @@ fun AMusicAppBar(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(Constants.toolBarHeight)
             .offset { IntOffset(0, offset.roundToInt()) }
-            .background(color = MaterialTheme.colors.surface)
-            .padding(vertical = 2.dp, horizontal = 2.dp),
+            .background(color = MaterialTheme.colors.surface),
         contentAlignment = Alignment.CenterEnd,
         content = content
     )
