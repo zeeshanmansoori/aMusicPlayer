@@ -38,9 +38,9 @@ fun HomeScreen(
     val playerState = viewModel.playerState.collectAsState()
     val selectedSortState = viewModel.sortByE.collectAsState()
     val songsState = viewModel.songsState.collectAsState()
-    val filterKeyState = viewModel.filterKey.collectAsState()
     val isSearchVisibleState = viewModel.isSearchVisible.collectAsState()
     val scope = rememberCoroutineScope()
+    val state = rememberLazyListState()
 
     val songs = songsState.value.songs
     val currentSong = playerState.value.item
@@ -50,14 +50,18 @@ fun HomeScreen(
             .fillMaxSize()
     ) {
         HomeAppBar(
-            filterKey = filterKeyState.value,
             onFilterKeyChanged = viewModel::onFilterKeyChanged,
             isSearchVisible = isSearchVisibleState.value,
             changeSearchVisibility = viewModel::changeSearchVisibility,
         )
         HomeActionBar(
             selectedSortBy = selectedSortState.value,
-            onSortActionChange = viewModel::onSortActionChange,
+            onSortActionChange = {
+                viewModel.onSortActionChange(it)
+                scope.launch {
+                    state.scrollToItem(0, 0)
+                }
+            },
         )
 
         if (songsState.value.isLoading) {
@@ -73,7 +77,7 @@ fun HomeScreen(
             modifier = modifier
                 .fillMaxSize()
                 .padding(horizontal = Constants.SIDE_PADDING),
-            state = rememberLazyListState(),
+            state = state,
         ) {
 
             itemsIndexed(songs, key = { _, b ->

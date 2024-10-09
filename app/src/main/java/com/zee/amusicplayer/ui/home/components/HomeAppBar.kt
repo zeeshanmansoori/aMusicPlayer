@@ -1,6 +1,5 @@
 package com.zee.amusicplayer.ui.home.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -11,8 +10,13 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import com.zee.amusicplayer.R
@@ -22,25 +26,36 @@ import com.zee.amusicplayer.ui.theme.IconTintColor
 
 @Composable
 fun HomeAppBar(
-    filterKey: String,
     onFilterKeyChanged: (String) -> Unit,
     isSearchVisible: Boolean,
     changeSearchVisibility: (Boolean) -> Unit,
 ) {
 
+    val focusRequester = remember {
+        FocusRequester()
+    }
+
+    val input = remember {
+        mutableStateOf("")
+    }
+
     AMusicAppBar(modifier = Modifier) {
         if (isSearchVisible) {
             TextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = filterKey,
-                onValueChange = onFilterKeyChanged,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester),
+                value = input.value,
+                onValueChange = {
+                    input.value = it
+                    onFilterKeyChanged.invoke(it)
+                },
                 placeholder = {
                     Text("Type here to search ...")
                 },
                 trailingIcon = {
                     IconButton(onClick = {
                         changeSearchVisibility(false)
-                        onFilterKeyChanged.invoke("")
                     }) {
                         Icon(
                             Icons.Rounded.Close,
@@ -49,8 +64,7 @@ fun HomeAppBar(
                     }
                 },
                 singleLine = true,
-                colors =
-                TextFieldDefaults.textFieldColors(
+                colors = TextFieldDefaults.textFieldColors(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     backgroundColor = MaterialTheme.colors.surface
@@ -71,5 +85,10 @@ fun HomeAppBar(
             )
         }
 
+    }
+
+    LaunchedEffect(key1 = focusRequester, key2 = isSearchVisible) {
+        if (isSearchVisible) focusRequester.requestFocus()
+        else input.value = ""
     }
 }

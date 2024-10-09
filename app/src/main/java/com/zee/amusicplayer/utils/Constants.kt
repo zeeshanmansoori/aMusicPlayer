@@ -4,6 +4,7 @@ import androidx.compose.ui.unit.dp
 
 object Constants {
 
+    const val DEBOUNCE_TIME =  200L
     const val UPDATE_PLAYER_POSITION_INTERVAL = 950L
 
     val toolBarHeight = 48.dp

@@ -35,6 +35,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+
 class MainViewModel(application: Application) : AndroidViewModel(application),
     MediaBrowser.Listener {
 
@@ -42,7 +43,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
     val isSearchVisible = _isSearchVisible.asStateFlow()
 
     private val _filterKey = MutableStateFlow("")
-    val filterKey = _filterKey.asStateFlow()
 
     private val executor = ContextCompat.getMainExecutor(application)
 
@@ -84,6 +84,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
     val artistsUseCase by lazy { ArtistsUseCase(songsState, viewModelScope) }
     val playListUseCase by lazy { PlayListUseCase(viewModelScope) }
 
+    private var job: Job? = null
+
     init {
         browserFuture.addListener({
             val browser = this.browser ?: return@addListener
@@ -99,11 +101,17 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
     }
 
     fun onFilterKeyChanged(key: String) {
-        _filterKey.value = key
+        job?.cancel()
+        job = viewModelScope.launch {
+            delay(Constants.DEBOUNCE_TIME)
+            _filterKey.value = key
+        }
+        job?.start()
     }
 
     fun changeSearchVisibility(isVisible: Boolean) {
         _isSearchVisible.value = isVisible
+        if (!isVisible) _filterKey.value = ""
     }
 
     private fun getChildren(rootId: String) {
@@ -125,6 +133,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
                 _songsState.value = SongsState(isLoading = false, children.map { it.toSong() })
                 browser.setMediaItems(children)
                 browser.prepare()
+//                browser.playWhenReady = true
 //                browser.playWhenReady = true
             },
             executor
@@ -199,6 +208,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
     }
 
     fun onItemClick(position: Int) {
+
         val songs = songsState.value.songs
         val song = songs[position]
         //updating the metaData Here...
@@ -215,6 +225,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
                 controller.playWhenReady = true
             }
         }
+
+        if (isSearchVisible.value) {
+            _filterKey.value = ""
+            _isSearchVisible.value = false
+        }
+
     }
 
     fun onPlayNextClick() {
