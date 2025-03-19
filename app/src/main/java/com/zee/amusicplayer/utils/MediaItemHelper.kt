@@ -13,7 +13,7 @@ object MediaItemHelper {
     private val catalogs = mutableMapOf<String, List<String>>()
     private val nodes = mutableMapOf<String, MediaItem>()
     private val TAG = "MediaItemHelper"
-    
+
     val Root by lazy {
 
         val item = buildMediaItem(
@@ -110,7 +110,8 @@ object MediaItemHelper {
 
     fun addChildren(parentId: String, mediaItems: List<MediaItem>) {
         catalogs[parentId] = mediaItems.map {
-            nodes[it.mediaId] = it
+            if (nodes[it.mediaId] == null)
+                nodes[it.mediaId] = it
             it.mediaId
         }
         Log.d(TAG, "addChildren: parentId $parentId size ${mediaItems.size}")

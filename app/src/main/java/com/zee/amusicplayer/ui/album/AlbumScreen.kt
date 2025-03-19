@@ -27,33 +27,27 @@ fun AlbumScreen(useCase: AlbumUseCase) {
 
     val albums by useCase.allAlbums.collectAsState()
 
-    Column(Modifier.fillMaxSize()) {
-        AMusicAppBar()
-        LazyVerticalGrid(
-            modifier = Modifier.fillMaxSize(),
-            columns = GridCells.Fixed(2),
-            contentPadding = PaddingValues(horizontal = Constants.SIDE_PADDING)
-        ) {
+    LazyVerticalGrid(
+        modifier = Modifier.fillMaxSize(),
+        columns = GridCells.Fixed(2),
+        contentPadding = PaddingValues(horizontal = Constants.SIDE_PADDING)
+    ) {
 
-            itemsIndexed(albums) { index: Int, album: Album ->
-                SingleAlbumUi(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(Constants.rectanglesCorner))
-                        .clickable {
-//                        showToast(
-//                            context = context,
-//                            "this feature is not available yet."
-//                        )
-                        }
-                        .padding(
-                            start = if (index % 2 == 0) 0.dp else 4.dp,
-                            end = if (index % 2 == 0) 4.dp else 0.dp
-                        ),
-                    album = album
-                )
-            }
-
+        itemsIndexed(albums) { index: Int, album: Album ->
+            SingleAlbumUi(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(Constants.rectanglesCorner))
+                    .clickable {
+                        useCase.navController.navigate("albums")
+                    }
+                    .padding(
+                        start = if (index % 2 == 0) 0.dp else 4.dp,
+                        end = if (index % 2 == 0) 4.dp else 0.dp
+                    ),
+                album = album
+            )
         }
+
     }
 
 }

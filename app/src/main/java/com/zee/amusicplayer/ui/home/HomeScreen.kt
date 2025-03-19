@@ -49,11 +49,7 @@ fun HomeScreen(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        HomeAppBar(
-            onFilterKeyChanged = viewModel::onFilterKeyChanged,
-            isSearchVisible = isSearchVisibleState.value,
-            changeSearchVisibility = viewModel::changeSearchVisibility,
-        )
+
         HomeActionBar(
             selectedSortBy = selectedSortState.value,
             onSortActionChange = {

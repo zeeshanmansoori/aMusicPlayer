@@ -25,12 +25,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.zee.amusicplayer.ui.album.AlbumScreen
+import com.zee.amusicplayer.ui.albumDetails.AlbumDetailsScreen
 import com.zee.amusicplayer.ui.artists.ArtistScreen
 import com.zee.amusicplayer.ui.home.HomeScreen
+import com.zee.amusicplayer.ui.home.components.HomeAppBar
 import com.zee.amusicplayer.ui.main.components.BottomNavBar
 import com.zee.amusicplayer.ui.pbSheet.PlayerBottomSheetScreen
 import com.zee.amusicplayer.ui.playList.PlayListScreen
@@ -80,72 +85,95 @@ private fun PermissionGrantedUI(viewModel: MainViewModel) {
 
     val bottomSheetState = rememberBottomSheetScaffoldState()
     val bottomMargin = Constants.toolBarHeight + Constants.bottomBarHeight
+    val controller = rememberNavController()
+    viewModel.setNavController(controller)
 
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+    NavHost(controller, startDestination = "home") {
 
-        val pagerState = rememberPagerState {
-            Screen.size
-        }
+        composable("home") {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
 
-        BottomSheetScaffold(
-            modifier = Modifier
-                .fillMaxSize(),
-            sheetPeekHeight = bottomMargin,
-            sheetContent = {
-                PlayerBottomSheetScreen(
-                    bottomSheetState,
-                    viewModel
-                )
-            },
-            scaffoldState = bottomSheetState
-        ) {
-            HorizontalPager(
-                state = pagerState, modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = bottomMargin)
-            ) { position ->
-                when (position) {
-                    Screen.HomeScreen.position -> {
+                val pagerState = rememberPagerState {
+                    Screen.size
+                }
 
-                        HomeScreen(
-                            viewModel,
-                            bottomSheetState
+                BottomSheetScaffold(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    sheetPeekHeight = bottomMargin,
+                    sheetContent = {
+                        PlayerBottomSheetScreen(
+                            bottomSheetState,
+                            viewModel
                         )
-                    }
+                    },
+                    scaffoldState = bottomSheetState
+                ) {
+                    Column {
+                        HomeAppBar(
+                            onFilterKeyChanged = viewModel::onFilterKeyChanged,
+                            isSearchVisible = false,
+                            changeSearchVisibility = viewModel::changeSearchVisibility,
+                        )
 
-                    Screen.AlbumScreen.position -> {
-                        AlbumScreen(viewModel.albumUseCase)
-                    }
+                        HorizontalPager(
+                            state = pagerState, modifier = Modifier
+                                .fillMaxSize()
+                                .padding(bottom = bottomMargin)
+                        ) { position ->
+                            when (position) {
+                                Screen.HomeScreen.position -> {
+
+                                    HomeScreen(
+                                        viewModel,
+                                        bottomSheetState
+                                    )
+                                }
+
+                                Screen.AlbumScreen.position -> {
+                                    AlbumScreen(viewModel.albumUseCase)
+                                }
 
 
-                    Screen.ArtistsScreen.position -> {
-                        ArtistScreen(viewModel.artistsUseCase)
-                    }
+                                Screen.ArtistsScreen.position -> {
+                                    ArtistScreen(viewModel.artistsUseCase)
+                                }
 
-                    Screen.PlayListScreen.position -> {
-                        PlayListScreen(viewModel.playListUseCase)
-                    }
+                                Screen.PlayListScreen.position -> {
+                                    PlayListScreen(viewModel.playListUseCase)
+                                }
 
-                    else -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(text = "Under Construction")
+                                else -> {
+                                    Box(
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(text = "Under Construction")
+                                    }
+                                }
+
+
+                            }
                         }
-                    }
 
+                    }
 
                 }
+
+                BottomNavBar(
+                    bottomBarHeight = Constants.bottomBarHeight,
+                    bottomSheetState = bottomSheetState,
+                    pagerState = pagerState
+                )
             }
         }
 
-        BottomNavBar(
-            bottomBarHeight = Constants.bottomBarHeight,
-            bottomSheetState = bottomSheetState,
-            pagerState = pagerState
-        )
+        composable("albums") {
+            AlbumDetailsScreen(viewModel)
+        }
+
     }
+
 }
 
 

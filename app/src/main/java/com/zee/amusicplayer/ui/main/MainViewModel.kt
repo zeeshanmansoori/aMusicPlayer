@@ -24,6 +24,7 @@ import androidx.media3.session.SessionCommands
 import androidx.media3.session.SessionError
 import androidx.media3.session.SessionResult
 import androidx.media3.session.SessionToken
+import androidx.navigation.NavHostController
 import com.google.common.util.concurrent.ListenableFuture
 import com.zee.amusicplayer.domain.model.Song
 import com.zee.amusicplayer.domain.model.toSong
@@ -32,7 +33,6 @@ import com.zee.amusicplayer.domain.useCase.artist.ArtistsUseCase
 import com.zee.amusicplayer.domain.useCase.playlist.PlayListUseCase
 import com.zee.amusicplayer.service.MusicService
 import com.zee.amusicplayer.utils.Constants
-import com.zee.amusicplayer.utils.MediaItemHelper
 import com.zee.amusicplayer.utils.SortBy
 import com.zee.amusicplayer.utils.fixedItemIndex
 import kotlinx.coroutines.Dispatchers
@@ -56,6 +56,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _filterKey = MutableStateFlow("")
 
     private val executor = ContextCompat.getMainExecutor(application)
+    private lateinit var navController: NavHostController
 
     private val browserListener = object : MediaBrowser.Listener {
         override fun onAvailableSessionCommandsChanged(
@@ -185,7 +186,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val sortByE = _sortBy.asStateFlow()
 
 
-    val albumUseCase by lazy { AlbumUseCase(songsState, viewModelScope) }
+    val albumUseCase by lazy { AlbumUseCase(songsState,navController, viewModelScope) }
     val artistsUseCase by lazy { ArtistsUseCase(songsState, viewModelScope) }
     val playListUseCase by lazy { PlayListUseCase(viewModelScope) }
 
@@ -368,6 +369,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun onSeekToClick(positionInMs: Long) {
         _playerState.value = playerState.value.copy(progress = positionInMs)
         browser?.seekTo(positionInMs)
+    }
+
+    fun setNavController(controller: NavHostController) {
+        this.navController = controller
     }
 
 

@@ -39,16 +39,19 @@ import java.util.UUID
 
 class MusicService : MediaLibraryService() {
 
+    private val TAG = "MusicService"
     private lateinit var player: ExoPlayer
     private lateinit var mediaLibrarySession: MediaLibrarySession
     private lateinit var librarySessionCallback: MediaLibrarySessionCallback
     private val workManager by lazy { WorkManager.getInstance(this) }
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private val TAG  ="MusicService"
-//    private val mediaStoreObserver = MediaStoreObserver(contentResolver){
 
-//        mediaLibrarySession.notifyChildrenChanged(mediaItemHelper.Root.mediaId,10,null)
-//    }
+    private val mediaStoreObserver by lazy {
+        MediaStoreObserver(contentResolver) {
+            scheduleFetchTask(this)
+        }
+    }
+
     init {
         scope.launch {
             workManager.getWorkInfoByIdFlow(fetchWorkerRequestId).collectLatest { workInfo ->
@@ -91,6 +94,8 @@ class MusicService : MediaLibraryService() {
         setListener(MediaSessionServiceListener(this))
         if (checkIfPermissionGranted())
             scheduleFetchTask(this)
+
+        mediaStoreObserver.register()
 
     }
 
@@ -141,6 +146,7 @@ class MusicService : MediaLibraryService() {
         player.release()
 //        clearListener()
         scope.cancel()
+        mediaStoreObserver.unregister()
         super.onDestroy()
     }
 
