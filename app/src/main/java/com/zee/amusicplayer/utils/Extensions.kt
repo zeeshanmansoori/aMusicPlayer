@@ -8,7 +8,9 @@ import android.net.Uri
 import android.os.Build
 import android.util.Log
 import android.util.Size
+import androidx.core.os.bundleOf
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import com.zee.amusicplayer.data.db.entity.OtherMediaMetaData
 import org.json.JSONObject
 

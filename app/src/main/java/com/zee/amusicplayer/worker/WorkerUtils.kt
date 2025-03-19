@@ -19,7 +19,7 @@ object WorkerUtils {
 
     private const val CHANNEL_NAME: String = "Music"
     private const val CHANNEL_DESCRIPTION = "Channel Description"
-    private const val CHANNEL_ID = "Music_Channel_ID"
+    const val CHANNEL_ID = "Music_Channel_ID"
 
     @SuppressLint("UnsafeOptInUsageError")
     fun ensureNotificationChannel(notificationManager: NotificationManagerCompat) {

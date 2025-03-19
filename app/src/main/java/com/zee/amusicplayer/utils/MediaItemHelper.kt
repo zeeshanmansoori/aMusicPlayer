@@ -121,7 +121,7 @@ object MediaItemHelper {
         Log.d(TAG, "getChildren: parentId $parentId ids $ids")
         return ids?.map {
             nodes[it]!!
-        }?: emptyList()
+        } ?: emptyList()
     }
 
     fun getChild(mediaId: String): MediaItem {

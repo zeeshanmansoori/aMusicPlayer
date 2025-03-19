@@ -3,9 +3,7 @@ package com.zee.amusicplayer.worker
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import androidx.work.workDataOf
 import com.zee.amusicplayer.di.AppModule
-import com.zee.amusicplayer.utils.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

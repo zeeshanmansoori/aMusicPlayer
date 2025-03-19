@@ -1,5 +1,6 @@
 package com.zee.amusicplayer.service
 
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
@@ -9,10 +10,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.media3.common.AudioAttributes
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.util.EventLogger
 import androidx.media3.session.MediaLibraryService
+import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSession.ControllerInfo
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
@@ -21,6 +25,7 @@ import androidx.work.WorkManager
 import com.zee.amusicplayer.ui.MainActivity
 import com.zee.amusicplayer.utils.Constants
 import com.zee.amusicplayer.utils.MediaItemHelper
+import com.zee.amusicplayer.utils.MediaStoreObserver
 import com.zee.amusicplayer.worker.FetchMediaWorker
 import com.zee.amusicplayer.worker.SaveMetaDataWorker
 import kotlinx.coroutines.CoroutineScope
@@ -39,8 +44,11 @@ class MusicService : MediaLibraryService() {
     private lateinit var librarySessionCallback: MediaLibrarySessionCallback
     private val workManager by lazy { WorkManager.getInstance(this) }
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val TAG  ="MusicService"
+//    private val mediaStoreObserver = MediaStoreObserver(contentResolver){
 
-
+//        mediaLibrarySession.notifyChildrenChanged(mediaItemHelper.Root.mediaId,10,null)
+//    }
     init {
         scope.launch {
             workManager.getWorkInfoByIdFlow(fetchWorkerRequestId).collectLatest { workInfo ->
@@ -75,12 +83,15 @@ class MusicService : MediaLibraryService() {
         }
     }
 
+    @SuppressLint("UnsafeOptInUsageError")
     override fun onCreate() {
         super.onCreate()
+        Log.d(TAG, "onCreate: ")
         initializeSessionAndPlayer()
-//        setListener(MediaSessionServiceListener(this))
+        setListener(MediaSessionServiceListener(this))
         if (checkIfPermissionGranted())
             scheduleFetchTask(this)
+
     }
 
     private fun checkIfPermissionGranted(): Boolean {
@@ -103,9 +114,13 @@ class MusicService : MediaLibraryService() {
         mediaLibrarySession =
             MediaLibrarySession.Builder(this, player, librarySessionCallback)
                 .setSessionActivity(getSingleTopActivity())
+
+
 //        .setCustomLayout(ImmutableList.of(librarySessionCallback.customCommands[0]))
 //                .setBitmapLoader(CacheBitmapLoader(DataSourceBitmapLoader(/* context= */ this)))
                 .build()
+
+        player.addAnalyticsListener(EventLogger())
     }
 
 
@@ -120,6 +135,7 @@ class MusicService : MediaLibraryService() {
     }
 
     override fun onDestroy() {
+        Log.d(TAG, "onDestroy: ")
         workManager.enqueue(OneTimeWorkRequest.from(SaveMetaDataWorker::class.java))
         mediaLibrarySession.release()
         player.release()
@@ -133,8 +149,12 @@ class MusicService : MediaLibraryService() {
             this,
             0,
             Intent(this, MainActivity::class.java),
-            FLAG_IMMUTABLE or FLAG_UPDATE_CURRENT
+            FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE
         )
+    }
+
+    override fun onUpdateNotification(session: MediaSession, startInForegroundRequired: Boolean) {
+        super.onUpdateNotification(session, startInForegroundRequired)
     }
 
     private fun getBackStackedActivity(): PendingIntent {
@@ -144,7 +164,6 @@ class MusicService : MediaLibraryService() {
             getPendingIntent(0, FLAG_IMMUTABLE or FLAG_UPDATE_CURRENT)
         }
     }
-
 
 
 }

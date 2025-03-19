@@ -2,7 +2,11 @@ package com.zee.amusicplayer.ui.main
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.app.PendingIntent
 import android.content.ComponentName
+import android.os.Bundle
+import android.util.Log
+import androidx.annotation.OptIn
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,10 +14,17 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.Tracks
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.session.CommandButton
 import androidx.media3.session.MediaBrowser
+import androidx.media3.session.MediaController
 import androidx.media3.session.MediaLibraryService
+import androidx.media3.session.SessionCommand
+import androidx.media3.session.SessionCommands
+import androidx.media3.session.SessionError
+import androidx.media3.session.SessionResult
 import androidx.media3.session.SessionToken
-import com.zee.amusicplayer.utils.SortBy
+import com.google.common.util.concurrent.ListenableFuture
 import com.zee.amusicplayer.domain.model.Song
 import com.zee.amusicplayer.domain.model.toSong
 import com.zee.amusicplayer.domain.useCase.album.AlbumUseCase
@@ -22,6 +33,7 @@ import com.zee.amusicplayer.domain.useCase.playlist.PlayListUseCase
 import com.zee.amusicplayer.service.MusicService
 import com.zee.amusicplayer.utils.Constants
 import com.zee.amusicplayer.utils.MediaItemHelper
+import com.zee.amusicplayer.utils.SortBy
 import com.zee.amusicplayer.utils.fixedItemIndex
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -36,8 +48,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-class MainViewModel(application: Application) : AndroidViewModel(application),
-    MediaBrowser.Listener {
+class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _isSearchVisible = MutableStateFlow(false)
     val isSearchVisible = _isSearchVisible.asStateFlow()
@@ -46,11 +57,105 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
 
     private val executor = ContextCompat.getMainExecutor(application)
 
+    private val browserListener = object : MediaBrowser.Listener {
+        override fun onAvailableSessionCommandsChanged(
+            controller: MediaController,
+            commands: SessionCommands
+        ) {
+            Log.d("zeeshan", "onAvailableSessionCommandsChanged: ")
+            super.onAvailableSessionCommandsChanged(controller, commands)
+        }
+
+        @SuppressLint("UnsafeOptInUsageError")
+        override fun onCustomLayoutChanged(
+            controller: MediaController,
+            layout: MutableList<CommandButton>
+        ) {
+            Log.d("zeeshan", "onCustomLayoutChanged: ")
+            super.onCustomLayoutChanged(controller, layout)
+        }
+
+        override fun onExtrasChanged(controller: MediaController, extras: Bundle) {
+            super.onExtrasChanged(controller, extras)
+            Log.d("zeeshan", "onExtrasChanged: ")
+        }
+
+        @SuppressLint("UnsafeOptInUsageError")
+        override fun onMediaButtonPreferencesChanged(
+            controller: MediaController,
+            mediaButtonPreferences: MutableList<CommandButton>
+        ) {
+            Log.d("zeeshan", "onMediaButtonPreferencesChanged: ")
+            super.onMediaButtonPreferencesChanged(controller, mediaButtonPreferences)
+        }
+
+        @SuppressLint("UnsafeOptInUsageError")
+        override fun onSessionActivityChanged(
+            controller: MediaController,
+            sessionActivity: PendingIntent
+        ) {
+            Log.d("zeeshan", "onSessionActivityChanged: ")
+            super.onSessionActivityChanged(controller, sessionActivity)
+        }
+
+        override fun onSetCustomLayout(
+            controller: MediaController,
+            layout: MutableList<CommandButton>
+        ): ListenableFuture<SessionResult> {
+            Log.d("zeeshan", "onSetCustomLayout: ")
+            return super.onSetCustomLayout(controller, layout)
+        }
+
+        override fun onCustomCommand(
+            controller: MediaController,
+            command: SessionCommand,
+            args: Bundle
+        ): ListenableFuture<SessionResult> {
+            Log.d("zeeshan", "onCustomCommand: ")
+            return super.onCustomCommand(controller, command, args)
+        }
+
+        override fun onSearchResultChanged(
+            browser: MediaBrowser,
+            query: String,
+            itemCount: Int,
+            params: MediaLibraryService.LibraryParams?
+        ) {
+            Log.d("zeeshan", "onSearchResultChanged: ")
+            super.onSearchResultChanged(browser, query, itemCount, params)
+        }
+
+        override fun onChildrenChanged(
+            browser: MediaBrowser,
+            parentId: String,
+            itemCount: Int,
+            params: MediaLibraryService.LibraryParams?
+        ) {
+            Log.d("zeeshan", "onChildrenChanged: ")
+            getChildren(parentId)
+        }
+
+        override fun onDisconnected(controller: MediaController) {
+            Log.d("zeeshan", "onDisconnected: ")
+            super.onDisconnected(controller)
+        }
+
+        @OptIn(UnstableApi::class)
+        override fun onError(
+            controller: MediaController,
+            @SuppressLint("UnsafeOptInUsageError") sessionError: SessionError
+        ) {
+            Log.d("zeeshan", "onError: error ${sessionError.message}")
+            super.onError(controller, sessionError)
+        }
+
+    }
+
     @SuppressLint("UnsafeOptInUsageError")
     private val browserFuture = MediaBrowser.Builder(
         application,
         SessionToken(application, ComponentName(application, MusicService::class.java))
-    ).setListener(this).buildAsync()
+    ).setListener(browserListener).buildAsync()
 
     private val browser: MediaBrowser?
         get() = if (browserFuture.isDone && !browserFuture.isCancelled) browserFuture.get() else null
@@ -89,8 +194,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
     init {
         browserFuture.addListener({
             val browser = this.browser ?: return@addListener
-            browser.subscribe(MediaItemHelper.Root.mediaId, null)
-            setController()
+            val rootFuture = browser.getLibraryRoot(null)
+            rootFuture.addListener({
+                val root = rootFuture.get().value!!
+                browser.subscribe(root.mediaId, null)
+                setController()
+            }, executor)
+
         }, executor)
 
     }
@@ -161,9 +271,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
 
                 override fun onPlayerError(error: PlaybackException) {
                     super.onPlayerError(error)
+                    Log.d("zeeshan", "onPlayerError: $error")
                     _playerState.value = playerState.value.copy(error = error)
 
                 }
+
             }
         )
     }
@@ -203,8 +315,16 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
     }
 
     fun onPlayPauseClick() {
+        Log.d(
+            "zeeshan",
+            "onPlayPauseClick: controller $browser currentMediaItem ${browser?.currentMediaItem} index ${browser?.currentMediaItemIndex}"
+        )
         val controller = browser ?: return
-        controller.playWhenReady = !controller.playWhenReady
+        val wantToPlay = !controller.playWhenReady
+        if (wantToPlay && controller.playbackState == Player.STATE_IDLE) {
+            controller.prepare()
+        }
+        controller.playWhenReady = wantToPlay
     }
 
     fun onItemClick(position: Int) {
@@ -248,15 +368,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application),
     fun onSeekToClick(positionInMs: Long) {
         _playerState.value = playerState.value.copy(progress = positionInMs)
         browser?.seekTo(positionInMs)
-    }
-
-    override fun onChildrenChanged(
-        browser: MediaBrowser,
-        parentId: String,
-        itemCount: Int,
-        params: MediaLibraryService.LibraryParams?
-    ) {
-        getChildren(parentId)
     }
 
 

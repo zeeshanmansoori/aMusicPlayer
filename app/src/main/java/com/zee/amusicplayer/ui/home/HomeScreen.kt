@@ -95,7 +95,7 @@ fun HomeScreen(
                             }
                             viewModel.onItemClick(itemPosition)
                         }
-                        .padding(horizontal = 10.dp, vertical = 10.dp),
+                        .padding(horizontal = 5.dp, vertical = 10.dp),
                     song = item,
                     showEqualizer = item.id == currentSong?.id,
                 )

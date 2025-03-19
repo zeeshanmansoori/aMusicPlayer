@@ -20,6 +20,7 @@ import com.zee.amusicplayer.utils.getStringOrNull
 import com.zee.amusicplayer.utils.id
 import com.zee.amusicplayer.utils.title
 import org.json.JSONObject
+import androidx.core.net.toUri
 
 
 class AudioOfflineDataSource(private val context: Context) {
@@ -82,7 +83,7 @@ class AudioOfflineDataSource(private val context: Context) {
 
 
     private fun getMediaStoreAlbumCoverUri(albumId: Long): Uri {
-        val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
+        val sArtworkUri = "content://media/external/audio/albumart".toUri()
         return ContentUris.withAppendedId(sArtworkUri, albumId)
     }
 

@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "com.zee.amusicplayer"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.zee.amusicplayer"

@@ -18,7 +18,7 @@ sealed class SortBy {
     data object History : SortBy() {
         override fun sortList(items: List<Song>): List<Song> {
             val list = items.toMutableList()
-            list.sortBy {
+            list.sortByDescending {
                 it.lastPlayedDate
             }
 
@@ -41,7 +41,7 @@ sealed class SortBy {
     data object MostPlayed : SortBy() {
         override fun sortList(items: List<Song>): List<Song> {
             val list = items.toMutableList()
-            list.sortBy {
+            list.sortByDescending {
                 it.playedCount
             }
 

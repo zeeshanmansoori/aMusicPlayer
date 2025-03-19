@@ -13,15 +13,6 @@ class FetchMediaWorker(appContext: Context, workerParameters: WorkerParameters) 
     CoroutineWorker(appContext, workerParameters) {
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
 
-        val notificationId = 1
-
-        WorkerUtils.makeStatusNotification(
-            notificationId,
-            "Fetching...",
-            "Scanning Music files",
-            applicationContext
-        )
-
         val repository = AppModule.provideSongRepository()
         val inputName = inputData.getString("parentId") ?: ""
 
@@ -32,7 +23,7 @@ class FetchMediaWorker(appContext: Context, workerParameters: WorkerParameters) 
             Constants.PARENT_ID_KEY to inputName,
             Constants.ITEM_COUNT_KEY to songs.size
         )
-        WorkerUtils.dismissNotification(notificationId, applicationContext)
+
         Result.success(output)
     }
 
