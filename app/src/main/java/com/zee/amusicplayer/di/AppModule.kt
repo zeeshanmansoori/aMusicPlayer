@@ -1,78 +1,41 @@
 package com.zee.amusicplayer.di
 
+import android.annotation.SuppressLint
 import android.app.Application
-import android.content.Context
-import com.google.android.exoplayer2.upstream.DataSource
-import com.google.android.exoplayer2.upstream.DefaultDataSource
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.zee.amusicplayer.domain.repository.AlbumRepository
-import com.zee.amusicplayer.domain.repository.ArtistRepository
-import com.zee.amusicplayer.domain.repository.SongRepository
-import com.zee.amusicplayer.domain.use_cases.GetAllAlbumUseCase
-import com.zee.amusicplayer.domain.use_cases.GetAllArtistUseCase
-import com.zee.amusicplayer.domain.use_cases.GetAllSongsUseCase
-import com.zee.amusicplayer.feature_albums.repository.AlbumRepositoryImpl
-import com.zee.amusicplayer.feature_artists.repository.ArtistRepositoryImpl
-import com.zee.amusicplayer.feature_songs.data_source.AudioOfflineDataSource
-import com.zee.amusicplayer.feature_songs.repository.SongRepositoryImpl
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.android.scopes.ServiceScoped
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import androidx.room.Room
+import com.zee.amusicplayer.data.dataSource.AppDatabase
+import com.zee.amusicplayer.data.dataSource.AudioOfflineDataSource
+import com.zee.amusicplayer.data.repository.SongRepositoryImpl
+import com.zee.amusicplayer.domain.repository.ISongRepository
+import com.zee.amusicplayer.domain.useCase.sorting.SortByNameUseCase
 
-@Module
-@InstallIn(SingletonComponent::class)
 object AppModule {
 
-    @Provides
-    @Singleton
-    fun providesDataSource(app: Application): AudioOfflineDataSource {
-        return AudioOfflineDataSource(app)
+    @SuppressLint("StaticFieldLeak")
+    private lateinit var application: Application
+     fun providesDataSource(): AudioOfflineDataSource {
+        return AudioOfflineDataSource(application)
+    }
+
+    fun init(application: Application) {
+        this.application = application
+    }
+
+    fun provideSongRepository(): ISongRepository {
+        return SongRepositoryImpl(providesDataSource(), provideDatabase())
     }
 
 
-    @Provides
-    @Singleton
-    fun provideSongRepository(dataSource: AudioOfflineDataSource): SongRepository {
-        return SongRepositoryImpl(dataSource = dataSource)
+    fun provideDatabase(): AppDatabase {
+        return Room.databaseBuilder(
+            application,
+            AppDatabase::class.java, "a-music-app-db"
+        ).fallbackToDestructiveMigration()
+            .build()
     }
 
-
-    @Provides
-    @Singleton
-    fun provideAlbumRepository(repository: SongRepository): AlbumRepository {
-        return AlbumRepositoryImpl(songRepository = repository)
+    ///UseCases
+    fun <T> provideSortByNameUseCase(): SortByNameUseCase<T> {
+        return SortByNameUseCase()
     }
-
-
-    @Provides
-    @Singleton
-    fun provideArtistRepository(repository: SongRepository): ArtistRepository {
-        return ArtistRepositoryImpl(songRepository = repository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideSongUseCase(repository: SongRepository): GetAllSongsUseCase {
-        return GetAllSongsUseCase(repository)
-    }
-
-
-    @Provides
-    @Singleton
-    fun provideAlbumUseCase(repository: AlbumRepository): GetAllAlbumUseCase {
-        return GetAllAlbumUseCase(repository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideArtistUseCase(repository: ArtistRepository): GetAllArtistUseCase {
-        return GetAllArtistUseCase(repository)
-    }
-
-
-
 }

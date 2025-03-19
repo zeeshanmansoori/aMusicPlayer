@@ -2,7 +2,6 @@ package com.zee.amusicplayer.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Teal200 = Color(0xFF03DAC5)
 val colorPrimary = Color(0xFF7c4dff)
 val colorPrimary700 = Color(0x707c4dff)
 val DarkColorSurface = Color(0xFF202124)
@@ -11,6 +10,7 @@ val TextColor = Color(0xffa09da6)
 val IconTintColor = Color(0xff767376)
 val lightBackGroundColor = Color(0xfffffbff)
 
+val Orange500 = Color(0xFFF5C32D)
 val Blue500 = Color(0xff2196F3)
 val Red500 = Color(0xffF44336)
 val Green500 = Color(0xff673AB7)

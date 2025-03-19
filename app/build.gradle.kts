@@ -1,126 +1,99 @@
 plugins {
-    id("com.android.application")
-    id("kotlin-android")
-    id("com.google.devtools.ksp")
-    id("dagger.hilt.android.plugin")
-    kotlin("kapt")
+    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.jetbrainsKotlin)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlinCompose)
+
+    id("kotlin-parcelize")
 }
 
 android {
-    compileSdk = 34
     namespace = "com.zee.amusicplayer"
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.zee.amusicplayer"
         minSdk = 27
         targetSdk = 34
-        versionCode = 3
+        versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
     }
 
     buildTypes {
-        getByName("release") {
-            isMinifyEnabled = true
-            isShrinkResources = true
+        debug{
+            applicationIdSuffix = ".debug"
+            resValue("string","app_name","aMusicPlayer Debug")
+        }
+        release {
+            isMinifyEnabled = false
             proguardFiles(
-                    getDefaultProguardFile("proguard-android-optimize.txt"),
-                    "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
             )
-        }
-        getByName("debug") {
-            isDebuggable = true
+
+            resValue("string","app_name","aMusicPlayer")
 
         }
-
     }
-
     compileOptions {
-        sourceCompatibility =  JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
     buildFeatures {
-        compose =  true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.2"
-    }
-    packagingOptions {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
+        compose = true
     }
 }
 
 dependencies {
-    val bom = platform("androidx.compose:compose-bom:2023.09.00")
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-    implementation("androidx.activity:activity-compose:1.7.2")
-    implementation(bom)
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material:material")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(bom)
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.core.ktx)
 
-    // Compose dependencies
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
-    implementation ("androidx.hilt:hilt-navigation-compose:1.1.0-alpha01")
-//    implementation (" androidx.navigation.compose:1.0.1");
-    // Coroutines
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 
-    //Dagger - Hilt
-    implementation ("com.google.dagger:hilt-android:2.48")
-    kapt( "com.google.dagger:hilt-android-compiler:2.48")
+    implementation(libs.androidx.media3.session)
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.ui)
 
+    //compose
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.navigation.compose)
 
-    //accomponist
-    val acc_version = "0.22.0-rc"
-    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
-    implementation ("com.google.accompanist:accompanist-permissions:0.30.1")
-    implementation ("com.google.accompanist:accompanist-navigation-animation:0.30.1")
-    implementation ("com.google.accompanist:accompanist-navigation-material:0.30.1")
-    implementation ("com.google.accompanist:accompanist-insets:0.30.1")
-
-
-
-    val exoplayer_version = "2.19.1"
-    implementation ("com.google.android.exoplayer:exoplayer-core:$exoplayer_version")
-    implementation ("com.google.android.exoplayer:exoplayer-ui:$exoplayer_version")
-    implementation ("com.google.android.exoplayer:extension-mediasession:$exoplayer_version")
-
+    // accompanist
+    implementation(libs.accompanist.permissions)
 
     //lottie
-    val lottieVersion = "4.2.2"
-    implementation ("com.airbnb.android:lottie-compose:$lottieVersion")
-
-    //coil
-    val coilVersion = "2.4.0"
-    implementation ("io.coil-kt:coil-compose:$coilVersion")
-    implementation ("com.github.skydoves:landscapist-glide:1.4.4")
-
+    implementation (libs.lottie.compose)
 
     // breaking while updating
-    val nav_compose_version = "2.4.0-rc01"
-    implementation ("androidx.navigation:navigation-compose:$nav_compose_version")
-    implementation ("androidx.compose.material:material-icons-extended:$1.4.0")
-}
+    implementation (libs.androidx.material.icons.extended)
 
-// AGP 8.1.
+    // coil
+    implementation(libs.coil.compose)
+
+    implementation(libs.gson)
+
+    // workManager
+    implementation(libs.androidx.work.runtime.ktx)
+
+    // room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+
+}
