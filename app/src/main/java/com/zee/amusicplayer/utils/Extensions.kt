@@ -1,6 +1,7 @@
 package com.zee.amusicplayer.utils
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.database.Cursor
 import android.graphics.Bitmap
@@ -8,12 +9,80 @@ import android.net.Uri
 import android.os.Build
 import android.util.Log
 import android.util.Size
-import androidx.core.os.bundleOf
+import androidx.compose.material3.BottomSheetScaffoldState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetValue
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaMetadata
 import com.zee.amusicplayer.data.db.entity.OtherMediaMetaData
 import org.json.JSONObject
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BottomSheetScaffoldState.currentFraction(sheetPeekHeight: Dp, btmNavBarHeight: Dp): Float {
+
+
+    val targetValue = bottomSheetState.targetValue
+    val currentValue = bottomSheetState.currentValue
+
+    val density = LocalDensity.current
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+
+    val sheetPeekHeightPx = with(density) { sheetPeekHeight.toPx() }
+    val btmNavBarHeightPx = with(density) { btmNavBarHeight.toPx() }
+    val screenHeightPx = with(density) { (screenHeight).toPx() }
+
+    val sheetOffset = try {
+        bottomSheetState.requireOffset() + sheetPeekHeightPx + btmNavBarHeightPx
+    } catch (e: Exception) {
+        0f
+    }
+
+    val fraction = (sheetOffset / screenHeightPx).coerceIn(0f, 1f)
+    var visibilityFraction = when {
+        currentValue == SheetValue.Hidden && targetValue == SheetValue.Hidden -> 0f
+        currentValue == SheetValue.Expanded && targetValue == SheetValue.Expanded -> 0f
+        currentValue == SheetValue.PartiallyExpanded && targetValue == SheetValue.PartiallyExpanded -> 1f
+        else -> fraction
+    }
+
+    visibilityFraction = (visibilityFraction * 100).toInt() / 100f
+    Log.d(
+        "zeeshan",
+        "currentFraction: $visibilityFraction sheetOffset $sheetOffset " +
+                "screenHeight $screenHeightPx c $currentValue t $targetValue " +
+                "sheetPeekHeightPx $sheetPeekHeightPx"
+    )
+
+    return visibilityFraction
+
+}
+
+@Composable
+fun rememberSystemGesturesBottomHeight(): Float {
+    val context = LocalContext.current
+    val density = LocalDensity.current
+
+    return remember {
+        var heightPx = 0f
+        val windowInsets = ViewCompat.getRootWindowInsets((context as Activity).window.decorView)
+        windowInsets?.let {
+
+            heightPx = it.getInsets(WindowInsetsCompat.Type.systemGestures()).bottom.toFloat()
+        }
+        with(density) { heightPx }
+    }
+}
 
 @SuppressLint("Range")
 internal fun Cursor.getInt(columnName: String): Int {

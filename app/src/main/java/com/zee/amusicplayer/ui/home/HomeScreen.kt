@@ -9,9 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.BottomSheetScaffoldState
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
@@ -19,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.zee.amusicplayer.ui.home.components.HomeAppBar
 import com.zee.amusicplayer.ui.home.components.HomeActionBar
 import com.zee.amusicplayer.ui.home.components.SongItemUi
 import com.zee.amusicplayer.ui.main.MainViewModel
@@ -27,11 +24,9 @@ import com.zee.amusicplayer.utils.Constants
 import kotlinx.coroutines.launch
 
 
-@ExperimentalMaterialApi
 @Composable
 fun HomeScreen(
     viewModel: MainViewModel,
-    bottomSheetState: BottomSheetScaffoldState,
     modifier: Modifier = Modifier,
 ) {
 
@@ -84,11 +79,11 @@ fun HomeScreen(
                         .padding(vertical = 3.dp)
                         .clip(RoundedCornerShape(Constants.rectanglesCorner))
                         .clickable {
-                            val bottomSheetCollapsed =
-                                bottomSheetState.bottomSheetState.isCollapsed
-                            if (bottomSheetCollapsed) scope.launch {
-                                bottomSheetState.bottomSheetState.expand()
-                            }
+//                            val bottomSheetCollapsed =
+//                                bottomSheetState.bottomSheetState.isCollapsed
+//                            if (bottomSheetCollapsed) scope.launch {
+//                                bottomSheetState.bottomSheetState.expand()
+//                            }
                             viewModel.onItemClick(itemPosition)
                         }
                         .padding(horizontal = 5.dp, vertical = 10.dp),

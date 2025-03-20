@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlin)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinCompose)
+    alias(libs.plugins.kotlin.serialization)
 
     id("kotlin-parcelize")
 }
@@ -71,7 +72,8 @@ dependencies {
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.material)
+//    implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.navigation.compose)
 
     // accompanist
@@ -94,6 +96,8 @@ dependencies {
     // room
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.kotlinx.serialization.json)
     ksp(libs.androidx.room.compiler)
+
 
 }

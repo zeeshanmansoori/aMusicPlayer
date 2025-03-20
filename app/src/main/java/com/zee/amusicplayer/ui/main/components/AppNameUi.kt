@@ -1,7 +1,7 @@
 package com.zee.amusicplayer.ui.main.components
 
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.sp
 fun AppNameUi(modifier: Modifier = Modifier) {
     val annotatedString = buildAnnotatedString {
         append("a ")
-        withStyle(style = SpanStyle(color = MaterialTheme.colors.primary)) {
+        withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary)) {
             append("Music")
         }
 
@@ -25,7 +25,7 @@ fun AppNameUi(modifier: Modifier = Modifier) {
     Text(
         modifier = modifier,
         text = annotatedString,
-        style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Bold),
+        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
         letterSpacing = 1.sp
     )
 

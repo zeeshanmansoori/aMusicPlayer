@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,7 +29,7 @@ fun AMusicAppBar(
         modifier = modifier
             .fillMaxWidth()
             .offset { IntOffset(0, offset.roundToInt()) }
-            .background(color = MaterialTheme.colors.surface),
+            .background(color = MaterialTheme.colorScheme.surface),
         contentAlignment = Alignment.CenterEnd,
         content = content
     )

@@ -12,9 +12,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -73,7 +73,7 @@ fun PlayerBottomSheetContent(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colors.surface)
+            .background(color = MaterialTheme.colorScheme.surface)
             .padding(horizontal = Constants.SIDE_PADDING)
     ) {
 
@@ -89,7 +89,6 @@ fun PlayerBottomSheetContent(
                     .fillMaxWidth()
                     .aspectRatio(1f)
                     .scale(scaleFactor),
-                elevation = if (scaleFactor == 1f) 5.dp else 0.dp,
                 shape = RoundedCornerShape(Constants.rectanglesCorner),
                 color = Color.LightGray,
             ) {
@@ -121,7 +120,7 @@ fun PlayerBottomSheetContent(
                     .fillMaxWidth()
                     .padding(top = 10.dp),
                 text = song?.title.toString(),
-                style = MaterialTheme.typography.subtitle1.copy(fontSize = 18.sp)
+                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp)
             )
 
             Text(

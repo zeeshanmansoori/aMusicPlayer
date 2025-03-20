@@ -1,12 +1,12 @@
 package com.zee.amusicplayer.ui.home.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.runtime.Composable
@@ -22,7 +22,7 @@ import androidx.compose.ui.res.painterResource
 import com.zee.amusicplayer.R
 import com.zee.amusicplayer.ui.main.components.AMusicAppBar
 import com.zee.amusicplayer.ui.main.components.AppNameUi
-import com.zee.amusicplayer.ui.theme.IconTintColor
+
 
 @Composable
 fun HomeAppBar(
@@ -64,10 +64,10 @@ fun HomeAppBar(
                     }
                 },
                 singleLine = true,
-                colors = TextFieldDefaults.textFieldColors(
+                colors = TextFieldDefaults.colors().copy(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
-                    backgroundColor = MaterialTheme.colors.surface
+//                    backgroundColor = MaterialTheme.colorScheme.surface
                 )
             )
             return@AMusicAppBar
@@ -81,7 +81,6 @@ fun HomeAppBar(
             Icon(
                 painter = painterResource(id = R.drawable.ic_serch),
                 contentDescription = "Settings",
-                tint = IconTintColor
             )
         }
 

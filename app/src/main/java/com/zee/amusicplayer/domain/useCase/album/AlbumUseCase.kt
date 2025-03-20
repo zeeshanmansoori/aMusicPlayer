@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.stateIn
 
 class AlbumUseCase(
     songsState: Flow<MainViewModel.SongsState>,
-    val navController: NavHostController,
     scope: CoroutineScope
 ) {
 

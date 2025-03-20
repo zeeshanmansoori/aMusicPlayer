@@ -1,7 +1,6 @@
 package com.zee.amusicplayer.ui.album
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -18,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import com.zee.amusicplayer.domain.model.Album
 import com.zee.amusicplayer.domain.useCase.album.AlbumUseCase
 import com.zee.amusicplayer.ui.album.component.SingleAlbumUi
-import com.zee.amusicplayer.ui.main.components.AMusicAppBar
 import com.zee.amusicplayer.utils.Constants
 
 
@@ -38,7 +36,7 @@ fun AlbumScreen(useCase: AlbumUseCase) {
                 modifier = Modifier
                     .clip(RoundedCornerShape(Constants.rectanglesCorner))
                     .clickable {
-                        useCase.navController.navigate("albums")
+//                        useCase.navController.navigate("albums")
                     }
                     .padding(
                         start = if (index % 2 == 0) 0.dp else 4.dp,

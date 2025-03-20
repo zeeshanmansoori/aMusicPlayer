@@ -10,9 +10,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,7 +31,7 @@ fun HomeActionBar(
 ) {
     LazyRow(
         modifier
-            .background(MaterialTheme.colors.surface)
+            .background(MaterialTheme.colorScheme.surface)
             .padding(bottom = 5.dp)
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -66,7 +66,7 @@ fun HomeActionBarChip(
     Row(verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .clip(RoundedCornerShape(15.dp))
-            .background(if (selected) MaterialTheme.colors.background else MaterialTheme.colors.surface)
+            .background(if (selected) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.surface)
             .clickable {
                 onSortActionChange.invoke(item.sortBy)
             }
@@ -82,7 +82,7 @@ fun HomeActionBarChip(
         Text(
             modifier = Modifier.padding(horizontal = 5.dp),
             text = item.title,
-            style = MaterialTheme.typography.subtitle1.copy(
+            style = MaterialTheme.typography.titleLarge.copy(
                 fontSize = 14.sp,
                 fontWeight = if(selected) FontWeight.Bold else FontWeight.Normal
             )

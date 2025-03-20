@@ -56,14 +56,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _filterKey = MutableStateFlow("")
 
     private val executor = ContextCompat.getMainExecutor(application)
-    private lateinit var navController: NavHostController
 
     private val browserListener = object : MediaBrowser.Listener {
         override fun onAvailableSessionCommandsChanged(
             controller: MediaController,
             commands: SessionCommands
         ) {
-            Log.d("zeeshan", "onAvailableSessionCommandsChanged: ")
+
             super.onAvailableSessionCommandsChanged(controller, commands)
         }
 
@@ -72,13 +71,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             controller: MediaController,
             layout: MutableList<CommandButton>
         ) {
-            Log.d("zeeshan", "onCustomLayoutChanged: ")
+
             super.onCustomLayoutChanged(controller, layout)
         }
 
         override fun onExtrasChanged(controller: MediaController, extras: Bundle) {
             super.onExtrasChanged(controller, extras)
-            Log.d("zeeshan", "onExtrasChanged: ")
         }
 
         @SuppressLint("UnsafeOptInUsageError")
@@ -86,7 +84,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             controller: MediaController,
             mediaButtonPreferences: MutableList<CommandButton>
         ) {
-            Log.d("zeeshan", "onMediaButtonPreferencesChanged: ")
             super.onMediaButtonPreferencesChanged(controller, mediaButtonPreferences)
         }
 
@@ -95,7 +92,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             controller: MediaController,
             sessionActivity: PendingIntent
         ) {
-            Log.d("zeeshan", "onSessionActivityChanged: ")
             super.onSessionActivityChanged(controller, sessionActivity)
         }
 
@@ -103,7 +99,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             controller: MediaController,
             layout: MutableList<CommandButton>
         ): ListenableFuture<SessionResult> {
-            Log.d("zeeshan", "onSetCustomLayout: ")
             return super.onSetCustomLayout(controller, layout)
         }
 
@@ -112,7 +107,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             command: SessionCommand,
             args: Bundle
         ): ListenableFuture<SessionResult> {
-            Log.d("zeeshan", "onCustomCommand: ")
             return super.onCustomCommand(controller, command, args)
         }
 
@@ -122,7 +116,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             itemCount: Int,
             params: MediaLibraryService.LibraryParams?
         ) {
-            Log.d("zeeshan", "onSearchResultChanged: ")
             super.onSearchResultChanged(browser, query, itemCount, params)
         }
 
@@ -132,12 +125,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             itemCount: Int,
             params: MediaLibraryService.LibraryParams?
         ) {
-            Log.d("zeeshan", "onChildrenChanged: ")
+
             getChildren(parentId)
         }
 
         override fun onDisconnected(controller: MediaController) {
-            Log.d("zeeshan", "onDisconnected: ")
             super.onDisconnected(controller)
         }
 
@@ -146,7 +138,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             controller: MediaController,
             @SuppressLint("UnsafeOptInUsageError") sessionError: SessionError
         ) {
-            Log.d("zeeshan", "onError: error ${sessionError.message}")
             super.onError(controller, sessionError)
         }
 
@@ -186,7 +177,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val sortByE = _sortBy.asStateFlow()
 
 
-    val albumUseCase by lazy { AlbumUseCase(songsState,navController, viewModelScope) }
+    val albumUseCase by lazy { AlbumUseCase(songsState, viewModelScope) }
     val artistsUseCase by lazy { ArtistsUseCase(songsState, viewModelScope) }
     val playListUseCase by lazy { PlayListUseCase(viewModelScope) }
 
@@ -272,7 +263,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
                 override fun onPlayerError(error: PlaybackException) {
                     super.onPlayerError(error)
-                    Log.d("zeeshan", "onPlayerError: $error")
                     _playerState.value = playerState.value.copy(error = error)
 
                 }
@@ -370,11 +360,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _playerState.value = playerState.value.copy(progress = positionInMs)
         browser?.seekTo(positionInMs)
     }
-
-    fun setNavController(controller: NavHostController) {
-        this.navController = controller
-    }
-
 
     data class PlayerState(
         val isPlaying: Boolean = false,

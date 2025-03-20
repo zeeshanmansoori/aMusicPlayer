@@ -6,9 +6,9 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
@@ -48,7 +48,7 @@ fun PlayerController(
         label = ""
     )
     val fabColor = animateColorAsState(
-        targetValue = if (isButtonTouchMode) MaterialTheme.colors.primary.copy(alpha = .8f) else MaterialTheme.colors.primary,
+        targetValue = if (isButtonTouchMode) MaterialTheme.colorScheme.primary.copy(alpha = .8f) else MaterialTheme.colorScheme.primary,
         label = ""
     )
     Row(
@@ -71,7 +71,7 @@ fun PlayerController(
             },
             modifier = Modifier
                 .scale(scaleFactor.value),
-            backgroundColor = fabColor.value,
+//            backgroundColor = fabColor.value,
             contentColor = if (isSystemInDarkTheme()) Color.White else Color.Black
         ) {
             Icon(

@@ -3,10 +3,11 @@ package com.zee.amusicplayer.ui.pbSheet.component
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Slider
-import androidx.compose.material.Text
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -15,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.zee.amusicplayer.ui.theme.TextColor
 import com.zee.amusicplayer.utils.toTwoDigitWord
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -39,9 +39,9 @@ fun TrackBar(
 
     Row(modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
 
-        Text(text = formattedTime(progress), fontSize = 14.sp, color = TextColor)
+        Text(text = formattedTime(progress), fontSize = 14.sp)
         var secondaryProgress by remember {
-            mutableStateOf(0f)
+            mutableFloatStateOf(0f)
         }
 
 
@@ -69,7 +69,7 @@ fun TrackBar(
             }
         )
 
-        Text(text = formattedTime(max), fontSize = 14.sp, color = TextColor)
+        Text(text = formattedTime(max), fontSize = 14.sp)
     }
 }
 
